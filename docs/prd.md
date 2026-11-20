@@ -486,32 +486,42 @@ The earlier draft produced 73 AI-drafted items, 85 traps and 82 example sentence
 
 `python manage.py importer_donnees_initiales <path>` loads them once, as follows:
 
-- **Owner and status.** Everything is attributed to a system user `import-initial`, with `statut = brouillon`.
+- **Owner and status.** Everything is attributed to a system user `import-initial`, which can't log in, with `statut = brouillon`.
 - **Marked as AI-generated.** Every imported record (entries, traps, examples and their links, translations, themes and links between entries) has `genere_par_ia` set. The flag can't be edited in the admin and is shown there and on reviewers' previews. During testing, seed records can be reviewed like any other.
 - **English text goes to the translation layer.** The source explanations are in English, so `gloss_en`, `literal_en` and `note_en` become `EntreeTraduction` and `PiegeTraduction` rows with `langue = en`. The French `explication` stays empty until the owner writes it.
 - **An empty explanation is allowed only in draft.** `explication` may be empty while `statut = brouillon`, and the model refuses `relu` or `valide` without it.
-- **Example sentences become `Exemple` rows.** Each sentence becomes one `Exemple` (82 in all), linked through `ExempleEntree` to every entry its tags point to (85 links), with each tag's text as that link's `surlignage`, and the English gloss as an `ExempleTraduction`.
+- **Example sentences become `Exemple` rows.** Each sentence becomes one `Exemple` (82 in all), linked through `ExempleEntree` to every entry its tags point to (85 links), with each tag's text as that link's `surlignage`, its position among that entry's sentences in the file as `ordre`, and the English gloss as an `ExempleTraduction`. Two sentences have no tags: they show *ça marche* and *n'importe quoi* in another sense. They are imported without links, so they can't be approved until someone links them or deletes them.
+- **Labels in French** (decided 20 November 2026). `sense_label` is mostly English, and `precision` is shown in French next to the `vedette`, so the import translates it: *before the noun* → *avant le nom*, *carry out* → *accomplir*, and so on. The labels already in French (*penser à*, *X me manque*) stay as they are.
 
 | Old field (seed files) | New field | Mapping |
 | --- | --- | --- |
 | `id` | `slug` | Unchanged |
-| `headword`, `sense_label` | `vedette`, `precision` | Unchanged text |
+| `headword` | `vedette` | Unchanged text |
+| `sense_label` | `precision` | Translated into French (see above) |
 | `kind` | `type_entree` | `word` → `mot`, others unchanged |
-| `pos` | `nature` | `noun` → `nom`, `verb` → `verbe`, `verb_phrase` → `locution_verbale`, `sentence` → `phrase`… |
+| `pos` | `nature` | `noun` → `nom`, `verb` → `verbe`, `adjective` → `adjectif`, `adverb` → `adverbe`, `conjunction` → `conjonction`, `pronoun` → `pronom`, `determiner` → `determinant`, `verb_phrase` → `locution_verbale`, `noun_phrase` → `locution_nominale`, `adjectival_phrase` → `locution_adjectivale`, `adverbial_phrase` → `locution_adverbiale`, `prepositional_phrase` → `locution_prepositionnelle`, `conjunctional_phrase` → `locution_conjonctive`, `sentence` → `phrase`; `preposition`, `numeral` and `interjection` unchanged |
 | `gender` | `genre` | `m` → `masculin`, `f` → `feminin`, `plural_only` → `pluriel_seulement` |
 | `ipa` | `api` | Unchanged |
 | `definition_fr` | `sens` | Copied into the `sens_…` field matching the entry's `niveau` (e.g. `sens_b1`) |
 | `cefr`, `register` | `niveau`, `registre` | Unchanged codes |
 | `frequency` | `frequence` | `very_common` → `tres_courante`, `common` → `courante`, `uncommon` → `peu_courante` |
-| `topics` | `themes` | `money` → `argent`, `food` → `nourriture`, `work` → `travail`, `relationships` → `relations`… |
+| `topics` | `themes` | One theme per topic, `slug` (`nom`), decided 20 November 2026: `money` → `argent` (Argent), `food` → `nourriture` (Nourriture), `work` → `travail` (Travail), `relationships` → `relations` (Relations), `emotions` → `emotions` (Émotions), `social` → `vie-sociale` (Vie sociale), `conversation` → `conversation` (Conversation), `communication` → `communication` (Communication), `time` → `temps` (Temps et durée), `weather` → `meteo` (Météo), `health` → `sante` (Santé), `home` → `maison` (Maison), `family` → `famille` (Famille), `travel` → `voyages` (Voyages), `places` → `lieux` (Lieux), `culture` → `culture` (Culture), `numbers` → `nombres` (Nombres) |
 | `forms` | `formes` | Unchanged |
-| `related` | `LienEntree` | `contrast` → `a_ne_pas_confondre`, `see_also` and `synonym` → `voir_aussi` |
-| gotcha `type` | `type_piege` | `non_compositional` → `sens_figure`, `false_friend` → `faux_ami`, `argument_structure` → `construction_inversee`, `meaning_by_position` → `sens_selon_position`, `gender_meaning` → `sens_selon_genre`, `polarity` → `polarite`, `pronunciation` → `prononciation`, `mood_trigger` → `mode_impose`, `fixed_form` → `forme_figee`, `confusable` → `confusion_possible`, `irregular_form` → `forme_irreguliere`, `pragmatic` → `pragmatique`; the rest unchanged |
+| `related` | `LienEntree` | `contrast` → `a_ne_pas_confondre`, `see_also` and `synonym` → `voir_aussi`, `antonym` → `contraire`, `variant` → `variante` |
+| gotcha `type` | `type_piege` | `non_compositional` → `sens_figure`, `false_friend` → `faux_ami`, `partial_false_friend` → `faux_ami_partiel`, `argument_structure` → `construction_inversee`, `meaning_by_position` → `sens_selon_position`, `gender_meaning` → `sens_selon_genre`, `polarity` → `polarite`, `pronunciation` → `prononciation`, `mood_trigger` → `mode_impose`, `fixed_form` → `forme_figee`, `confusable` → `confusion_possible`, `irregular_form` → `forme_irreguliere`, `register` → `registre`, `pragmatic` → `pragmatique`; `calque`, `connotation`, `preposition` and `regional` unchanged |
 | `affects`, `severity` | `concerne`, `gravite` | `low` / `medium` / `high` → `faible` / `moyenne` / `elevee` |
 | `l1: en` | `langue_apprenant` | Set to `en` only for `faux_ami`, `faux_ami_partiel`, `calque`, `connotation`, `preposition` and `construction_inversee`; empty otherwise |
 | `trigger`, `wrong`, `right` | `declencheur`, `incorrect`, `correct` | Unchanged |
 
-The import is safe to re-run: it skips slugs that already exist.
+Fields with no place in the data model are not imported: `expression_type`, `transparency`, `cefr_basis`, `detect`, `pattern`, `provenance` and `license` on entries, the trap `id`s, and the sentences' `id`, `register`, `topics`, `grammar`, `regions`, `not_tags` and `notes`.
+
+The import runs in one transaction: an unknown code, or a tag whose text isn't in its sentence, stops it with a message naming the file and field, and nothing is imported.
+
+The import is safe to re-run:
+- **Existing entries:** it skips slugs that already exist, together with their traps and translations.
+- **No duplicates:** it never creates the same example or link twice.
+- **Hand-made content:** it never attaches seed content to an entry or example created by hand.
+- **Deleted entries:** a seed entry that was deleted comes back with its traps, links and examples.
 
 ## Writing an entry
 
