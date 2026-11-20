@@ -1,0 +1,9 @@
+{% load i18n lexique %}<ol class="entrees">
+  {% for resume in resumes %}{% with entree=resume.entree %}{% url 'lexique:fiche' entree.slug as adresse_fiche %}
+  <li class="resume">
+    <p class="vedette"><a href="{% avec_niveau adresse_fiche %}" lang="fr">{{ entree.vedette }}</a>{% if entree.precision %} <span class="precision" lang="fr">({{ entree.precision }})</span>{% endif %}</p>
+    <p class="etiquettes"><span class="niveau">{{ entree.niveau }}</span> · {{ entree.get_nature_display }} · {{ entree.get_registre_display }}</p>
+    {% if resume.sens %}<p class="sens" lang="fr">{{ resume.sens }}</p>{% endif %}
+  </li>
+  {% endwith %}{% endfor %}
+</ol>

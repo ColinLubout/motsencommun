@@ -1,0 +1,20 @@
+{% extends "lexique/base.html" %}{% load i18n %}
+{% block titre %}{% if requete %}{% blocktranslate %}Recherche : {{ requete }}{% endblocktranslate %}{% else %}{% translate "Recherche" %}{% endif %}{% endblock %}
+{% block contenu %}
+<h1>{% translate "Recherche" %}</h1>
+{% if requete %}
+<p class="compte">{% blocktranslate trimmed count total=page.paginator.count %}
+  {{ total }} résultat pour « {{ requete }} »
+{% plural %}
+  {{ total }} résultats pour « {{ requete }} »
+{% endblocktranslate %}</p>
+{% if resumes %}
+{% include "lexique/_resumes.html" %}
+{% include "lexique/_pagination.html" %}
+{% else %}
+<p>{% translate "Essayez avec moins de mots, ou avec une autre forme de l'expression." %}</p>
+{% endif %}
+{% else %}
+<p>{% translate "Tapez une expression ou un mot dans le champ de recherche : les accents et les majuscules ne comptent pas." %}</p>
+{% endif %}
+{% endblock %}

@@ -17,6 +17,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -400,6 +401,10 @@ class Entree(Contenu):
         if update_fields := kwargs.get("update_fields"):
             kwargs["update_fields"] = {*update_fields, "recherche", "cle_de_tri"}
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        """La fiche publique ; l'administration en fait un bouton « Voir sur le site »."""
+        return reverse("lexique:fiche", args=[self.slug])
 
     def sens(self):
         """Les versions du sens qui sont remplies, par niveau : {"B1": "…"}."""

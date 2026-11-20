@@ -1,0 +1,348 @@
+"""Pages publiques : accueil, liste et raccourcis, fiche, recherche, téléchargement, à propos.
+
+Aucune de ces pages ne pose de cookie ni ne lit la session d'un visiteur
+(voir ``affichage.voit_les_brouillons``), et aucune ne contient de formulaire
+protégé par CSRF : tout passe par des liens et des formulaires GET.
+"""
+
+from django.conf import settings
+from django.core.paginator import Paginator
+from django.http import Http404
+from django.shortcuts import get_object_or_404, render
+from django.utils.translation import get_language
+from django.utils.translation import gettext as _
+
+from lexique import affichage as a
+from lexique import models as m
+from lexique import recherche as r
+from lexique import vocabulaire as v
+
+
+def mon_niveau(request):
+    """Le niveau choisi par le lecteur (« ?mon_niveau=A2 »), ou None."""
+    return a.niveau_valide(request.GET.get("mon_niveau"))
+
+
+def slug_du_type(code):
+    """« faux_ami » → « faux-ami », pour les adresses des raccourcis."""
+    return code.replace("_", "-")
+
+
+def entrees_publiques():
+    return a.publics(m.Entree.objects.all())
+
+
+def resumes(entrees, niveau):
+    """Chaque entrée d'une liste, avec son sens au niveau du lecteur, sinon au sien."""
+    return [
+        {
+            "entree": entree,
+            "niveau_du_sens": niveau_affiche,
+            "sens": sens,
+        }
+        for entree in entrees
+        for niveau_affiche, sens in [
+            a.version_au_niveau(entree.sens(), niveau or entree.niveau)
+        ]
+    ]
+
+
+def themes_publics(langue):
+    """Les thèmes qui ont au moins une entrée publique, triés selon la langue de l'interface."""
+    themes = (
+        m.Theme.objects.filter(entrees__statut__in=v.STATUTS_PUBLICS)
+        .distinct()
+        .prefetch_related("traductions")
+    )
+    return [
+        {"theme": theme, "nom": nom, "langue_du_nom": langue_du_nom}
+        for theme in r.trier(themes, langue, cle=lambda t: a.nom_du_theme(t, langue)[0])
+        for nom, langue_du_nom in [a.nom_du_theme(theme, langue)]
+    ]
+
+
+def types_publics():
+    """Les types de pièges présents dans le contenu public, dans l'ordre du vocabulaire."""
+    presents = set(
+        a.publics(m.Piege.objects.filter(entree__statut__in=v.STATUTS_PUBLICS))
+        .values_list("type_piege", flat=True)
+        .distinct()
+    )
+    return [
+        {"code": code, "libelle": libelle, "slug": slug_du_type(code)}
+        for code, libelle in v.TypePiege.choices
+        if code in presents
+    ]
+
+
+# --- Accueil ------------------------------------------------------------------
+
+
+def accueil(request):
+    langue = get_language()
+    recentes = entrees_publiques().order_by("-cree_le", "-pk")[
+        : settings.ENTREES_RECENTES
+    ]
+    return render(
+        request,
+        "lexique/accueil.html",
+        {
+            "themes": themes_publics(langue),
+            "types": types_publics(),
+            "recentes": resumes(recentes, mon_niveau(request)),
+        },
+    )
+
+
+# --- Liste et raccourcis ------------------------------------------------------
+
+
+def filtres_demandes(request, imposes=None):
+    """Les filtres de l'adresse qui sont valides ; un raccourci impose le sien."""
+    demande = request.GET
+    type_piege = demande.get("type", "").replace("-", "_")
+    theme = demande.get("theme", "")
+    registre = demande.get("registre", "")
+    filtres = {
+        "niveau": a.niveau_valide(demande.get("niveau")),
+        "type": type_piege if type_piege in v.TypePiege.values else None,
+        "theme": theme
+        if theme and m.Theme.objects.filter(slug=theme).exists()
+        else None,
+        "registre": registre if registre in v.Registre.values else None,
+    }
+    filtres.update(imposes or {})
+    return filtres
+
+
+def filtrer(entrees, filtres):
+    """Les entrées qui passent tous les filtres à la fois."""
+    if filtres["niveau"]:
+        entrees = entrees.filter(niveau=filtres["niveau"])
+    if filtres["type"]:
+        pieges = a.publics(m.Piege.objects.filter(type_piege=filtres["type"]))
+        entrees = entrees.filter(pk__in=pieges.values("entree"))
+    if filtres["theme"]:
+        entrees = entrees.filter(themes__slug=filtres["theme"])
+    if filtres["registre"]:
+        entrees = entrees.filter(registre=filtres["registre"])
+    return entrees
+
+
+def page_de_liste(request, titre, imposes=None):
+    langue = get_language()
+    filtres = filtres_demandes(request, imposes)
+    entrees = filtrer(entrees_publiques(), filtres)
+    page = Paginator(entrees, settings.ENTREES_PAR_PAGE).get_page(
+        request.GET.get("page")
+    )
+    return render(
+        request,
+        "lexique/liste.html",
+        {
+            "titre": titre,
+            "filtres": filtres,
+            "page": page,
+            "resumes": resumes(page.object_list, mon_niveau(request)),
+            "choix_niveaux": v.NIVEAUX,
+            "choix_types": v.TypePiege.choices,
+            "choix_themes": themes_publics(langue),
+            "choix_registres": v.Registre.choices,
+        },
+    )
+
+
+def liste(request):
+    return page_de_liste(request, _("Toutes les expressions"))
+
+
+def par_niveau(request, niveau):
+    code = a.niveau_valide(niveau)
+    if code is None or niveau != code.lower():
+        raise Http404
+    return page_de_liste(
+        request, _("Niveau %(niveau)s") % {"niveau": code}, {"niveau": code}
+    )
+
+
+def par_type(request, type_piege):
+    code = type_piege.replace("-", "_")
+    if code not in v.TypePiege.values or type_piege != slug_du_type(code):
+        raise Http404
+    return page_de_liste(request, v.TypePiege(code).label, {"type": code})
+
+
+def par_theme(request, slug):
+    theme = get_object_or_404(
+        m.Theme.objects.prefetch_related("traductions"), slug=slug
+    )
+    nom, _langue = a.nom_du_theme(theme, get_language())
+    return page_de_liste(request, nom, {"theme": slug})
+
+
+# --- Fiche --------------------------------------------------------------------
+
+
+def traduction_dans(traductions, langue):
+    """La traduction de ``traductions`` (déjà filtrées) dans ``langue``, ou None."""
+    if langue == "fr":
+        return None
+    return next((t for t in traductions if t.langue == langue), None)
+
+
+def fiche(request, slug):
+    apercu = a.voit_les_brouillons(request)
+    entree = get_object_or_404(
+        m.Entree.objects.select_related("ajoute_par__contributeur"), slug=slug
+    )
+    if not apercu and not a.est_public(entree):
+        raise Http404
+    langue = get_language()
+    niveau_demande = mon_niveau(request)
+    niveau = niveau_demande or entree.niveau
+    versions = entree.sens()
+    niveau_du_sens, sens = a.version_au_niveau(versions, niveau)
+
+    pieges = []
+    for piege in a.visibles(entree.pieges.prefetch_related("traductions"), apercu):
+        niveau_explication, explication = a.version_au_niveau(
+            piege.explications(), niveau
+        )
+        pieges.append(
+            {
+                "piege": piege,
+                "niveau": niveau_explication,
+                "explication": explication,
+                "public": a.est_public(piege),
+                "traduction": traduction_dans(
+                    a.visibles(piege.traductions.all(), apercu), langue
+                ),
+            }
+        )
+
+    exemples = []
+    rattachements = entree.liens_exemples.select_related("exemple").filter(
+        exemple__in=a.visibles(m.Exemple.objects.all(), apercu)
+    )
+    for rattachement in rattachements:
+        exemple = rattachement.exemple
+        avant, mots, apres = a.decouper_surlignage(
+            exemple.phrase, rattachement.surlignage
+        )
+        exemples.append(
+            {
+                "exemple": exemple,
+                "avant": avant,
+                "mots": mots,
+                "apres": apres,
+                "public": a.est_public(exemple),
+                "traduction": traduction_dans(
+                    a.visibles(exemple.traductions.all(), apercu), langue
+                ),
+            }
+        )
+
+    liens = []
+    sortants = entree.liens_sortants.select_related("cible").filter(
+        cible__in=a.visibles(m.Entree.objects.all(), apercu)
+    )
+    for type_lien, libelle in v.TypeLien.choices:
+        cibles = [lien.cible for lien in sortants if lien.type_lien == type_lien]
+        if cibles:
+            liens.append({"type": type_lien, "libelle": libelle, "cibles": cibles})
+
+    return render(
+        request,
+        "lexique/fiche.html",
+        {
+            "entree": entree,
+            "apercu": apercu,
+            "public": a.est_public(entree),
+            "sens": sens,
+            "niveau_du_sens": niveau_du_sens,
+            "niveau_demande": niveau_demande,
+            "autres_niveaux": [n for n in versions if n != niveau_du_sens],
+            "traduction": traduction_dans(
+                a.visibles(entree.traductions.all(), apercu), langue
+            ),
+            "themes": [
+                {"theme": theme, "nom": nom, "langue_du_nom": langue_du_nom}
+                for theme in entree.themes.prefetch_related("traductions")
+                for nom, langue_du_nom in [a.nom_du_theme(theme, langue)]
+            ],
+            "pieges": pieges,
+            "exemples": exemples,
+            "liens": liens,
+            "auteur": entree.ajoute_par.contributeur.nom_affiche,
+            "regions": [v.Region(code).label for code in entree.regions],
+        },
+    )
+
+
+# --- Recherche ----------------------------------------------------------------
+
+
+def recherche(request):
+    requete = request.GET.get("q", "").strip()
+    resultats = (
+        r.chercher(
+            requete,
+            get_language(),
+            entrees=entrees_publiques(),
+            traductions=a.publics(m.EntreeTraduction.objects.all()),
+        )
+        if requete
+        else []
+    )
+    page = Paginator(resultats, settings.ENTREES_PAR_PAGE).get_page(
+        request.GET.get("page")
+    )
+    return render(
+        request,
+        "lexique/recherche.html",
+        {
+            "requete": requete,
+            "page": page,
+            "resumes": resumes(page.object_list, mon_niveau(request)),
+        },
+    )
+
+
+# --- Téléchargement et à propos -----------------------------------------------
+
+
+def telecharger(request):
+    return render(request, "lexique/telecharger.html")
+
+
+def contributeurs_credites(langue):
+    """Les noms de ceux qui ont ajouté ou approuvé du contenu public, triés selon la langue."""
+    comptes = set()
+    for modele in (
+        m.Entree,
+        m.Piege,
+        m.Exemple,
+        m.EntreeTraduction,
+        m.PiegeTraduction,
+        m.ExempleTraduction,
+    ):
+        comptes.update(
+            a.publics(modele.objects.all()).values_list("ajoute_par", flat=True)
+        )
+    comptes.update(
+        m.Relecture.objects.filter(decision=v.Decision.APPROUVE).values_list(
+            "relecteur", flat=True
+        )
+    )
+    noms = m.Contributeur.objects.filter(utilisateur__in=comptes).values_list(
+        "nom_affiche", flat=True
+    )
+    return r.trier(noms, langue)
+
+
+def a_propos(request):
+    return render(
+        request,
+        "lexique/a_propos.html",
+        {"contributeurs": contributeurs_credites(get_language())},
+    )

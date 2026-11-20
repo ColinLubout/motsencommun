@@ -1,4 +1,4 @@
-Translation of README.md, version 2026-11-20.
+Translation of README.md, version 2026-11-21.
 
 # Mots en commun
 
@@ -29,10 +29,10 @@ The site is being built: this is phase 1, the basic site. It will be announced o
 
 ## Working on the code
 
-You need [uv](https://docs.astral.sh/uv/), which installs the right Python version and the dependencies locked in `uv.lock` by itself. You also need the ICU library, which sorts words by each language's alphabet: PyICU is compiled against it during installation.
+You need [uv](https://docs.astral.sh/uv/), which installs the right Python version and the dependencies locked in `uv.lock` by itself. You also need the ICU library, which sorts words by each language's alphabet (PyICU is compiled against it during installation), and the gettext tools, which compile the interface translations.
 
-- Debian or Ubuntu: `sudo apt install libicu-dev pkg-config g++`
-- macOS: `brew install icu4c pkg-config`, then `export PKG_CONFIG_PATH="$(brew --prefix icu4c)/lib/pkgconfig"` before `uv sync`
+- Debian or Ubuntu: `sudo apt install libicu-dev pkg-config g++ gettext`
+- macOS: `brew install icu4c pkg-config gettext`, then `export PKG_CONFIG_PATH="$(brew --prefix icu4c)/lib/pkgconfig"` before `uv sync`
 
 ```sh
 uv sync              # create the project environment (.venv)
@@ -46,12 +46,13 @@ To run the site locally, turn on development mode with the `DJANGO_DEBUG=1` vari
 ```sh
 export DJANGO_DEBUG=1          # in PowerShell: $env:DJANGO_DEBUG = "1"
 uv run python manage.py migrate
+uv run python manage.py compilemessages --ignore=.venv   # the English interface
 uv run python manage.py createsuperuser
 uv run python manage.py activer_double_authentification <your-account>
 uv run python manage.py runserver
 ```
 
-The admin is then at <http://127.0.0.1:8000/admin/>. The superuser can only open it with two-factor login: `activer_double_authentification` shows a QR code to scan with an app (Aegis, FreeOTP, Google Authenticator…), then ten backup codes.
+The site is then at <http://127.0.0.1:8000/fr/> (and <http://127.0.0.1:8000/en/> in English), the admin at <http://127.0.0.1:8000/admin/>. The superuser can only open it with two-factor login: `activer_double_authentification` shows a QR code to scan with an app (Aegis, FreeOTP, Google Authenticator…), then ten backup codes.
 
 To try the site with some content, import the seed data:
 

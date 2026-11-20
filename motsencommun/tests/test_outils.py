@@ -29,3 +29,9 @@ def test_le_script_installe_de_quoi_compiler_pyicu():
     """PyICU se compile à l'installation : il lui faut ICU, pkg-config et un compilateur C++."""
     paquets = re.search(r'paquets="([^"]+)"', SCRIPT.read_text("utf-8-sig")).group(1)
     assert {"libicu-dev", "pkg-config", "g++"} <= set(paquets.split())
+
+
+def test_le_script_installe_de_quoi_compiler_les_traductions():
+    """« compilemessages » et « makemessages » ont besoin des outils GNU gettext."""
+    paquets = re.search(r'paquets="([^"]+)"', SCRIPT.read_text("utf-8-sig")).group(1)
+    assert "gettext" in paquets.split()

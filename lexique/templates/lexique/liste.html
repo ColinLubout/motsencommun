@@ -1,0 +1,48 @@
+{% extends "lexique/base.html" %}{% load i18n %}
+{% block titre %}{{ titre }}{% endblock %}
+{% block contenu %}
+<h1>{{ titre }}</h1>
+<form class="filtres" action="{% url 'lexique:liste' %}" method="get">
+  {% if mon_niveau %}<input type="hidden" name="mon_niveau" value="{{ mon_niveau }}">{% endif %}
+  <p>
+    <label for="filtre-niveau">{% translate "Niveau" %}</label>
+    <select id="filtre-niveau" name="niveau">
+      <option value="">{% translate "Tous" %}</option>
+      {% for niveau in choix_niveaux %}<option value="{{ niveau }}"{% if niveau == filtres.niveau %} selected{% endif %}>{{ niveau }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p>
+    <label for="filtre-type">{% translate "Type de piège" %}</label>
+    <select id="filtre-type" name="type">
+      <option value="">{% translate "Tous" %}</option>
+      {% for code, libelle in choix_types %}<option value="{{ code }}"{% if code == filtres.type %} selected{% endif %}>{{ libelle }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p>
+    <label for="filtre-theme">{% translate "Thème" %}</label>
+    <select id="filtre-theme" name="theme">
+      <option value="">{% translate "Tous" %}</option>
+      {% for choix in choix_themes %}<option value="{{ choix.theme.slug }}"{% if choix.theme.slug == filtres.theme %} selected{% endif %}>{{ choix.nom }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p>
+    <label for="filtre-registre">{% translate "Registre" %}</label>
+    <select id="filtre-registre" name="registre">
+      <option value="">{% translate "Tous" %}</option>
+      {% for code, libelle in choix_registres %}<option value="{{ code }}"{% if code == filtres.registre %} selected{% endif %}>{{ libelle }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p><button type="submit">{% translate "Filtrer" %}</button></p>
+</form>
+<p class="compte">{% blocktranslate trimmed count total=page.paginator.count %}
+  {{ total }} entrée
+{% plural %}
+  {{ total }} entrées
+{% endblocktranslate %}</p>
+{% include "lexique/_resumes.html" %}
+{% include "lexique/_pagination.html" %}
+{% endblock %}

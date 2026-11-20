@@ -1,0 +1,18 @@
+{% extends "lexique/base.html" %}{% load i18n %}
+{% block titre %}{% translate "Télécharger" %}{% endblock %}
+{% block contenu %}
+<h1>{% translate "Télécharger" %}</h1>
+<p>{% blocktranslate trimmed %}
+  Toutes les entrées relues de Mots en commun se téléchargent librement, en JSON
+  et en CSV, avec un dictionnaire de données qui explique chaque champ et chaque code.
+  Les fichiers sont refaits chaque nuit, et une copie datée est gardée le premier de chaque mois.
+{% endblocktranslate %}</p>
+<p class="a-venir">{% translate "Les fichiers ne sont pas encore disponibles." %}</p>
+
+<h2 id="licence">{% translate "Licence" %}</h2>
+<p>{% blocktranslate trimmed %}
+  Les données sont publiées sous licence CC BY 4.0 : vous pouvez les réutiliser,
+  les modifier et les partager, y compris pour un usage commercial, en créditant
+  « Contributeurs de Mots en commun ».
+{% endblocktranslate %}</p>
+{% endblock %}

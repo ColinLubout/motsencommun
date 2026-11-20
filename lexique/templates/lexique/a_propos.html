@@ -1,0 +1,41 @@
+{% extends "lexique/base.html" %}{% load i18n %}
+{% block titre %}{% translate "À propos" %}{% endblock %}
+{% block contenu %}
+<h1>{% translate "À propos" %}</h1>
+<p>{% blocktranslate trimmed %}
+  Mots en commun est un site libre et gratuit où les personnes qui apprennent le
+  français et celles qui le parlent recensent les expressions dont les mots sont
+  familiers mais dont le sens ne l'est pas, et expliquent pourquoi elles trompent.
+  Chaque entrée est relue avant d'être publiée.
+{% endblocktranslate %}</p>
+
+<h2 id="contributeurs">{% translate "Contributeurs" %}</h2>
+{% if contributeurs %}
+<ul class="contributeurs">
+  {% for nom in contributeurs %}<li>{{ nom }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>{% translate "Personne n'a encore de contenu publié." %}</p>
+{% endif %}
+
+<h2 id="licence">{% translate "Licence" %}</h2>
+<p>{% blocktranslate trimmed %}
+  Les données sont publiées sous licence
+  <a href="https://creativecommons.org/licenses/by/4.0/deed.fr">CC BY 4.0</a>,
+  au nom des « Contributeurs de Mots en commun ». Le code est sous licence MIT et se trouve sur
+  <a href="https://github.com/ColinLubout/motsencommun">GitHub</a>.
+{% endblocktranslate %}</p>
+
+<h2 id="vie-privee">{% translate "Vie privée" %}</h2>
+<p>{% blocktranslate trimmed %}
+  Ce site ne dépose aucun cookie et ne fait appel à aucun autre site : pas de
+  polices venues d'ailleurs, pas de statistiques, pas de publicité. Il n'enregistre
+  ni les pages que vous lisez, ni votre adresse IP. Lire ne demande aucun compte.
+{% endblocktranslate %}</p>
+<p>{% blocktranslate trimmed %}
+  Pour signaler une faille de sécurité, utilisez le
+  <a href="https://github.com/ColinLubout/motsencommun/security/advisories/new">signalement privé de GitHub</a>
+  plutôt qu'un message public.
+{% endblocktranslate %}</p>
+{% endblock %}

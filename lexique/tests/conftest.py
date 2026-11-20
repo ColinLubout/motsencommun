@@ -1,5 +1,7 @@
 """Comptes et contenus de test, partagés par les tests du lexique."""
 
+import types
+
 import pytest
 from django.contrib.auth.models import Group, User
 from django.core.cache import cache
@@ -157,6 +159,66 @@ def entree_multilingue(db, proprietaire):
             entree=entree, langue=langue, sens=sens, ajoute_par=proprietaire
         )
     return entree
+
+
+def rendre_public(*contenus, statut="relu"):
+    """Donne un statut sans passer par les relectures : pour tester l'affichage seulement."""
+    for contenu in contenus:
+        type(contenu).objects.filter(pk=contenu.pk).update(statut=statut)
+        contenu.statut = statut
+
+
+@pytest.fixture
+def site_public(db, proprietaire):
+    """Un petit lexique public, avec à côté du contenu pas encore relu."""
+    relations = m.Theme.objects.create(slug="relations", nom="Relations")
+    temps = m.Theme.objects.create(slug="temps", nom="Temps et durée")
+    lapin = creer_entree(proprietaire)
+    lapin.themes.add(relations)
+    piege = creer_piege(lapin, proprietaire)
+    piege_cache = creer_piege(
+        lapin,
+        proprietaire,
+        type_piege="faux_ami",
+        explication_b1="Une explication pas encore relue.",
+    )
+    exemple = creer_exemple(lapin, proprietaire)
+    exemple_cache = creer_exemple(
+        lapin,
+        proprietaire,
+        phrase="Une phrase pas encore relue, avec un lapin.",
+        surlignage="un lapin",
+    )
+    traduction = m.EntreeTraduction.objects.create(
+        entree=lapin, langue="en", sens="to stand someone up", ajoute_par=proprietaire
+    )
+    lune = creer_entree(
+        proprietaire,
+        vedette="être dans la lune",
+        niveau="A2",
+        registre="courant",
+        sens_b1="",
+        sens_a2="Rêver, ne pas faire attention.",
+    )
+    lune.themes.add(temps)
+    secrete = creer_entree(
+        proprietaire, vedette="expression secrète", sens_b1="Pas encore relue."
+    )
+    m.LienEntree.objects.create(entree=lapin, cible=lune, type_lien="voir_aussi")
+    m.LienEntree.objects.create(entree=lapin, cible=secrete, type_lien="voir_aussi")
+    rendre_public(lapin, piege, exemple, traduction, lune)
+    return types.SimpleNamespace(
+        lapin=lapin,
+        piege=piege,
+        piege_cache=piege_cache,
+        exemple=exemple,
+        exemple_cache=exemple_cache,
+        traduction=traduction,
+        lune=lune,
+        secrete=secrete,
+        relations=relations,
+        temps=temps,
+    )
 
 
 def relire(contenu, relecteur, decision="approuve", commentaire=""):

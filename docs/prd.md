@@ -86,7 +86,7 @@ The phases have no dates. Each opens when its gate is met, at whatever pace the 
 
 ## Phase 1 site: pages, URLs and behaviour
 
-Every public URL starts with a language prefix that sets the interface language: `/fr/` by default, `/en/`, `/pl/`, `/uk/` as translations exist. The rest of the path stays in French whatever the language. Switching language is a plain link to the same page under another prefix, with no cookie.
+Every public URL starts with a language prefix that sets the interface language: `/fr/` by default, `/en/`, `/pl/`, `/uk/` as translations exist. The rest of the path stays in French whatever the language. Switching language is a plain link to the same page under another prefix, with no cookie. The language comes only from the prefix, never from the browser's settings or a cookie: `/` leads to `/fr/`, and the admin, which has no prefix, stays in French (decided 20 November 2026).
 
 | Page | URL | What it shows |
 | --- | --- | --- |
@@ -112,11 +112,11 @@ Every public URL starts with a language prefix that sets the interface language:
 **Display rules**
 
 - **Only reviewed content is public.** Entries, traps and examples that aren't `relu` or `valide` appear nowhere on the public site: not in lists, search, themes, links between entries, embeds, the sitemap or downloads. Their URLs return 404 to visitors. When logged in, the owner and reviewers see them on the normal entry page with a *Pas encore relu* banner, so they review exactly what readers will see. A reviewed entry shows only its reviewed traps and examples.
-- **Missing translations fall back to French.** When there's no approved translation in the interface language, the French text is shown, marked with `lang="fr"`.
+- **Missing translations fall back to French.** When there's no approved translation in the interface language, the French text is shown, marked with `lang="fr"`. The French meaning, explanations and sentences are always shown, since they're what the reader is learning; an approved translation in the interface language appears beside them, with its own `lang`.
 - **Lists print cleanly.** A print stylesheet removes navigation and fits entries on paper, so a teacher prints straight from the browser.
 - **Every page works without JavaScript.**
 - **Teachers can embed entries.** Each entry has an embed page (`/fr/expressions/poser-un-lapin/integrer/`): the entry alone, with no navigation, plus a small link back to the full page. Only these pages may be shown inside other sites, such as a course site or Moodle. The entry page offers a ready-to-copy `<iframe>` code.
-- **Explanations follow the reader's level.** A *Mon niveau* selector (A1–C2) sits beside the search box. Each meaning and trap explanation shows the highest version written at or below the reader's level, and the lowest available version if none is. When the reader hasn't chosen a level, the entry's own level is used. The choice is a `?niveau=A2` parameter in the URL, so it works without JavaScript and can be shared. With JavaScript it's also remembered in `localStorage`, like the reading-comfort switch. A small note says which level's version is shown, with links to the others.
+- **Explanations follow the reader's level.** A *Mon niveau* selector (A1–C2) sits beside the search box. Each meaning and trap explanation shows the highest version written at or below the reader's level, and the lowest available version if none is. When the reader hasn't chosen a level, the entry's own level is used. The choice is a `?mon_niveau=A2` parameter in the URL, so it works without JavaScript and can be shared. Links carry it from page to page. It only chooses which version is shown and never filters a list; the list's level filter is the separate `?niveau=B1` (decided 20 November 2026). With JavaScript it's also remembered in `localStorage`, like the reading-comfort switch. A small note says which level's version is shown, with links to the others.
 
 ## Look and feel
 
@@ -621,7 +621,7 @@ This section tells Claude Code what deployment must look like. Everything needed
 - SSH accepts keys only; root login and passwords are off.
 - Firewall (nftables): from the internet only ports 80, 443 and WireGuard's UDP port are open. SSH listens only on the WireGuard interface (see Security).
 - Turns on unattended security updates with automatic reboots at 04:30 UTC when needed, sets up WireGuard, and adds 1 GB of swap.
-- Installs Caddy from its official Debian repository, `uv` with the pinned Python version, and the build packages PyICU needs (`libicu-dev`, `pkg-config`, a C++ compiler).
+- Installs Caddy from its official Debian repository, `uv` with the pinned Python version, the build packages PyICU needs (`libicu-dev`, `pkg-config`, a C++ compiler), and `gettext`, which `compilemessages` uses.
 - Creates the folders below and installs the systemd units and timers.
 
 ```
@@ -758,7 +758,7 @@ Phase 1 is done when every item below passes. Most are automated tests.
 - [ ] Entries, traps and examples that aren't `relu` or `valide` appear nowhere on the public site (lists, search, themes, links, embeds, sitemap, downloads), and their URLs return 404 to visitors. Logged-in reviewers see them with the *Pas encore relu* banner.
 - [ ] Lists print cleanly from the browser.
 - [ ] Every page works with JavaScript turned off.
-- [ ] With `?niveau=A2`, an entry shows the highest `sens_…` and `explication_…` versions at or below A2, and falls back to the lowest available version when none exists, saying which level is shown. Tested with an entry that only has `sens_b1`.
+- [ ] With `?mon_niveau=A2`, an entry shows the highest `sens_…` and `explication_…` versions at or below A2, and falls back to the lowest available version when none exists, saying which level is shown. Tested with an entry that only has `sens_b1`.
 - [ ] The *Confort de lecture* switch changes the font to OpenDyslexic and increases size and spacing. The font file downloads only once the switch is on, the choice is remembered without a cookie, and the switch is hidden when JavaScript is off.
 - [ ] Every entry has an `/integrer/` embed page, and these are the only pages another site can frame.
 - [ ] `sitemap.xml` lists only reviewed entries, and reviewers' preview pages carry `noindex`. `robots.txt` lists the AI crawlers configured in settings.
