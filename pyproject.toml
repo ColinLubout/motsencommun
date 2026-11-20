@@ -1,0 +1,40 @@
+[project]
+name = "motsencommun"
+version = "0.1.0"
+description = "Les expressions françaises, expliquées par ceux qui les apprennent et ceux qui les parlent."
+requires-python = "==3.13.*"
+dependencies = [
+    "django>=5.2,<5.3",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "motsencommun.settings_tests"
+testpaths = ["motsencommun", "lexique"]
+python_files = ["test_*.py"]
+addopts = ["--strict-markers", "--strict-config", "-ra"]
+# Un avertissement (par exemple une fonction de Django bientôt retirée) fait échouer les tests :
+# on le voit tout de suite plutôt qu'au moment de changer de version.
+filterwarnings = ["error"]
+
+[tool.ruff]
+# Les migrations ne sont jamais modifiées une fois publiées : on ne les reformate pas.
+extend-exclude = ["**/migrations/*"]
+
+[tool.ruff.lint]
+# En plus des règles par défaut : tri des imports (I), erreurs probables (B), syntaxe Python
+# récente (UP), Django (DJ), sécurité (S) et dates sans fuseau horaire (DTZ).
+extend-select = ["I", "B", "UP", "DJ", "S", "DTZ"]
+
+[tool.ruff.lint.per-file-ignores]
+# Dans les tests, assert est l'outil normal.
+"**/tests/*" = ["S101"]
+
+[dependency-groups]
+audit = [
+    "pip-audit>=2.10.1",
+]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-django>=4.14.0",
+    "ruff>=0.17.6",
+]

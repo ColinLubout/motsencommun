@@ -1,0 +1,14 @@
+# Environnement et caches Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Variables d'environnement locales : elles ne doivent jamais être committées
+.env
+.env.*
+
+# Données créées par le serveur de développement
+donnees/base.sqlite3*
+donnees/media/
