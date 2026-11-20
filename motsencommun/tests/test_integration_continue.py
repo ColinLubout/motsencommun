@@ -33,6 +33,13 @@ def test_les_verifications_tournent_a_chaque_push_et_pull_request():
     assert re.search(r"^  pull_request:", declencheurs, re.MULTILINE)
 
 
+def test_icu_est_installe_avant_les_dependances():
+    """PyICU se compile pendant « uv sync » : ICU doit déjà être là."""
+    texte = WORKFLOW.read_text("utf-8")
+    assert "libicu-dev" in texte
+    assert texte.index("libicu-dev") < texte.index("uv sync --locked")
+
+
 def test_les_verifications_lancent_les_tests_et_pip_audit():
     texte = WORKFLOW.read_text("utf-8")
     assert "uv run pytest" in texte
