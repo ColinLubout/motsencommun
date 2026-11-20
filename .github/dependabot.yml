@@ -18,7 +18,11 @@ updates:
         update-types: ["minor", "patch"]
     ignore:
       # Django reste sur sa version LTS : le passage à la suivante se fait à la main.
+      # Dependabot nomme la dépendance comme pyproject.toml, extras compris
+      # (« django[argon2] ») : chaque forme a sa règle.
       - dependency-name: "django"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "django[argon2]"
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
