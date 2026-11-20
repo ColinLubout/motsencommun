@@ -1,0 +1,32 @@
+# Dependabot propose chaque semaine les mises à jour des dépendances Python
+# (verrouillées dans uv.lock) et des actions GitHub (épinglées à un commit).
+#
+# Une nouvelle version n'est proposée qu'après 7 jours (cooldown) : une version
+# piégée est en général repérée et retirée avant. Ce délai ne concerne pas les
+# correctifs de sécurité, proposés dès qu'une faille est connue.
+version: 2
+updates:
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      dependances-python:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      # Django reste sur sa version LTS : le passage à la suivante se fait à la main.
+      - dependency-name: "django"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      actions-github:
+        patterns: ["*"]

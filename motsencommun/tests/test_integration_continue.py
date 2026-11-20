@@ -37,3 +37,9 @@ def test_les_verifications_lancent_les_tests_et_pip_audit():
     assert "uv run pytest" in texte
     assert "pip-audit" in texte
     assert "--strict" in texte
+
+
+def test_dependabot_surveille_les_dependances_python_et_les_actions():
+    texte = (GITHUB / "dependabot.yml").read_text("utf-8")
+    ecosystemes = re.findall(r'package-ecosystem:\s*"?([\w-]+)"?', texte)
+    assert sorted(ecosystemes) == ["github-actions", "uv"]
