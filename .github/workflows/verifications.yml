@@ -1,0 +1,57 @@
+# Vérifications automatiques : tests, style et failles connues des dépendances.
+# Chaque action est épinglée à un commit complet ; Dependabot propose les mises à jour.
+name: Vérifications
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Chaque lundi : une faille découverte dans une dépendance inchangée est signalée quand même.
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Tests et style
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.9"
+      - name: Installer Python et les dépendances verrouillées
+        run: uv sync --locked
+      - name: Vérifier le style (ruff)
+        run: |
+          uv run ruff check
+          uv run ruff format --check
+      - name: Lancer les tests
+        run: uv run pytest
+
+  audit:
+    name: Failles connues (pip-audit)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.9"
+      - name: Exporter les dépendances verrouillées, avec leurs empreintes
+        run: >-
+          uv export --locked --all-groups --no-emit-project --format requirements-txt
+          --output-file "$RUNNER_TEMP/dependances.txt"
+      - name: Chercher les failles connues (échoue s'il y en a une)
+        run: >-
+          uv run --locked --only-group audit pip-audit --strict --require-hashes --disable-pip
+          --requirement "$RUNNER_TEMP/dependances.txt"
