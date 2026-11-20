@@ -29,7 +29,10 @@ The site is being built: this is phase 1, the basic site. It will be announced o
 
 ## Working on the code
 
-You need [uv](https://docs.astral.sh/uv/), which installs the right Python version and the dependencies locked in `uv.lock` by itself.
+You need [uv](https://docs.astral.sh/uv/), which installs the right Python version and the dependencies locked in `uv.lock` by itself. You also need the ICU library, which sorts words by each language's alphabet: PyICU is compiled against it during installation.
+
+- Debian or Ubuntu: `sudo apt install libicu-dev pkg-config g++`
+- macOS: `brew install icu4c pkg-config`, then `export PKG_CONFIG_PATH="$(brew --prefix icu4c)/lib/pkgconfig"` before `uv sync`
 
 ```sh
 uv sync              # create the project environment (.venv)

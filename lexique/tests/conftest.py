@@ -100,6 +100,65 @@ def creer_exemple(
     return exemple
 
 
+#: Textes de test en ukrainien et en polonais (PRD, « Every alphabet ») : recherche,
+#: tri, et plus tard surlignage et export.
+SENS_UKRAINIEN = "Мій рідний край — Київ. Без мʼяса й хліба."
+SENS_POLONAIS = "Łódź to miasto, a łąka jest zielona."
+#: Des mots dans l'ordre de leur alphabet.
+POLONAIS_DANS_L_ORDRE = [
+    "az",
+    "ąb",
+    "cebula",
+    "ćma",
+    "lampa",
+    "łąka",
+    "oko",
+    "ósmy",
+    "sok",
+    "śnieg",
+    "zebra",
+    "źle",
+    "żaba",
+]
+UKRAINIEN_DANS_L_ORDRE = [
+    "бук",
+    "гора",
+    "ґанок",
+    "ефір",
+    "єнот",
+    "иній",
+    "іній",
+    "їжак",
+    "йод",
+    "кіт",
+    "щука",
+    "яблуко",
+]
+FRANCAIS_DANS_L_ORDRE = [
+    "abri",
+    "ancien",
+    "ancienne",
+    "cote",
+    "côte",
+    "école",
+    "élève",
+    "etre",
+    "Être",
+    "zèbre",
+]
+
+
+@pytest.fixture
+def entree_multilingue(db, proprietaire):
+    """Une entrée traduite en ukrainien et en polonais."""
+    entree = creer_entree(proprietaire)
+    for langue, sens in (("uk", SENS_UKRAINIEN), ("pl", SENS_POLONAIS)):
+        m.EntreeTraduction.objects.create(
+            entree=entree, langue=langue, sens=sens, ajoute_par=proprietaire
+        )
+    return entree
+
+
 def relire(contenu, relecteur, decision="approuve", commentaire=""):
     return m.Relecture.objects.create(
         contenu=contenu, relecteur=relecteur, decision=decision, commentaire=commentaire

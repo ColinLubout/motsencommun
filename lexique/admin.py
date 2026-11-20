@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from simple_history.admin import SimpleHistoryAdmin
 
 from lexique import models as m
+from lexique import recherche
 from lexique import vocabulaire as v
 
 #: Les statuts qu'on choisit à la main ; « relu », « validé » et « refusé » viennent des relectures.
@@ -170,6 +171,18 @@ class EntreeAdmin(AdminContenu):
     )
     search_fields = ("vedette", "precision", "slug")
     filter_horizontal = ("themes",)
+
+    def get_search_results(self, request, queryset, search_term):
+        """Comme sur le site : sans casse ni accents (« etre » trouve « Être »), tous les mots.
+
+        Sert aussi aux listes à compléter des liens et des exemples.
+        """
+        resultats, doublons = super().get_search_results(request, queryset, search_term)
+        mots = recherche.mots(search_term, recherche.FRANCAIS)
+        if mots:
+            resultats |= queryset.filter(recherche.contient_tous_les_mots(mots))
+        return resultats, doublons
+
     fieldsets = (
         (None, {"fields": ("vedette", "precision", "slug")}),
         (

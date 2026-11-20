@@ -23,3 +23,9 @@ def test_le_script_installe_la_meme_version_de_uv_que_l_integration_continue():
     )
     versions_ci = set(re.findall(r'version: "([\d.]+)"', workflow))
     assert versions_ci == {version}
+
+
+def test_le_script_installe_de_quoi_compiler_pyicu():
+    """PyICU se compile à l'installation : il lui faut ICU, pkg-config et un compilateur C++."""
+    paquets = re.search(r'paquets="([^"]+)"', SCRIPT.read_text("utf-8-sig")).group(1)
+    assert {"libicu-dev", "pkg-config", "g++"} <= set(paquets.split())

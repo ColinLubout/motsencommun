@@ -7,6 +7,7 @@ dependencies = [
     "django-otp>=1.7.5",
     "django-simple-history>=3.13.0",
     "django[argon2]>=5.2,<5.3",
+    "pyicu>=2.17",
     "pyyaml>=6.0.3",
     "qrcode>=8.2",
 ]

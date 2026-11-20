@@ -160,13 +160,15 @@ if ((Get-UidParDefaut) -eq "0") {
 Write-Info "prête"
 
 Write-Etape "Paquets de base dans Debian"
+# libicu-dev, pkg-config et g++ servent à compiler PyICU (le tri selon l'alphabet de chaque langue).
 Invoke-Debian -Root -Script @'
 set -eu
-if dpkg -s curl ca-certificates >/dev/null 2>&1; then
+paquets="curl ca-certificates libicu-dev pkg-config g++"
+if dpkg -s $paquets >/dev/null 2>&1; then
   echo '    déjà installés'
 else
   apt-get update -qq
-  DEBIAN_FRONTEND=noninteractive apt-get install -y -qq curl ca-certificates
+  DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends $paquets
 fi
 '@
 
