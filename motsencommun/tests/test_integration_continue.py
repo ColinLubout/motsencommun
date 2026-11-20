@@ -40,6 +40,14 @@ def test_icu_est_installe_avant_les_dependances():
     assert texte.index("libicu-dev") < texte.index("uv sync --locked")
 
 
+def test_les_textes_de_l_interface_sont_recueillis_avant_les_tests():
+    """Un texte nouveau entre sans traduction dans le catalogue : le test de complétude échoue."""
+    texte = WORKFLOW.read_text("utf-8")
+    assert "gettext" in texte
+    assert "makemessages --all" in texte
+    assert texte.index("makemessages --all") < texte.index("uv run pytest")
+
+
 def test_les_verifications_lancent_les_tests_et_pip_audit():
     texte = WORKFLOW.read_text("utf-8")
     assert "uv run pytest" in texte

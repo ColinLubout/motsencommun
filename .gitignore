@@ -11,4 +11,8 @@ __pycache__/
 
 # Données créées par le serveur de développement
 donnees/base.sqlite3*
+donnees/cache/
 donnees/media/
+
+# Traductions compilées : « manage.py compilemessages » les recrée à partir des .po
+*.mo
