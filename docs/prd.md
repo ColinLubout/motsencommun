@@ -94,7 +94,7 @@ Every public URL starts with a language prefix that sets the interface language:
 | Liste | `/fr/expressions/` | All entries, alphabetical by `vedette`, 50 per page. Filters in the query string, so any filtered list is a shareable link: `?niveau=B1&type=faux_ami&theme=emotions&registre=familier` |
 | Raccourcis | `/fr/niveau/b1/`, `/fr/type/faux-ami/`, `/fr/theme/emotions/` | The same list, pre-filtered, with a heading |
 | Fiche | `/fr/expressions/poser-un-lapin/` | One entry: the full layout is below |
-| Recherche | `/fr/recherche/?q=…` | Results across `vedette`, `formes`, `sens` and translations in the current language. Accents and capitals are ignored; exact matches come first |
+| Recherche | `/fr/recherche/?q=…` | Results across `vedette`, `formes`, `sens` and translations in the current language. Accents and capitals are ignored. Every word of the query must appear, in any order (decided 20 November 2026). Exact matches of a `vedette` or form come first, then those that contain the query |
 | Télécharger | `/fr/telecharger/` | Download links, data dictionary, licence |
 | À propos | `/fr/a-propos/` | The project, contributor credits, licence, privacy statement ("this site sets no cookies") |
 | Admin | A non-obvious path set in configuration | Django admin, for the owner in phase 1 |
@@ -318,12 +318,14 @@ There is one row per record and language, enforced by a uniqueness constraint on
 Ukrainian and Polish contributors are expected from the start, and right-to-left languages must be possible later. These are requirements, not nice-to-haves.
 
 1. **UTF-8 everywhere:** database, files, HTTP responses and downloads.
-2. **Normalise every saved text field to Unicode NFC**, in the model's `clean()` and `save()`. Also convert typographic apostrophes (’) to straight ones (') in `formes` and `surlignage`, so searches and highlights match.
-3. **Search through a precomputed field, not the database's case handling.** SQLite only treats upper and lower case as equal for unaccented ASCII letters, so `É`/`é` and `К`/`к` wouldn't match. Each searchable model stores a `recherche` field, built in Python on save:
-   - Python `casefold()`.
-   - For French text only, strip accents (*être* → *etre*).
+2. **Normalise every saved text field to Unicode NFC**, in the model's `clean()` and `save()`. Also convert typographic apostrophes (’) to straight ones (') in `formes`, `surlignage` and the example's `phrase` (decided 20 November 2026), so searches and highlights match character for character.
+3. **Search through a precomputed field, not the database's case handling.** SQLite only treats upper and lower case as equal for unaccented ASCII letters, so `É`/`é` and `К`/`к` wouldn't match. `Entree` (`vedette`, `formes`, `sens_…`) and `EntreeTraduction` (`sens`, in its own language) store a `recherche` field, built in Python on save by `lexique/recherche.py`:
+   - Python `casefold()`, with every way of typing an apostrophe treated as the same.
+   - For French text only, strip accents and ligatures (*être* → *etre*, *cœur* → *coeur*), and only from Latin letters.
    - Never strip marks from other languages. Removing the breve turns Ukrainian *й* into a different letter, *и*. Polish *ł* must stay *ł*.
-4. **Sort by each language's alphabet**, for example with PyICU, or a per-language sort key stored alongside. Polish *ł* sorts after *l*, not after *z*.
+4. **Sort by each language's alphabet, with PyICU.** Polish *ł* sorts after *l*, not after *z*. Entries store their ICU sort key (`cle_de_tri`: the `vedette`, then the `precision`), so lists are sorted and paginated by the database. Shorter lists, such as translated theme names, are sorted in Python with the same collation.
+
+The `recherche` and `cle_de_tri` fields are derived: they can't be edited, aren't kept in the history, and never count as a change of text, so they never send content back to review. `python manage.py reconstruire_recherche` recomputes them, for example after the rules change or the server's ICU is upgraded (sort keys depend on the ICU version).
 5. **Mark the language and direction of text.** Every block of translated text carries `lang` and `dir` attributes, and the page's `<html lang dir>` follows the interface language. Use CSS logical properties (`margin-inline-start`, not `margin-left`) so right-to-left needs no second stylesheet.
 6. **Fonts:** the system font stack, which covers Latin, Latin Extended and Cyrillic on every common device. Any web font must be self-hosted and include those ranges. No Google Fonts.
 7. **Plurals:** Polish and Ukrainian have three or more plural forms. Interface strings with numbers must use Django's plural support, never strings glued together by hand.
@@ -385,7 +387,7 @@ One small server in the EU runs everything. There are no external services.
 | App server | Gunicorn, run by systemd |  |
 | Web server | Caddy | Automatic HTTPS. Serves `/static/`, `/media/` and `/telechargements/` directly. Keeps no access logs |
 | Caching | Django's cache for anonymous pages | Cleared when any record is saved |
-| Sorting | PyICU, if available on the server | Otherwise a precomputed sort key per language |
+| Sorting | PyICU, compiled against the system's ICU | Entries store an ICU sort key; `reconstruire_recherche` recomputes it after an ICU upgrade |
 | Backups | Nightly SQLite online backup plus `media/`, encrypted with restic and sent to Scaleway Object Storage (Amsterdam), with a 30-day object lock | Keep 30 daily and 12 monthly. Restore tested before launch, then every six months |
 | Server upkeep | Automatic security updates with reboots at 04:30 UTC, a firewall open only on 80, 443 and WireGuard, SSH by key and only through WireGuard |  |
 | Admin | Non-default URL path, two-factor login required for the owner (django-otp), Argon2 passwords. See Security |  |
@@ -660,7 +662,7 @@ Run from the owner's machine (or by Claude Code with the owner's SSH key) once C
 1. Fetch the tag into `versions/<tag>/` and install dependencies from the lock file (`uv sync --frozen`).
 2. Run `check --deploy --fail-level WARNING`, `collectstatic` and `compilemessages`. Stop on any error, with the live site untouched.
 3. Take an online backup of the database (the same method as the nightly backup).
-4. Run `migrate`.
+4. Run `migrate`, then `reconstruire_recherche`, which takes a moment and refreshes the sort keys in case the server's ICU has changed.
 5. Point `actuelle` at the new release and reload Gunicorn gracefully, so no requests are dropped.
 6. Check that `/sante/` and `/fr/` return 200. If not, switch `actuelle` back and reload automatically.
 7. Keep the last five releases; delete older ones.
