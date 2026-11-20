@@ -77,7 +77,7 @@ Learners keep stumbling on phrases where every word is familiar but the meaning 
 
 | Phase | What it adds | Gate to open the next phase |
 |---|---|---|
-| **1 · Le site de base** (build now) | Browse, search, filter; entry pages, printing; downloads, admin; 73 entries imported | **Open to others:** native reviewers found, data model settled |
+| **1 · Le site de base** (build now) | Browse, search, filter; entry pages, printing; downloads, admin; 73 AI-drafted test entries for trying it out, none of them on the live site | **Open to others:** native reviewers found, data model settled |
 | **2 · Contributeurs** | Accounts and roles; proposals and review; translations (pl, uk…); public forms | **Image rules:** picture rights policy agreed and published |
 | **3 · Illustrations** | Pictures on entries; credit and licence; alt text required | **Consent ready:** voice licence agreed, storage and moderation in place |
 | **4 · Enregistrements** | Read-aloud recordings; consent per file; moderation | — |
@@ -143,7 +143,7 @@ Plain and calm, like a well-set dictionary page: the words are the design.
 
 ## Data model
 
-The Django project is `motsencommun` and holds one app, `lexique`. Every model gets automatic history through django-simple-history. Every model except the vocabulary-like ones carries `cree_le`, `modifie_le`, `ajoute_par` and `statut`.
+The Django project is `motsencommun` and holds one app, `lexique`. Every model gets automatic history through django-simple-history. Every model except the vocabulary-like ones carries `cree_le`, `modifie_le`, `ajoute_par` and `statut`: entries, traps, examples and their translations. They also carry `texte_modifie_le`, the last time their text changed, which decides which reviews still count. Every model that the seed import fills also has a read-only `genere_par_ia` flag (see the seed data section).
 
 ### `Entree`: a word or expression (table `lexique_entree`)
 
@@ -183,19 +183,27 @@ The Django project is `motsencommun` and holds one app, `lexique`. Every model g
 
 ### `Exemple`: an example sentence (table `lexique_exemple`)
 
+One sentence is one `Exemple`, even when it illustrates several entries (decided 19 November 2026): it is reviewed, translated and, in phase 4, recorded once.
+
 | Field | Type | Notes |
 | --- | --- | --- |
-| `entree` | foreign key |  |
 | `phrase` | text | Original French |
-| `surlignage` | text | Exact words in `phrase` to highlight. Validated on save |
 | `niveau` | code | Level of the whole sentence |
-| `ordre` | integer | Display order |
+| `entrees` | through `ExempleEntree` | The entries the sentence illustrates, at least one before review |
 | common fields |  |  |
+
+### `ExempleEntree`: an example on an entry (table `lexique_exempleentree`)
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `exemple`, `entree` | foreign keys | One row per sentence and entry |
+| `surlignage` | text | Exact words in `phrase` to highlight for this entry. Validated on save |
+| `ordre` | integer | Display order on the entry page |
 
 ### Supporting tables
 
 - **`Theme`:** `slug`, `nom` (in French). Translations go in `ThemeTraduction`.
-- **`Contributeur`:** Django's `User` plus a profile with `nom_affiche` (the name credited publicly, in any script), `langues` (the languages they speak), `licence_acceptee_le` (when they accepted the data licence), `invitation` (the invitation used to sign up, if any) and `relit_langues` (for reviewers: the content they may review, `fr` and/or translation languages, set only by the owner).
+- **`Contributeur`:** Django's `User` plus a profile with `nom_affiche` (the name credited publicly, in any script), `langues` (the languages they speak), `licence_acceptee_le` (when they accepted the data licence), `invitation` (the invitation used to sign up, if any; added in phase 2 with the `Invitation` table) and `relit_langues` (for reviewers: the content they may review, `fr` and/or translation languages, set only by the owner).
 - **Translations:** `EntreeTraduction`, `PiegeTraduction`, `ExempleTraduction` and `ThemeTraduction`, described in the translations section.
 - **`Signalement` (phase 2):** an error report on an entry. Fields:
   - `entree`
@@ -223,21 +231,22 @@ Everything hangs off an `Entree`; translations sit beside it.
 Theme (slug, nom) ──themes── Entree (vedette, niveau, sens_a1 … sens_c2, formes, statut, ajoute_par)
                                 │
         ┌───────────────────────┼─────────────────────────┬──────────────────────────────┐
-        │ 1..n                  │ 1..n                    │ 0..n                         │ 0..n
-      Piege                  Exemple                  LienEntree                [Illustration · phase 3]
- (type_piege, gravite,   (phrase, surlignage,      (type_lien, cible:         (image, texte_alternatif,
-  concerne,               niveau, ordre)            voir_aussi, contraire…)     credit, licence)
-  langue_apprenant,          │ 0..n
-  explication_…)          [Enregistrement · phase 4]
+        │ 1..n                  │ n..n                    │ 0..n                         │ 0..n
+      Piege            ExempleEntree               LienEntree                [Illustration · phase 3]
+ (type_piege, gravite,  (surlignage, ordre)       (type_lien, cible:         (image, texte_alternatif,
+  concerne,                    │                   voir_aussi, contraire…)     credit, licence)
+  langue_apprenant,         Exemple (phrase, niveau)
+  explication_…)               │ 0..n
+                          [Enregistrement · phase 4]
                           (fichier_audio, locuteur, consentement_le, licence)
 
 Traductions: EntreeTraduction, PiegeTraduction, ExempleTraduction, ThemeTraduction · one per langue
-Historique:  django-simple-history on every table · Relecture records each review, never by ajoute_par
+Historique:  django-simple-history on every table · Relecture records each review, never by an author or editor
 ```
 
 Boxes in [brackets] are reserved for later phases.
 
-Reviews live in a `Relecture` table: record, `relecteur`, `decision`, `commentaire`, `date`.
+Reviews live in a `Relecture` table: the reviewed record (`contenu`), `relecteur`, `decision` (`approuve` or `refuse`), `commentaire`, `date`. A review is never changed once saved.
 
 ## Vocabularies
 
@@ -296,7 +305,7 @@ The core is French and complete on its own. Every other language is an optional 
 | `ExempleTraduction` | `traduction` (the sentence in that language) | `exemple`, `langue`, common fields |
 | `ThemeTraduction` | `nom` | `theme`, `langue` |
 
-There is one row per record and language, enforced by a uniqueness constraint on (record, `langue`). The site shows a translation only once its `statut` is `relu` or `valide`, and otherwise falls back to French.
+There is one row per record and language, enforced by a uniqueness constraint on (record, `langue`). The site shows a translation only once its `statut` is `relu` or `valide`, and otherwise falls back to French. `ThemeTraduction` is the exception: theme names are vocabulary managed by the owner, without a `statut`.
 
 **Interface text** is written in French in the templates and code, using Django's translation functions (`gettext`, `{% translate %}`, `{% blocktranslate count %}` for plurals). Other languages live in standard `.po` files under `locale/`. In phase 1 the owner can add English interface strings. From phase 2, contributors can translate them too. A self-hosted Weblate is one option for this, if editing `.po` files by hand becomes a barrier.
 
@@ -452,7 +461,7 @@ One entry in `mots-en-commun.json`, once written and reviewed, looks like this (
 - **Slugs are permanent.** A retired entry stays in the downloads marked `retire`, rather than disappearing.
 - **Credit by name:** each record includes the display names of whoever added it (`ajoute_par`) and reviewed it (`relecteurs`), and the file header lists every contributor. Email addresses, accounts and the edit history never leave the server.
 - **Two kinds of file:** `mots-en-commun.json` and its CSVs are rebuilt every night. On the first of each month a dated copy is also saved, for example `mots-en-commun-2026-12.json`, and kept permanently. Old snapshots are listed on the download page, so a worksheet or a study can cite the exact version it used.
-- **At launch the files are nearly empty.** Only reviewed entries are exported, so they grow as reviewers work through the imported drafts.
+- **At launch the files are empty.** The live site starts from an empty database (see the seed data section), and only reviewed entries are exported, so the files grow as the owner adds entries and reviewers approve them.
 
 **Licence** (decided 18 November 2026):
 
@@ -473,12 +482,15 @@ This isn't legal advice.
 
 The earlier draft produced 73 AI-drafted items, 85 traps and 82 example sentences. They live in `donnees/import/donnees-initiales.zip`, in `data/items/*.yaml` and `data/sentences/0001-ai-placeholders.yaml`, with their format in `schema/` and a short `LISEZMOI.md`.
 
+**They are test data only** (decided 19 November 2026). They are imported on the owner's computers and on the server during the testing phase, to try out browsing, reviewing and exporting. For go-live, the site is redeployed from an empty database without running the import, so none of this AI-drafted content reaches the live site; the owner then adds entries by hand.
+
 `python manage.py importer_donnees_initiales <path>` loads them once, as follows:
 
 - **Owner and status.** Everything is attributed to a system user `import-initial`, with `statut = brouillon`.
+- **Marked as AI-generated.** Every imported record (entries, traps, examples and their links, translations, themes and links between entries) has `genere_par_ia` set. The flag can't be edited in the admin and is shown there and on reviewers' previews. During testing, seed records can be reviewed like any other.
 - **English text goes to the translation layer.** The source explanations are in English, so `gloss_en`, `literal_en` and `note_en` become `EntreeTraduction` and `PiegeTraduction` rows with `langue = en`. The French `explication` stays empty until the owner writes it.
 - **An empty explanation is allowed only in draft.** `explication` may be empty while `statut = brouillon`, and the model refuses `relu` or `valide` without it.
-- **Example sentences become `Exemple` rows.** Each attaches to the entry its tag pointed to, with the tag's text as `surlignage` and the English gloss as an `ExempleTraduction`.
+- **Example sentences become `Exemple` rows.** Each sentence becomes one `Exemple` (82 in all), linked through `ExempleEntree` to every entry its tags point to (85 links), with each tag's text as that link's `surlignage`, and the English gloss as an `ExempleTraduction`.
 
 | Old field (seed files) | New field | Mapping |
 | --- | --- | --- |
@@ -524,18 +536,21 @@ Every entry, trap, example and translation has its own `statut`, and the history
 | --- | --- | --- |
 | `brouillon` | Draft: visible only to the owner and reviewers when logged in, with a *Pas encore relu* banner | The person adding it |
 | `en_relecture` | Submitted for review | The person adding it |
-| `relu` | Approved by one reviewer | A reviewer who isn't `ajoute_par` |
-| `valide` | Approved by two reviewers | The second reviewer, also not `ajoute_par` |
-| `refuse` | Rejected, with a comment | A reviewer |
+| `relu` | Approved by one reviewer | Set by the first approving review, from a reviewer who neither added nor edited it |
+| `valide` | Approved by two reviewers | Set by a second approving review, from another such reviewer |
+| `refuse` | Rejected, with a comment | Set by a refusing review |
 | `retire` | Withdrawn. Kept in the history and in the downloads, never deleted | The owner |
 
 **Rules enforced by the model, not just by convention:**
 
-- **No self-review.** Nobody can move their own record to `relu` or `valide`. Reviews are recorded in a `Relecture` table: record, reviewer, decision, comment, date.
-- **French explanations are required before approval.** `relu` and `valide` require at least one French `sens_…` level on the entry, and at least one `explication_…` level on each of its traps.
-- **Translations are reviewed separately.** A translation is reviewed on its own, ideally by someone who reads both languages.
+- **Statuses come from reviews.** Nobody types `relu`, `valide` or `refuse`: they follow from the `Relecture` records (record, reviewer, decision, comment, date).
+- **No self-review** (decided 19 November 2026). Nobody can approve a record they added *or edited*: the history shows who changed its text. So an imported entry whose French explanation the owner wrote needs another reviewer.
+- **Editing a reviewed record sends it back to review** (decided 19 November 2026). Any change to the text of a `relu` or `valide` record moves it to `en_relecture`, so it leaves the public site until reviewed again, and reviews made before the change no longer count.
+- **French explanations are required before approval.** `relu` and `valide` require at least one French `sens_…` level on the entry, and at least one `explication_…` level on each of its traps (refused or withdrawn traps aside). A trap needs its own `explication_…` to be approved, and an example must illustrate at least one entry.
+- **A refusal needs a comment.**
+- **Translations are reviewed separately.** A translation is reviewed on its own, by a reviewer whose `relit_langues` includes its language; French content needs `fr`.
 
-**Phase 1:** the owner is the only editor. Reviewers, starting with the owner's French tutor, get accounts the owner creates by hand in the admin (invitations arrive in phase 2), and record their reviews there. The imported entries belong to `import-initial`, so the owner can review those alongside the tutor. Entries the owner writes stay in `brouillon` until a second person reviews them. The site isn't announced until enough entries have been reviewed to be worth visiting.
+**Phase 1:** the owner is the only editor. Reviewers, starting with the owner's French tutor, get accounts the owner creates by hand in the admin (invitations arrive in phase 2), and record their reviews there. During testing, the imported entries belong to `import-initial`, so the owner can review those they haven't edited, alongside the tutor. Entries the owner writes stay in `brouillon` until a second person reviews them. The site isn't announced until enough entries have been reviewed to be worth visiting.
 
 **Phase 2:** contributors get accounts with two roles, *contributeur* and *relecteur*, built on Django's groups and permissions. They work through simple public forms rather than the admin.
 
@@ -718,7 +733,8 @@ Phase 1 is done when every item below passes. Most are automated tests.
 
 - [ ] All models, tables, fields, URL paths, vocabulary codes and management commands use the French names in this document.
 - [ ] Every model, including the translation tables, has django-simple-history. The admin shows each record's history.
-- [ ] `importer_donnees_initiales` loads 73 entries, 85 traps and 82 examples as `brouillon`, with their English translations, and running it twice changes nothing.
+- [ ] `importer_donnees_initiales` loads 73 entries, 85 traps and 82 examples (85 example links) as `brouillon`, marked `genere_par_ia`, with their English translations, and running it twice changes nothing.
+- [ ] Editing the text of a reviewed record sends it back to `en_relecture`, and nobody can approve a record they added or edited.
 - [ ] Saving an `Exemple` whose `surlignage` doesn't appear in `phrase` is refused with a clear message.
 - [ ] Nobody can set their own record to `relu` or `valide`.
 
@@ -786,7 +802,7 @@ Ideas that are agreed but not yet scheduled into a phase.
 
 | Risk | Mitigation |
 | --- | --- |
-| The 73 imported entries were drafted by AI and may contain errors | Imported as `brouillon` and labelled on the site; reviewed by a native speaker before `relu` |
+| The 73 imported entries were drafted by AI and may contain errors | Used for testing only, marked `genere_par_ia`; the live site is deployed from an empty database without them |
 | Explanations written by a learner (the owner) contain mistakes | Same review rule: nothing the owner writes reaches `relu` without a second person |
 | French-only explanations are too hard for beginners at launch | The English layer comes from the import; the owner and friends add Polish and Ukrainian over time |
 | Self-hosting upkeep (updates, backups, security) gets neglected | Automatic security updates; one backup script with a tested restore; a short checklist in `deploiement/README` |
