@@ -2,7 +2,7 @@
 
 *Les expressions françaises, expliquées par ceux qui les apprennent et ceux qui les parlent.*
 
-Version de ce texte : 2026-11-19 · Traductions : [English](README.en.md)
+Version de ce texte : 2026-11-20 · Traductions : [English](README.en.md)
 
 **Mots en commun** est un site gratuit et auto-hébergé où les personnes qui apprennent le français et celles qui le parlent depuis toujours notent et retrouvent les expressions qui ne veulent pas dire ce que leurs mots laissent croire : *être en train de*, *en vouloir à quelqu'un*, *poser un lapin*… Chaque entrée donne une explication simple, son niveau, les pièges qu'elle tend et des phrases d'exemple. Toute la liste pourra être téléchargée en données structurées, pour construire d'autres outils d'apprentissage.
 
@@ -42,10 +42,19 @@ Pour lancer le site en local, activez le mode développement avec la variable `D
 export DJANGO_DEBUG=1          # sous PowerShell : $env:DJANGO_DEBUG = "1"
 uv run python manage.py migrate
 uv run python manage.py createsuperuser
+uv run python manage.py activer_double_authentification <votre-compte>
 uv run python manage.py runserver
 ```
 
-L'administration est alors à l'adresse <http://127.0.0.1:8000/admin/>. Sur le serveur, tous les réglages viennent de variables d'environnement, décrites dans [deploiement/env.exemple](deploiement/env.exemple).
+L'administration est alors à l'adresse <http://127.0.0.1:8000/admin/>. Le superutilisateur ne l'ouvre qu'avec la double authentification : `activer_double_authentification` affiche un QR code à scanner avec une application (Aegis, FreeOTP, Google Authenticator…), puis dix codes de secours.
+
+Pour essayer le site avec du contenu, importez les données de départ :
+
+```sh
+uv run python manage.py importer_donnees_initiales donnees/import/donnees-initiales.zip
+```
+
+Elles ont été rédigées par une IA et ne servent qu'aux essais : tout arrive en brouillon, marqué « généré par IA », et le site en ligne est déployé sans elles. Sur le serveur, tous les réglages viennent de variables d'environnement, décrites dans [deploiement/env.exemple](deploiement/env.exemple).
 
 Sous Windows, si Smart App Control bloque Python, travaillez dans WSL (le sous-système Windows pour Linux) : le script [outils/preparer-poste-windows.ps1](outils/preparer-poste-windows.ps1) installe et prépare tout.
 
