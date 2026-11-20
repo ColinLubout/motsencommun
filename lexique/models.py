@@ -24,6 +24,13 @@ from simple_history.models import HistoricalRecords
 
 from lexique import vocabulaire as v
 from lexique.champs import ListeJSON
+from lexique.recherche import (
+    apostrophes_droites,
+    cle_de_tri_de_l_entree,
+    nfc,
+    recherche_de_l_entree,
+    recherche_de_la_traduction,
+)
 
 NIVEAUX_EN_MINUSCULES = [niveau.lower() for niveau in v.NIVEAUX]
 
@@ -45,7 +52,54 @@ def slug_depuis(*textes):
 # --- Bases communes -----------------------------------------------------------
 
 
-class MarqueIA(models.Model):
+class TextesNormalises(models.Model):
+    """Tout texte enregistré est en Unicode NFC (PRD, « Every alphabet »).
+
+    La normalisation a lieu à la validation (``clean_fields``, donc avant
+    ``clean()`` et ses vérifications) et à l'enregistrement. Un ``save()`` qui
+    vérifie quelque chose avant d'appeler ``super().save()`` normalise d'abord.
+    """
+
+    #: Champs cherchés ou surlignés : leurs apostrophes typographiques (’) deviennent
+    #: droites ('), pour que recherches et surlignages concordent.
+    CHAMPS_A_APOSTROPHES_DROITES = frozenset()
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        self.normaliser_les_textes()
+        super().save(*args, **kwargs)
+
+    def clean_fields(self, exclude=None):
+        self.normaliser_les_textes()
+        super().clean_fields(exclude=exclude)
+
+    def normaliser_les_textes(self):
+        for champ in self._meta.concrete_fields:
+            valeur = getattr(self, champ.attname)
+            if isinstance(valeur, str):
+                setattr(self, champ.attname, self._normaliser(champ.name, valeur))
+            elif isinstance(champ, ListeJSON) and isinstance(valeur, list):
+                setattr(
+                    self,
+                    champ.attname,
+                    [
+                        self._normaliser(champ.name, element)
+                        if isinstance(element, str)
+                        else element
+                        for element in valeur
+                    ],
+                )
+
+    def _normaliser(self, nom_du_champ, texte):
+        texte = nfc(texte)
+        if nom_du_champ in self.CHAMPS_A_APOSTROPHES_DROITES:
+            texte = apostrophes_droites(texte)
+        return texte
+
+
+class MarqueIA(TextesNormalises):
     """Marque les données de départ, rédigées par une IA, qui ne servent qu'aux essais."""
 
     genere_par_ia = models.BooleanField(
@@ -97,6 +151,9 @@ class Contenu(MarqueIA):
             "ajoute_par",
             "statut",
             "genere_par_ia",
+            # Calculés à partir du texte, pour chercher et trier.
+            "recherche",
+            "cle_de_tri",
         }
     )
 
@@ -104,6 +161,9 @@ class Contenu(MarqueIA):
         abstract = True
 
     def save(self, *args, **kwargs):
+        # Normaliser avant de comparer avec la version enregistrée : un texte
+        # identique, saisi sous une autre forme Unicode, n'est pas une modification.
+        self.normaliser_les_textes()
         with transaction.atomic():
             ancien = type(self).objects.filter(pk=self.pk).first() if self.pk else None
             if ancien is not None and any(
@@ -300,10 +360,30 @@ class Entree(Contenu):
         related_name="+",
         verbose_name=_("liens"),
     )
-    history = HistoricalRecords(m2m_fields=[themes])
+    recherche = models.TextField(
+        _("texte de recherche"),
+        blank=True,
+        default="",
+        editable=False,
+        help_text=_("Vedette, formes et sens, sans casse ni accents, pour chercher."),
+    )
+    cle_de_tri = models.BinaryField(
+        _("clé de tri"),
+        blank=True,
+        default=b"",
+        editable=False,
+        help_text=_(
+            "Vedette puis précision, dans l'ordre alphabétique français (ICU)."
+        ),
+    )
+    history = HistoricalRecords(
+        m2m_fields=[themes], excluded_fields=["recherche", "cle_de_tri"]
+    )
+
+    CHAMPS_A_APOSTROPHES_DROITES = frozenset({"formes"})
 
     class Meta:
-        ordering = ["vedette", "precision"]
+        ordering = ["cle_de_tri"]
         verbose_name = _("entrée")
         verbose_name_plural = _("entrées")
 
@@ -311,9 +391,14 @@ class Entree(Contenu):
         return f"{self.vedette} ({self.precision})" if self.precision else self.vedette
 
     def save(self, *args, **kwargs):
+        self.normaliser_les_textes()
         if not self.slug:
             self.slug = slug_depuis(self.vedette, self.precision)
         self.verifier_slug()
+        self.recherche = recherche_de_l_entree(self)
+        self.cle_de_tri = cle_de_tri_de_l_entree(self)
+        if update_fields := kwargs.get("update_fields"):
+            kwargs["update_fields"] = {*update_fields, "recherche", "cle_de_tri"}
         super().save(*args, **kwargs)
 
     def sens(self):
@@ -486,6 +571,10 @@ class Exemple(Contenu):
     )
     history = HistoricalRecords()
 
+    # Décidé le 20 novembre 2026 : les phrases aussi, pour que surlignages et
+    # phrases concordent caractère pour caractère.
+    CHAMPS_A_APOSTROPHES_DROITES = frozenset({"phrase"})
+
     class Meta:
         ordering = ["id"]
         verbose_name = _("exemple")
@@ -498,6 +587,7 @@ class Exemple(Contenu):
         # Pas de vérification dans clean() : dans un formulaire, la phrase et ses
         # surlignages changent ensemble, et chaque surlignage se vérifie lui-même
         # contre la nouvelle phrase. Ici, au moment d'enregistrer, tout doit concorder.
+        self.normaliser_les_textes()
         self.verifier_surlignages()
         super().save(*args, **kwargs)
 
@@ -546,6 +636,8 @@ class ExempleEntree(MarqueIA):
     ordre = models.PositiveSmallIntegerField(_("ordre"), default=0)
     history = HistoricalRecords()
 
+    CHAMPS_A_APOSTROPHES_DROITES = frozenset({"surlignage"})
+
     class Meta:
         ordering = ["ordre", "id"]
         verbose_name = _("exemple d'une entrée")
@@ -560,6 +652,7 @@ class ExempleEntree(MarqueIA):
         return f"{self.entree} : {self.surlignage}"
 
     def save(self, *args, **kwargs):
+        self.normaliser_les_textes()
         self.verifier_surlignage(self.exemple.phrase)
         super().save(*args, **kwargs)
 
@@ -571,7 +664,8 @@ class ExempleEntree(MarqueIA):
         self.verifier_surlignage(phrase)
 
     def verifier_surlignage(self, phrase):
-        if self.surlignage not in phrase:
+        # La phrase d'un formulaire n'est pas forcément encore normalisée.
+        if self.surlignage not in apostrophes_droites(nfc(phrase)):
             raise ValidationError(
                 {
                     "surlignage": _(
@@ -620,7 +714,14 @@ class EntreeTraduction(Traduction):
     )
     sens = models.TextField(_("sens"), blank=True)
     sens_litteral = models.TextField(_("sens littéral"), blank=True)
-    history = HistoricalRecords()
+    recherche = models.TextField(
+        _("texte de recherche"),
+        blank=True,
+        default="",
+        editable=False,
+        help_text=_("Le sens sans casse, pour chercher dans cette langue."),
+    )
+    history = HistoricalRecords(excluded_fields=["recherche"])
 
     class Meta:
         verbose_name = _("traduction d'entrée")
@@ -633,6 +734,13 @@ class EntreeTraduction(Traduction):
 
     def __str__(self):
         return f"{self.entree} ({self.langue})"
+
+    def save(self, *args, **kwargs):
+        self.normaliser_les_textes()
+        self.recherche = recherche_de_la_traduction(self)
+        if update_fields := kwargs.get("update_fields"):
+            kwargs["update_fields"] = {*update_fields, "recherche"}
+        super().save(*args, **kwargs)
 
     def prerequis_d_approbation(self):
         return [] if self.sens.strip() else [_("Écrivez le sens dans cette langue.")]
@@ -701,7 +809,7 @@ class ExempleTraduction(Traduction):
 # --- Contributeurs et relectures ----------------------------------------------
 
 
-class Contributeur(models.Model):
+class Contributeur(TextesNormalises):
     """Profil public d'un compte : le nom crédité et les langues qu'il peut relire."""
 
     utilisateur = models.OneToOneField(
@@ -739,7 +847,7 @@ class Contributeur(models.Model):
         return self.nom_affiche
 
 
-class Relecture(models.Model):
+class Relecture(TextesNormalises):
     """Une relecture : quelqu'un approuve ou refuse un contenu. Elle ne se modifie plus."""
 
     type_contenu = models.ForeignKey(
