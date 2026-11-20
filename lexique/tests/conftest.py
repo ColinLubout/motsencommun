@@ -3,6 +3,8 @@
 import pytest
 from django.contrib.auth.models import Group, User
 from django.core.cache import cache
+from django_otp import DEVICE_ID_SESSION_KEY
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from lexique import models as m
 from lexique.apps import NOM_DU_GROUPE_DES_RELECTEURS
@@ -115,8 +117,14 @@ def modifier(contenu, utilisateur, **champs):
 
 @pytest.fixture
 def client_proprietaire(client, proprietaire):
-    """Un navigateur connecté en superutilisateur."""
+    """Un navigateur connecté en superutilisateur, double authentification passée."""
+    appareil = TOTPDevice.objects.create(
+        user=proprietaire, name="Téléphone", confirmed=True
+    )
     client.force_login(proprietaire)
+    session = client.session
+    session[DEVICE_ID_SESSION_KEY] = appareil.persistent_id
+    session.save()
     return client
 
 

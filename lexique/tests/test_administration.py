@@ -47,6 +47,8 @@ def test_un_relecteur_entre_sans_double_authentification(client):
     [
         "admin:auth_user_changelist",
         "admin:auth_group_changelist",
+        "admin:otp_totp_totpdevice_changelist",
+        "admin:otp_static_staticdevice_changelist",
         "admin:lexique_contributeur_changelist",
     ],
 )

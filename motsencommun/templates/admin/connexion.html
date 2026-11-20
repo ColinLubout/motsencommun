@@ -1,0 +1,52 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/login.css" %}">
+{{ form.media }}
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+{% block usertools %}{% endblock %}
+{% block nav-global %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block content_title %}{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+{% if form.errors and not form.non_field_errors %}
+<p class="errornote">{% translate "Corrigez l'erreur ci-dessous." %}</p>
+{% endif %}
+{% for error in form.non_field_errors %}
+<p class="errornote">{{ error }}</p>
+{% endfor %}
+
+<div id="content-main">
+{% if user.is_authenticated %}
+<p class="errornote">{% blocktranslate trimmed %}
+  Vous êtes connecté en tant que {{ username }}, mais ce compte n'a pas accès à cette page.
+  Le compte superutilisateur doit se connecter avec son code de double authentification.
+{% endblocktranslate %}</p>
+{% endif %}
+
+<form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+  <div class="form-row">
+    {{ form.username.errors }}
+    {{ form.username.label_tag }} {{ form.username }}
+  </div>
+  <div class="form-row">
+    {{ form.password.errors }}
+    {{ form.password.label_tag }} {{ form.password }}
+    <input type="hidden" name="next" value="{{ next }}">
+  </div>
+  <div class="form-row">
+    {{ form.otp_token.errors }}
+    {{ form.otp_token.label_tag }} {{ form.otp_token }}
+    <div class="help">{{ form.otp_token.help_text }}
+      {% translate "Laissez vide si la double authentification n'est pas activée sur votre compte." %}</div>
+  </div>
+  <div class="submit-row">
+    <input type="submit" value="{% translate "Se connecter" %}">
+  </div>
+</form>
+</div>
+{% endblock %}

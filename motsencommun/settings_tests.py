@@ -20,3 +20,6 @@ VARIABLES_DES_TESTS = {
 os.environ.update(VARIABLES_DES_TESTS)
 
 from motsencommun.settings import *
+
+# Un cache en mémoire, vidé avant chaque test : les tests n'écrivent aucun fichier.
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
