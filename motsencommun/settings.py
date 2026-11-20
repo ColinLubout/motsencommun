@@ -32,12 +32,17 @@ DOSSIER_DONNEES = env.dossier("DOSSIER_DONNEES", en_developpement=BASE_DIR / "do
 env.verifier()
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    # L'admin de Django, avec notre site (double authentification du superutilisateur).
+    "motsencommun.apps.AdministrationConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_otp",
+    "django_otp.plugins.otp_totp",
+    "django_otp.plugins.otp_static",
+    "simple_history",
     "lexique",
 ]
 
@@ -47,6 +52,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_otp.middleware.OTPMiddleware",
+    # Retient qui fait chaque modification, pour l'historique.
+    "simple_history.middleware.HistoryRequestMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -57,7 +65,7 @@ WSGI_APPLICATION = "motsencommun.wsgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "motsencommun" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -87,14 +95,45 @@ DATABASES = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Le cache est partagé entre les processus Gunicorn (fichiers dans DOSSIER_DONNEES) :
+# le freinage des connexions ratées en dépend.
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": DOSSIER_DONNEES / "cache",
+    }
+}
+
+# Mots de passe : Argon2, au moins 16 caractères, sans maximum.
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+]
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {
+        "NAME": "motsencommun.mots_de_passe.LongueurMinimale",
+        "OPTIONS": {"min_length": 16},
+    },
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+# Sessions de l'administration : 12 heures au plus. Changer de mot de passe
+# déconnecte les autres sessions (comportement de Django). Sur le serveur, les
+# cookies ne passent qu'en HTTPS.
+SESSION_COOKIE_AGE = 12 * 60 * 60
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
+# Le nom de l'émetteur affiché dans l'application de double authentification.
+OTP_TOTP_ISSUER = "Mots en commun"
 
 # Le français d'abord. L'interface existe aussi en anglais ; d'autres langues
 # s'ajoutent quand leurs traductions existent. Chaque langue est nommée dans sa

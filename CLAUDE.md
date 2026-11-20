@@ -38,7 +38,7 @@ Mots en commun is a free, self-hosted Django site where French learners and nati
 - **Only reviewed content is public:** anything that isn't `relu` or `valide` must not appear anywhere public, and its URL returns 404 to visitors.
 - **Dependencies:** add one only when it's clearly needed, and say why in the PR. Pin GitHub Actions to full commit SHAs.
 - **The real server:** write the deployment scripts and test them locally (a throwaway VM or container). **Never** connect to, deploy to, or change the real server, DNS, Scaleway or any account. The owner runs those steps.
-- **Seed data:** the archive in `donnees/import/donnees-initiales.zip` was drafted by AI and may contain errors. It is imported with `statut = brouillon` and is never treated as reviewed. Keep the 82 example sentences marked as placeholders.
+- **Seed data:** the archive in `donnees/import/donnees-initiales.zip` was drafted by AI and may contain errors. It is test data only: imported with `statut = brouillon`, every imported record marked with the read-only `genere_par_ia` flag, and never part of the live site, which is deployed from an empty database without running the import.
 
 ## Milestones (phase 1)
 
