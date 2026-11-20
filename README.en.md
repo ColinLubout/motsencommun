@@ -1,0 +1,69 @@
+Translation of README.md, version 2026-11-19.
+
+# Mots en commun
+
+*French expressions, explained by the people who learn them and the people who speak them.*
+
+Translations: [Français (original)](README.md) · English
+
+**Mots en commun** ("words in common") is a free, self-hosted website where people learning French and people who have always spoken it record and look up the expressions that don't mean what their words suggest: *être en train de*, *en vouloir à quelqu'un*, *poser un lapin*… Each entry gives a plain explanation, its level, the traps it sets and example sentences. The whole list will be downloadable as structured data, so others can build learning tools on it.
+
+The project is community-run and self-funded. It has no advertising and no tracking, and it isn't a commercial venture.
+
+## Status
+
+The site is being built: this is phase 1, the basic site. It will be announced once enough entries have been reviewed to be worth visiting. The full specification is in [docs/prd.md](docs/prd.md).
+
+## Principles
+
+- **French first.** Everything the project defines is named in French: tables, fields, URLs and interface. Other languages are a separate layer that contributors add.
+- **Every alphabet.** Latin, Cyrillic and right-to-left scripts work from day one.
+- **Private by design.** No cookies on public pages, no requests to other sites, no tracking. JavaScript is only used to make the site better for readers, never to track them.
+- **Simple and fast.** Server-rendered HTML, one small stylesheet, and pages that work without JavaScript.
+- **Nothing is lost.** Every change is recorded, with who made it and when.
+
+## Licences
+
+- **The code** is under the MIT licence: see [LICENCE-CODE](LICENCE-CODE).
+- **The data** (entries, traps, examples, translations and download files) is under the [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/) licence (CC BY 4.0): see [LICENCE-DONNEES](LICENCE-DONNEES). To reuse it, credit it as *Contributeurs de Mots en commun*.
+
+## Working on the code
+
+You need [uv](https://docs.astral.sh/uv/), which installs the right Python version and the dependencies locked in `uv.lock` by itself.
+
+```sh
+uv sync              # create the project environment (.venv)
+uv run pytest        # run the tests
+uv run ruff check    # lint the code
+uv run ruff format   # format the code
+```
+
+To run the site locally, turn on development mode with the `DJANGO_DEBUG=1` variable:
+
+```sh
+export DJANGO_DEBUG=1          # in PowerShell: $env:DJANGO_DEBUG = "1"
+uv run python manage.py migrate
+uv run python manage.py createsuperuser
+uv run python manage.py runserver
+```
+
+The admin is then at <http://127.0.0.1:8000/admin/>. On the server, every setting comes from environment variables, described in [deploiement/env.exemple](deploiement/env.exemple).
+
+On Windows, if Smart App Control blocks Python, work in WSL (Windows Subsystem for Linux): the [outils/preparer-poste-windows.ps1](outils/preparer-poste-windows.ps1) script installs and sets up everything.
+
+## Contributing
+
+Code contributions are open to everyone: see [CONTRIBUTING.md](CONTRIBUTING.md) (in French). Issues and pull requests can be written in French or English.
+
+To report a security problem, don't open a public issue: follow [SECURITY.md](SECURITY.md).
+
+## Translating this README
+
+Translations of this file are welcome. A pull request adding one will be accepted if it follows these rules:
+
+- the file is named `README.<code>.md`, where `<code>` is the language's two-letter ISO 639-1 code, the same one the site uses: `README.pl.md`, `README.uk.md`
+- a regional variant uses a BCP 47 tag: `README.pt-BR.md`
+- the first line says which version of `README.md` it translates (the date on its "Version de ce texte" line), so an outdated translation is easy to spot
+- the new language is added to the list of translations at the top of `README.md` and of every translation
+
+If you change `README.md`, update its version date.

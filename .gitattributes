@@ -1,0 +1,3 @@
+# Fins de ligne LF partout, y compris sous Windows : les scripts shell du
+# déploiement et tout ce qui est lu sous Linux en ont besoin.
+* text=auto eol=lf

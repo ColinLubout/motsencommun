@@ -33,7 +33,7 @@ Mots en commun is a free, self-hosted Django site where French learners and nati
 - **Privacy:**
   - Public pages set no cookies and make no requests to any other site. No CDN, no external fonts, no analytics.
   - Nothing stores visitor IP addresses, and nothing writes access logs.
-- **JavaScript:** none on public pages, except the *Confort de lecture* switch. Every page must work with JavaScript off.
+- **JavaScript:** allowed when it makes the site better for readers (the *Confort de lecture* switch, remembering *Mon niveau*…), never to track them: no analytics, fingerprinting or beacons, and nothing that records or profiles what a reader does. Scripts are self-hosted files, never inline. Every page must still work with JavaScript off.
 - **Contributor text is never HTML:** never use `|safe`, `mark_safe` or `format_html` on contributor-written fields.
 - **Only reviewed content is public:** anything that isn't `relu` or `valide` must not appear anywhere public, and its URL returns 404 to visitors.
 - **Dependencies:** add one only when it's clearly needed, and say why in the PR. Pin GitHub Actions to full commit SHAs.

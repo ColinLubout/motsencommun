@@ -50,7 +50,7 @@ Learners keep stumbling on phrases where every word is familiar but the meaning 
 1. **French first.** Everything the project defines is named in French: models, tables, fields, URLs, codes and interface. Only Django's own reserved words stay in English. Identifiers use ASCII without accents; accents belong in content and labels.
 2. **Other languages are contributed, not built in.** The core holds French only. Translations are a separate layer, each with its own contributor and review.
 3. **Every alphabet works.** Latin, Cyrillic and right-to-left scripts work from day one.
-4. **Private by design.** No cookies on public pages, no third-party requests, no tracking.
+4. **Private by design.** No cookies on public pages, no third-party requests, no tracking. JavaScript is welcome where it makes the site better for readers, never to track them.
 5. **Simple and fast.** Server-rendered HTML, one small stylesheet, and pages that work without JavaScript.
 6. **Nothing is lost.** Every change is recorded with who made it and when, and kept forever.
 
@@ -131,7 +131,7 @@ Plain and calm, like a well-set dictionary page: the words are the design.
   - italics and justified text are turned off
   - the background is a soft cream, with an equivalent in dark mode
 
-  Research finds that the spacing does most of the work, not the letter shapes, which is why the mode changes both. The OpenDyslexic file downloads only when the mode is first switched on, so nobody else pays for it. The choice is remembered in the browser's `localStorage`: it's never sent to the server and it isn't a cookie. This switch is the one piece of JavaScript on the site; without JavaScript it's simply hidden.
+  Research finds that the spacing does most of the work, not the letter shapes, which is why the mode changes both. The OpenDyslexic file downloads only when the mode is first switched on, so nobody else pays for it. The choice is remembered in the browser's `localStorage`: it's never sent to the server and it isn't a cookie. The switch needs JavaScript; without it, the switch is simply hidden.
 - **Spacing must never break the layout.** Pages must still work when readers apply their own spacing through browser extensions (WCAG 2.2 success criterion 1.4.12, Text Spacing).
 - **Colour:** near-black text on off-white, and one deep blue accent colour for links and level labels, adjusted to pass contrast checks in both light and dark mode. Severity is shown with words and a shape as well as colour, never by colour alone.
 - **Highlights:** `<mark>` in a soft colour that stays readable when printed in black and white.
@@ -213,7 +213,7 @@ The Django project is `motsencommun` and holds one app, `lexique`. Every model g
 These tables are named now but not built in phase 1:
 
 - **`Illustration` (phase 3):** `entree`, `image`, `texte_alternatif`, `credit`, `licence`, common fields.
-- **`Enregistrement` (phase 4):** `exemple`, `fichier_audio`, `locuteur`, `region_accent`, `consentement_le`, `retire_le`, `licence`, common fields. Decided 19 November 2026: recordings are made on the site itself, not through Lingua Libre (whose CC BY-SA licence, Wikimedia Commons hosting and uncertain funding don't fit). A logged-in contributor records in the browser on the editing page, the only other place besides the level checker where JavaScript is allowed. Audio is stored on our server and licensed CC BY 4.0, accepted at the moment of recording. A voice is personal data, so a speaker can withdraw a recording at any time (`retire_le`), and it then leaves the site and future downloads. A recording appears only once reviewed. Formats, size limits and the review steps are settled at the phase 4 gate.
+- **`Enregistrement` (phase 4):** `exemple`, `fichier_audio`, `locuteur`, `region_accent`, `consentement_le`, `retire_le`, `licence`, common fields. Decided 19 November 2026: recordings are made on the site itself, not through Lingua Libre (whose CC BY-SA licence, Wikimedia Commons hosting and uncertain funding don't fit). A logged-in contributor records in the browser on the editing page. Audio is stored on our server and licensed CC BY 4.0, accepted at the moment of recording. A voice is personal data, so a speaker can withdraw a recording at any time (`retire_le`), and it then leaves the site and future downloads. A recording appears only once reviewed. Formats, size limits and the review steps are settled at the phase 4 gate.
 
 The diagram below shows how the tables connect.
 
@@ -328,6 +328,7 @@ Ukrainian and Polish contributors are expected from the start, and right-to-left
 
 - **No cookies on public pages.** Public views must not set a session or CSRF cookie: no `{% csrf_token %}` on public templates, and no session access. Cookies appear only in the admin and, from phase 2, for logged-in contributors.
 - **No third-party requests at all:** no fonts, scripts, analytics, maps or embeds from other servers.
+- **JavaScript only for the reader's benefit** (decided 19 November 2026). Scripts may make the site better for readers, such as the reading-comfort switch or remembering *Mon niveau*, but never track them: no analytics, fingerprinting or beacons, and nothing that records or profiles what a reader does. Scripts are files on our own server, never inline, and every page still works without them.
 - **Server logs only.** Keep them short (e.g. 14 days), and never send them to a third-party service.
 - **Data collected from contributors (phase 2):** an email address for login, plus the display name they choose. Nothing else. The À propos page explains this in plain words.
 - **Strict security headers, set by Caddy:**
