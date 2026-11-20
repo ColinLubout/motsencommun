@@ -1,0 +1,1033 @@
+# Traduction anglaise de l'interface de Mots en commun.
+# Ce fichier est distribué sous la même licence que le code (MIT).
+msgid ""
+msgstr ""
+"Project-Id-Version: Mots en commun\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-21 00:33+0100\n"
+"PO-Revision-Date: 2026-11-21 00:33+0100\n"
+"Last-Translator: Contributeurs de Mots en commun\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "relecture"
+msgstr "review"
+
+msgid "Relire ce contenu"
+msgstr "Review this content"
+
+msgid ""
+"« Relu », « validé » et « refusé » viennent des relectures. Modifier le "
+"texte d'un contenu relu le renvoie en relecture."
+msgstr ""
+"“Reviewed”, “validated” and “refused” come from reviews. Editing the text of "
+"reviewed content sends it back to review."
+
+msgid "exemple"
+msgstr "example"
+
+msgid "exemples"
+msgstr "examples"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Sens, en français, par niveau"
+msgstr "Meaning, in French, by level"
+
+msgid "Suivi"
+msgstr "Tracking"
+
+msgid "Explication, en français, par niveau"
+msgstr "Explanation, in French, by level"
+
+msgid "Paire minimale"
+msgstr "Minimal pair"
+
+msgid "entrée illustrée"
+msgstr "illustrated entry"
+
+msgid "entrées illustrées"
+msgstr "illustrated entries"
+
+msgid "Lexique"
+msgstr "Lexicon"
+
+msgid "Une liste de textes est attendue."
+msgstr "A list of texts is expected."
+
+msgid "Choisissez au moins une valeur."
+msgstr "Choose at least one value."
+
+msgid "Une valeur apparaît deux fois."
+msgstr "A value appears twice."
+
+#, python-format
+msgid "Codes inconnus : %(codes)s."
+msgstr "Unknown codes: %(codes)s."
+
+msgid "généré par IA"
+msgstr "AI-generated"
+
+msgid "Donnée de départ rédigée par une IA, pour les essais seulement."
+msgstr "Seed data drafted by an AI, for testing only."
+
+msgid "créé le"
+msgstr "created on"
+
+msgid "modifié le"
+msgstr "modified on"
+
+msgid "texte modifié le"
+msgstr "text modified on"
+
+msgid "Seules les approbations postérieures comptent."
+msgstr "Only approvals given after this count."
+
+msgid "ajouté par"
+msgstr "added by"
+
+msgid "statut"
+msgstr "status"
+
+#, python-format
+msgid ""
+"« %(statut)s » ne se choisit pas : ce statut vient des relectures (une "
+"approbation pour « relu », deux pour « validé », par des personnes qui n'ont "
+"ni ajouté ni modifié ce contenu)."
+msgstr ""
+"“%(statut)s” can't be chosen: this status comes from reviews (one approval "
+"for “reviewed”, two for “validated”, by people who neither added nor edited "
+"this content)."
+
+msgid "« Refusé » vient d'une relecture qui refuse ce contenu."
+msgstr "“Refused” comes from a review that refuses this content."
+
+msgid "slug"
+msgstr "slug"
+
+msgid "nom"
+msgstr "name"
+
+msgid "thème"
+msgstr "theme"
+
+msgid "thèmes"
+msgstr "themes"
+
+msgid "langue"
+msgstr "language"
+
+msgid "traduction de thème"
+msgstr "theme translation"
+
+msgid "traductions de thèmes"
+msgstr "theme translations"
+
+msgid ""
+"Adresse permanente de la fiche, tirée de la vedette si on la laisse vide. "
+"Elle ne change plus ensuite."
+msgstr ""
+"The entry page's permanent address, taken from the headword if left empty. "
+"It never changes afterwards."
+
+msgid "vedette"
+msgstr "headword"
+
+msgid "précision"
+msgstr "qualifier"
+
+msgid "type d'entrée"
+msgstr "entry type"
+
+msgid "nature"
+msgstr "part of speech"
+
+msgid "genre"
+msgstr "gender"
+
+msgid "prononciation (API)"
+msgstr "pronunciation (IPA)"
+
+msgid "sens (A1)"
+msgstr "meaning (A1)"
+
+msgid "sens (A2)"
+msgstr "meaning (A2)"
+
+msgid "sens (B1)"
+msgstr "meaning (B1)"
+
+msgid "sens (B2)"
+msgstr "meaning (B2)"
+
+msgid "sens (C1)"
+msgstr "meaning (C1)"
+
+msgid "sens (C2)"
+msgstr "meaning (C2)"
+
+msgid "sens littéral"
+msgstr "literal meaning"
+
+msgid "niveau"
+msgstr "level"
+
+msgid "registre"
+msgstr "register"
+
+msgid "fréquence"
+msgstr "frequency"
+
+msgid "régions"
+msgstr "regions"
+
+msgid "Aucune région cochée : partout."
+msgstr "No region ticked: everywhere."
+
+msgid "formes"
+msgstr "forms"
+
+msgid "Graphies à chercher, une par ligne : j'en ai marre, t'en as marre…"
+msgstr "Spellings to search for, one per line: j'en ai marre, t'en as marre…"
+
+msgid "liens"
+msgstr "links"
+
+msgid "texte de recherche"
+msgstr "search text"
+
+msgid "Vedette, formes et sens, sans casse ni accents, pour chercher."
+msgstr "Headword, forms and meanings, without case or accents, for searching."
+
+msgid "clé de tri"
+msgstr "sort key"
+
+msgid "Vedette puis précision, dans l'ordre alphabétique français (ICU)."
+msgstr "Headword then qualifier, in French alphabetical order (ICU)."
+
+msgid "entrée"
+msgstr "entry"
+
+msgid "entrées"
+msgstr "entries"
+
+msgid "Écrivez le sens en français à au moins un niveau."
+msgstr "Write the meaning in French at one level at least."
+
+msgid "Chaque piège de l'entrée doit avoir une explication en français."
+msgstr "Each of the entry's traps needs an explanation in French."
+
+msgid "Indiquez un slug : la vedette n'en donne pas."
+msgstr "Enter a slug: the headword doesn't give one."
+
+msgid ""
+"Le slug d'une entrée ne change jamais, pour que les liens vers sa fiche "
+"restent valables."
+msgstr "An entry's slug never changes, so that links to its page keep working."
+
+#, python-format
+msgid ""
+"Une autre entrée a déjà le slug « %(slug)s » : remplissez la précision ou "
+"choisissez un autre slug."
+msgstr ""
+"Another entry already has the slug “%(slug)s”: fill in the qualifier or "
+"choose another slug."
+
+msgid "entrée liée"
+msgstr "linked entry"
+
+msgid "type de lien"
+msgstr "link type"
+
+msgid "lien entre entrées"
+msgstr "link between entries"
+
+msgid "liens entre entrées"
+msgstr "links between entries"
+
+msgid "Une entrée ne peut pas être liée à elle-même."
+msgstr "An entry can't be linked to itself."
+
+msgid "type de piège"
+msgstr "trap type"
+
+msgid "concerne"
+msgstr "affects"
+
+msgid "gravité"
+msgstr "severity"
+
+msgid "langue de l'apprenant"
+msgstr "learner's language"
+
+msgid "Seulement si le piège dépend de la langue de l'apprenant (faux amis…)."
+msgstr "Only if the trap depends on the learner's language (false friends…)."
+
+msgid "déclencheur"
+msgstr "trigger"
+
+msgid "explication (A1)"
+msgstr "explanation (A1)"
+
+msgid "explication (A2)"
+msgstr "explanation (A2)"
+
+msgid "explication (B1)"
+msgstr "explanation (B1)"
+
+msgid "explication (B2)"
+msgstr "explanation (B2)"
+
+msgid "explication (C1)"
+msgstr "explanation (C1)"
+
+msgid "explication (C2)"
+msgstr "explanation (C2)"
+
+msgid "incorrect"
+msgstr "incorrect"
+
+msgid "correct"
+msgstr "correct"
+
+msgid "piège"
+msgstr "trap"
+
+msgid "pièges"
+msgstr "traps"
+
+msgid "Écrivez l'explication en français à au moins un niveau."
+msgstr "Write the explanation in French at one level at least."
+
+msgid "phrase"
+msgstr "sentence"
+
+msgid "Rattachez l'exemple à au moins une entrée."
+msgstr "Link the example to at least one entry."
+
+#, python-format
+msgid ""
+"La phrase ne contient plus « %(surlignage)s », le surlignage de l'entrée "
+"« %(entree)s ». Modifiez aussi ce surlignage."
+msgstr ""
+"The sentence no longer contains “%(surlignage)s”, the highlight for the "
+"entry “%(entree)s”. Change that highlight too."
+
+msgid "surlignage"
+msgstr "highlight"
+
+msgid "Les mots exacts de la phrase à mettre en évidence."
+msgstr "The exact words of the sentence to highlight."
+
+msgid "ordre"
+msgstr "order"
+
+msgid "exemple d'une entrée"
+msgstr "entry example"
+
+msgid "exemples des entrées"
+msgstr "entry examples"
+
+#, python-format
+msgid ""
+"« %(surlignage)s » n'apparaît pas dans la phrase. Le surlignage reprend "
+"exactement des mots de la phrase, avec les mêmes majuscules et la même "
+"ponctuation."
+msgstr ""
+"“%(surlignage)s” doesn't appear in the sentence. The highlight repeats words "
+"of the sentence exactly, with the same capitals and punctuation."
+
+msgid "Le français est la langue d'origine : traduisez vers une autre langue."
+msgstr "French is the original language: translate into another language."
+
+msgid "sens"
+msgstr "meaning"
+
+msgid "Le sens sans casse, pour chercher dans cette langue."
+msgstr "The meaning without case, for searching in this language."
+
+msgid "traduction d'entrée"
+msgstr "entry translation"
+
+msgid "traductions d'entrées"
+msgstr "entry translations"
+
+msgid "Écrivez le sens dans cette langue."
+msgstr "Write the meaning in this language."
+
+msgid "explication"
+msgstr "explanation"
+
+msgid "traduction de piège"
+msgstr "trap translation"
+
+msgid "traductions de pièges"
+msgstr "trap translations"
+
+msgid "Écrivez l'explication dans cette langue."
+msgstr "Write the explanation in this language."
+
+msgid "traduction"
+msgstr "translation"
+
+msgid "traduction d'exemple"
+msgstr "example translation"
+
+msgid "traductions d'exemples"
+msgstr "example translations"
+
+msgid "Écrivez la phrase dans cette langue."
+msgstr "Write the sentence in this language."
+
+msgid "compte"
+msgstr "account"
+
+msgid "nom affiché"
+msgstr "display name"
+
+msgid "Le nom crédité publiquement, dans n'importe quelle écriture."
+msgstr "The name credited publicly, in any script."
+
+msgid "langues parlées"
+msgstr "languages spoken"
+
+msgid "licence acceptée le"
+msgstr "licence accepted on"
+
+msgid "langues relues"
+msgstr "review languages"
+
+msgid ""
+"Le contenu que cette personne peut relire : « Français » pour les entrées, "
+"pièges et exemples, une autre langue pour leurs traductions."
+msgstr ""
+"The content this person may review: “French” for entries, traps and "
+"examples, another language for their translations."
+
+msgid "contributeur"
+msgstr "contributor"
+
+msgid "contributeurs"
+msgstr "contributors"
+
+msgid "type de contenu"
+msgstr "content type"
+
+msgid "identifiant du contenu"
+msgstr "content ID"
+
+msgid "relecteur"
+msgstr "reviewer"
+
+msgid "décision"
+msgstr "decision"
+
+msgid "commentaire"
+msgstr "comment"
+
+msgid "date"
+msgstr "date"
+
+msgid "relectures"
+msgstr "reviews"
+
+msgid "Une relecture ne se modifie pas."
+msgstr "A review can't be changed."
+
+msgid "Ce contenu n'existe pas ou ne se relit pas."
+msgstr "This content doesn't exist or can't be reviewed."
+
+msgid "Vous ne pouvez pas relire un contenu que vous avez ajouté ou modifié."
+msgstr "You can't review content you added or edited."
+
+#, python-format
+msgid ""
+"Votre profil ne vous permet pas de relire le contenu en « %(langue)s ». Les "
+"langues relues se règlent dans le profil de contributeur."
+msgstr ""
+"Your profile doesn't allow you to review content in “%(langue)s”. Review "
+"languages are set in the contributor profile."
+
+msgid "Un contenu retiré ne se relit plus."
+msgstr "Withdrawn content can no longer be reviewed."
+
+msgid "Ce contenu est déjà validé."
+msgstr "This content is already validated."
+
+msgid "Vous avez déjà approuvé cette version du contenu."
+msgstr "You have already approved this version of the content."
+
+msgid "Un refus s'accompagne d'un commentaire qui l'explique."
+msgstr "A refusal needs a comment explaining it."
+
+msgid "Pages"
+msgstr "Pages"
+
+msgid "Page précédente"
+msgstr "Previous page"
+
+#, python-format
+msgid "Page %(numero)s sur %(total)s"
+msgstr "Page %(numero)s of %(total)s"
+
+msgid "Page suivante"
+msgstr "Next page"
+
+msgid "À propos"
+msgstr "About"
+
+msgid ""
+"Mots en commun est un site libre et gratuit où les personnes qui apprennent "
+"le français et celles qui le parlent recensent les expressions dont les mots "
+"sont familiers mais dont le sens ne l'est pas, et expliquent pourquoi elles "
+"trompent. Chaque entrée est relue avant d'être publiée."
+msgstr ""
+"Mots en commun is a free, open website where people learning French and "
+"people who speak it collect the expressions whose words are familiar but "
+"whose meaning isn't, and explain why they mislead. Every entry is reviewed "
+"before it's published."
+
+msgid "Contributeurs"
+msgstr "Contributors"
+
+msgid "Personne n'a encore de contenu publié."
+msgstr "Nobody has published content yet."
+
+msgid "Licence"
+msgstr "Licence"
+
+msgid ""
+"Les données sont publiées sous licence <a href=\"https://creativecommons.org/"
+"licenses/by/4.0/deed.fr\">CC BY 4.0</a>, au nom des « Contributeurs de Mots "
+"en commun ». Le code est sous licence MIT et se trouve sur <a href=\"https://"
+"github.com/ColinLubout/motsencommun\">GitHub</a>."
+msgstr ""
+"The data is published under the <a href=\"https://creativecommons.org/"
+"licenses/by/4.0/deed.en\">CC BY 4.0</a> licence, credited to “Contributeurs "
+"de Mots en commun”. The code is under the MIT licence and is on <a "
+"href=\"https://github.com/ColinLubout/motsencommun\">GitHub</a>."
+
+msgid "Vie privée"
+msgstr "Privacy"
+
+msgid ""
+"Ce site ne dépose aucun cookie et ne fait appel à aucun autre site : pas de "
+"polices venues d'ailleurs, pas de statistiques, pas de publicité. Il "
+"n'enregistre ni les pages que vous lisez, ni votre adresse IP. Lire ne "
+"demande aucun compte."
+msgstr ""
+"This site sets no cookies and calls on no other website: no fonts from "
+"elsewhere, no statistics, no advertising. It records neither the pages you "
+"read nor your IP address. Reading needs no account."
+
+msgid ""
+"Pour signaler une faille de sécurité, utilisez le <a href=\"https://"
+"github.com/ColinLubout/motsencommun/security/advisories/new\">signalement "
+"privé de GitHub</a> plutôt qu'un message public."
+msgstr ""
+"To report a security problem, use <a href=\"https://github.com/ColinLubout/"
+"motsencommun/security/advisories/new\">GitHub's private reporting</a> rather "
+"than a public message."
+
+msgid ""
+"Les expressions françaises qui ne veulent pas dire ce que disent leurs mots, "
+"expliquées par celles et ceux qui apprennent et parlent le français."
+msgstr ""
+"French expressions that don't mean what their words say, explained by people "
+"who learn and speak French."
+
+msgid "Parcourir"
+msgstr "Browse"
+
+msgid "Par niveau"
+msgstr "By level"
+
+msgid "Par type de piège"
+msgstr "By trap type"
+
+msgid "Par thème"
+msgstr "By theme"
+
+msgid "Ajoutées récemment"
+msgstr "Recently added"
+
+msgid "Aucune expression relue pour l'instant."
+msgstr "No reviewed expressions yet."
+
+msgid "Aller au contenu"
+msgstr "Skip to content"
+
+msgid "Chercher une expression"
+msgstr "Search for an expression"
+
+msgid "Chercher"
+msgstr "Search"
+
+msgid "Mon niveau"
+msgstr "My level"
+
+msgid "Celui de chaque entrée"
+msgstr "Each entry's own"
+
+msgid "Choisir"
+msgstr "Choose"
+
+msgid "Menu principal"
+msgstr "Main menu"
+
+msgid "Toutes les expressions"
+msgstr "All expressions"
+
+msgid "Télécharger"
+msgstr "Download"
+
+#, python-format
+msgid ""
+"Données sous licence <a href=\"%(adresse)s#licence\">CC BY 4.0</a>, par les "
+"<a href=\"%(adresse)s#contributeurs\">contributeurs de Mots en commun</a>. "
+"Code sous licence MIT. Ce site ne dépose aucun cookie."
+msgstr ""
+"Data under the <a href=\"%(adresse)s#licence\">CC BY 4.0</a> licence, by the "
+"<a href=\"%(adresse)s#contributeurs\">contributors to Mots en commun</a>. "
+"Code under the MIT licence. This site sets no cookies."
+
+msgid "Langue du site"
+msgstr "Site language"
+
+msgid "Pas encore relu"
+msgstr "Not yet reviewed"
+
+#, python-format
+msgid ""
+"(statut : %(statut)s). Seuls les relecteurs connectés voient cette page."
+msgstr "(status: %(statut)s). Only logged-in reviewers can see this page."
+
+#, python-format
+msgid "Niveau %(niveau)s"
+msgstr "Level %(niveau)s"
+
+msgid "Thèmes :"
+msgstr "Themes:"
+
+msgid "Sens"
+msgstr "Meaning"
+
+#, python-format
+msgid ""
+"Pas de version de niveau %(niveau_demande)s : voici la version "
+"%(niveau_du_sens)s."
+msgstr ""
+"No version for level %(niveau_demande)s: here is the level "
+"%(niveau_du_sens)s version."
+
+#, python-format
+msgid "Version de niveau %(niveau_du_sens)s."
+msgstr "Version for level %(niveau_du_sens)s."
+
+msgid "Autres versions :"
+msgstr "Other versions:"
+
+msgid "Le sens n'est pas encore écrit."
+msgstr "The meaning hasn't been written yet."
+
+msgid "Mot à mot :"
+msgstr "Word for word:"
+
+msgid "Traduction :"
+msgstr "Translation:"
+
+msgid "Pièges"
+msgstr "Traps"
+
+#, python-format
+msgid "Gravité : %(gravite)s"
+msgstr "Severity: %(gravite)s"
+
+#, python-format
+msgid "Langue de l'apprenant : %(langue)s"
+msgstr "Learner's language: %(langue)s"
+
+msgid "À éviter :"
+msgstr "Avoid:"
+
+msgid "À dire :"
+msgstr "Say:"
+
+msgid "Exemples"
+msgstr "Examples"
+
+msgid "Entrées liées"
+msgstr "Related entries"
+
+#, python-format
+msgid ""
+"Ajoutée par %(auteur)s · texte modifié le %(date)s · statut : %(statut)s"
+msgstr "Added by %(auteur)s · text changed on %(date)s · status: %(statut)s"
+
+msgid "Niveau"
+msgstr "Level"
+
+msgid "Tous"
+msgstr "All"
+
+msgid "Type de piège"
+msgstr "Trap type"
+
+msgid "Thème"
+msgstr "Theme"
+
+msgid "Registre"
+msgstr "Register"
+
+msgid "Filtrer"
+msgstr "Filter"
+
+#, python-format
+msgid "%(total)s entrée"
+msgid_plural "%(total)s entrées"
+msgstr[0] "%(total)s entry"
+msgstr[1] "%(total)s entries"
+
+#, python-format
+msgid "Recherche : %(requete)s"
+msgstr "Search: %(requete)s"
+
+msgid "Recherche"
+msgstr "Search"
+
+#, python-format
+msgid "%(total)s résultat pour « %(requete)s »"
+msgid_plural "%(total)s résultats pour « %(requete)s »"
+msgstr[0] "%(total)s result for “%(requete)s”"
+msgstr[1] "%(total)s results for “%(requete)s”"
+
+msgid "Essayez avec moins de mots, ou avec une autre forme de l'expression."
+msgstr "Try fewer words, or another form of the expression."
+
+msgid ""
+"Tapez une expression ou un mot dans le champ de recherche : les accents et "
+"les majuscules ne comptent pas."
+msgstr ""
+"Type an expression or a word in the search box: accents and capitals don't "
+"matter."
+
+msgid ""
+"Toutes les entrées relues de Mots en commun se téléchargent librement, en "
+"JSON et en CSV, avec un dictionnaire de données qui explique chaque champ et "
+"chaque code. Les fichiers sont refaits chaque nuit, et une copie datée est "
+"gardée le premier de chaque mois."
+msgstr ""
+"Every reviewed entry of Mots en commun can be downloaded freely, as JSON and "
+"CSV, with a data dictionary that explains every field and code. The files "
+"are rebuilt every night, and a dated copy is kept on the first of each month."
+
+msgid "Les fichiers ne sont pas encore disponibles."
+msgstr "The files aren't available yet."
+
+msgid ""
+"Les données sont publiées sous licence CC BY 4.0 : vous pouvez les "
+"réutiliser, les modifier et les partager, y compris pour un usage "
+"commercial, en créditant « Contributeurs de Mots en commun »."
+msgstr ""
+"The data is published under the CC BY 4.0 licence: you may reuse, change and "
+"share it, including for commercial use, as long as you credit “Contributeurs "
+"de Mots en commun”."
+
+msgid "Mot"
+msgstr "Word"
+
+msgid "Expression"
+msgstr "Expression"
+
+msgid "Construction"
+msgstr "Construction"
+
+msgid "Nom"
+msgstr "Noun"
+
+msgid "Verbe"
+msgstr "Verb"
+
+msgid "Adjectif"
+msgstr "Adjective"
+
+msgid "Adverbe"
+msgstr "Adverb"
+
+msgid "Préposition"
+msgstr "Preposition"
+
+msgid "Conjonction"
+msgstr "Conjunction"
+
+msgid "Pronom"
+msgstr "Pronoun"
+
+msgid "Déterminant"
+msgstr "Determiner"
+
+msgid "Numéral"
+msgstr "Numeral"
+
+msgid "Interjection"
+msgstr "Interjection"
+
+msgid "Locution verbale"
+msgstr "Verb phrase"
+
+msgid "Locution nominale"
+msgstr "Noun phrase"
+
+msgid "Locution adjectivale"
+msgstr "Adjective phrase"
+
+msgid "Locution adverbiale"
+msgstr "Adverb phrase"
+
+msgid "Locution prépositionnelle"
+msgstr "Prepositional phrase"
+
+msgid "Locution conjonctive"
+msgstr "Conjunctional phrase"
+
+msgid "Phrase"
+msgstr "Sentence"
+
+msgid "Masculin"
+msgstr "Masculine"
+
+msgid "Féminin"
+msgstr "Feminine"
+
+msgid "Épicène"
+msgstr "Epicene"
+
+msgid "Pluriel seulement"
+msgstr "Plural only"
+
+msgid "Soutenu"
+msgstr "Formal"
+
+msgid "Courant"
+msgstr "Standard"
+
+msgid "Familier"
+msgstr "Informal"
+
+msgid "Très familier"
+msgstr "Very informal"
+
+msgid "Vulgaire"
+msgstr "Vulgar"
+
+msgid "Argot"
+msgstr "Slang"
+
+msgid "Très courante"
+msgstr "Very common"
+
+msgid "Courante"
+msgstr "Common"
+
+msgid "Peu courante"
+msgstr "Uncommon"
+
+msgid "Rare"
+msgstr "Rare"
+
+msgid "France"
+msgstr "France"
+
+msgid "Belgique"
+msgstr "Belgium"
+
+msgid "Suisse"
+msgstr "Switzerland"
+
+msgid "Québec"
+msgstr "Quebec"
+
+msgid "Luxembourg"
+msgstr "Luxembourg"
+
+msgid "Afrique francophone"
+msgstr "French-speaking Africa"
+
+msgid "Compréhension"
+msgstr "Comprehension"
+
+msgid "Production"
+msgstr "Production"
+
+msgid "Faible"
+msgstr "Low"
+
+msgid "Moyenne"
+msgstr "Medium"
+
+msgid "Élevée"
+msgstr "High"
+
+msgid "Voir aussi"
+msgstr "See also"
+
+msgid "Contraire"
+msgstr "Opposite"
+
+msgid "À ne pas confondre"
+msgstr "Not to be confused with"
+
+msgid "Variante"
+msgstr "Variant"
+
+msgid "Brouillon"
+msgstr "Draft"
+
+msgid "En relecture"
+msgstr "In review"
+
+msgid "Relu"
+msgstr "Reviewed"
+
+msgid "Validé"
+msgstr "Validated"
+
+msgid "Refusé"
+msgstr "Refused"
+
+msgid "Retiré"
+msgstr "Withdrawn"
+
+msgid "Approuvé"
+msgstr "Approved"
+
+msgid "Sens figuré"
+msgstr "Figurative meaning"
+
+msgid "Faux ami"
+msgstr "False friend"
+
+msgid "Faux ami partiel"
+msgstr "Partial false friend"
+
+msgid "Connotation"
+msgstr "Connotation"
+
+msgid "Calque"
+msgstr "Calque"
+
+msgid "Construction inversée"
+msgstr "Reversed construction"
+
+msgid "Sens selon la position"
+msgstr "Meaning by position"
+
+msgid "Sens selon le genre"
+msgstr "Meaning by gender"
+
+msgid "Polarité"
+msgstr "Polarity"
+
+msgid "Prononciation"
+msgstr "Pronunciation"
+
+msgid "Mode imposé"
+msgstr "Required mood"
+
+msgid "Forme figée"
+msgstr "Fixed form"
+
+msgid "Confusion possible"
+msgstr "Easily confused"
+
+msgid "Forme irrégulière"
+msgstr "Irregular form"
+
+msgid "Régional"
+msgstr "Regional"
+
+msgid "Pragmatique"
+msgstr "Pragmatic"
+
+msgid "Administration"
+msgstr "Administration"
+
+msgid "Code de double authentification"
+msgstr "Two-factor code"
+
+msgid "Le code à six chiffres de votre application, ou un code de secours."
+msgstr "The six-digit code from your app, or a backup code."
+
+msgid "Trop d'essais de connexion. Réessayez dans 15 minutes."
+msgstr "Too many login attempts. Try again in 15 minutes."
+
+msgid "Saisissez votre code de double authentification."
+msgstr "Enter your two-factor code."
+
+msgid "Code invalide ou expiré. Réessayez avec un nouveau code."
+msgstr "Invalid or expired code. Try again with a new code."
+
+#, python-format
+msgid ""
+"Vérification suspendue après %(failure_count)d essais ratés : réessayez dans "
+"un instant."
+msgstr ""
+"Verification paused after %(failure_count)d failed attempts: try again in a "
+"moment."
+
+msgid "Vérification impossible pour le moment : réessayez dans un instant."
+msgstr "Verification isn't possible right now: try again in a moment."
+
+#, python-format
+msgid ""
+"Au moins %(min_length)d caractère. Le plus simple : une phrase de passe de "
+"plusieurs mots ordinaires, comme « tortue lampe cerise voyage »."
+msgid_plural ""
+"Au moins %(min_length)d caractères. Le plus simple : une phrase de passe de "
+"plusieurs mots ordinaires, comme « tortue lampe cerise voyage »."
+msgstr[0] ""
+"At least %(min_length)d character. The easiest way: a passphrase of several "
+"ordinary words, such as “tortue lampe cerise voyage”."
+msgstr[1] ""
+"At least %(min_length)d characters. The easiest way: a passphrase of several "
+"ordinary words, such as “tortue lampe cerise voyage”."
+
+msgid "Page introuvable"
+msgstr "Page not found"
+
+msgid "Cette page n'existe pas, ou n'est pas encore publiée."
+msgstr "This page doesn't exist, or isn't published yet."
+
+msgid "Voir toutes les expressions"
+msgstr "See all expressions"
+
+msgid "Une erreur s'est produite"
+msgstr "Something went wrong"
+
+msgid "Le problème est noté. Réessayez dans un moment."
+msgstr "The problem has been logged. Try again in a moment."
+
+msgid "Corrigez l'erreur ci-dessous."
+msgstr "Please correct the error below."
+
+#, python-format
+msgid ""
+"Vous êtes connecté en tant que %(username)s, mais ce compte n'a pas accès à "
+"cette page. Le compte superutilisateur doit se connecter avec son code de "
+"double authentification."
+msgstr ""
+"You're logged in as %(username)s, but this account can't access this page. "
+"The superuser account must log in with its two-factor code."
+
+msgid ""
+"Laissez vide si la double authentification n'est pas activée sur votre "
+"compte."
+msgstr "Leave empty if two-factor login isn't set up on your account."
+
+msgid "Se connecter"
+msgstr "Log in"

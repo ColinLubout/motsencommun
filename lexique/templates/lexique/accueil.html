@@ -1,0 +1,41 @@
+{% extends "lexique/base.html" %}{% load i18n lexique %}
+{% block titre_complet %}Mots en commun{% endblock %}
+{% block contenu %}
+<h1>Mots en commun</h1>
+<p class="introduction">{% blocktranslate trimmed %}
+  Les expressions françaises qui ne veulent pas dire ce que disent leurs mots,
+  expliquées par celles et ceux qui apprennent et parlent le français.
+{% endblocktranslate %}</p>
+
+<section aria-labelledby="titre-parcourir">
+  <h2 id="titre-parcourir">{% translate "Parcourir" %}</h2>
+  <h3>{% translate "Par niveau" %}</h3>
+  <ul class="raccourcis">
+    {% for niveau in niveaux %}{% url 'lexique:par_niveau' niveau|lower as adresse %}<li><a href="{% avec_niveau adresse %}">{{ niveau }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if types %}
+  <h3>{% translate "Par type de piège" %}</h3>
+  <ul class="raccourcis">
+    {% for type in types %}{% url 'lexique:par_type' type.slug as adresse %}<li><a href="{% avec_niveau adresse %}">{{ type.libelle }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if themes %}
+  <h3>{% translate "Par thème" %}</h3>
+  <ul class="raccourcis">
+    {% for choix in themes %}{% url 'lexique:par_theme' choix.theme.slug as adresse %}<li><a href="{% avec_niveau adresse %}" lang="{{ choix.langue_du_nom }}">{{ choix.nom }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+
+<section aria-labelledby="titre-recentes">
+  <h2 id="titre-recentes">{% translate "Ajoutées récemment" %}</h2>
+  {% if recentes %}
+  {% include "lexique/_resumes.html" with resumes=recentes %}
+  {% else %}
+  <p>{% translate "Aucune expression relue pour l'instant." %}</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,109 @@
+/* Mots en commun : la feuille de style unique du site.
+   Jalon 5 : la mise en page de base et l'impression. L'apparence complète
+   (Literata, mode sombre, confort de lecture) arrive au jalon 6.
+   Propriétés logiques (margin-inline-start…) : la droite-à-gauche n'a pas
+   besoin d'une seconde feuille. */
+
+html {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  font-size: 106.25%; /* 17 px */
+  line-height: 1.5;
+}
+
+body {
+  margin: 0 auto;
+  max-inline-size: 42rem;
+  padding: 1rem;
+}
+
+/* Lien d'évitement : visible seulement quand il reçoit le focus. */
+.evitement {
+  position: absolute;
+  inset-inline-start: -100vw;
+}
+.evitement:focus {
+  position: static;
+}
+
+/* Texte pour les lecteurs d'écran seulement. */
+.lecteur-ecran {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.navigation ul,
+.langues ul,
+.raccourcis,
+.etiquettes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+.entrees {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.resume {
+  margin-block-end: 1rem;
+}
+
+.resume p {
+  margin-block: 0.125rem;
+}
+
+.bandeau-brouillon,
+.pas-encore-relu {
+  border-inline-start: 0.25rem solid;
+  padding-inline-start: 0.5rem;
+}
+
+.pied {
+  margin-block-start: 3rem;
+  font-size: 0.9rem;
+}
+
+/* Impression : la liste ou la fiche seules, sans navigation ni formulaires. */
+@media print {
+  .evitement,
+  .recherche,
+  .mon-niveau,
+  .navigation,
+  .filtres,
+  .pagination,
+  .langues {
+    display: none;
+  }
+
+  body {
+    max-inline-size: none;
+    padding: 0;
+    font-size: 11pt;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .resume,
+  .piege,
+  .exemple {
+    break-inside: avoid;
+  }
+
+  /* Le surlignage reste lisible en noir et blanc. */
+  mark {
+    background: none;
+    color: inherit;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+}

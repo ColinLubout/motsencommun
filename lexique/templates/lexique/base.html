@@ -1,0 +1,58 @@
+{% load i18n static lexique %}<!doctype html>
+<html lang="{{ langue }}" dir="{{ direction_langue }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titre_complet %}{% block titre %}{% endblock %} — Mots en commun{% endblock %}</title>
+{% if apercu %}<meta name="robots" content="noindex">{% endif %}
+<link rel="stylesheet" href="{% static 'mots-en-commun.css' %}">
+</head>
+<body>
+<a class="evitement" href="#contenu">{% translate "Aller au contenu" %}</a>
+<header class="en-tete">
+  {% url 'lexique:accueil' as adresse_accueil %}
+  <p class="logo"><a href="{% avec_niveau adresse_accueil %}">Mots en commun</a></p>
+  <form class="recherche" action="{% url 'lexique:recherche' %}" method="get" role="search">
+    <label for="champ-recherche">{% translate "Chercher une expression" %}</label>
+    <input type="search" id="champ-recherche" name="q" value="{{ requete|default:'' }}">
+    {% if mon_niveau %}<input type="hidden" name="mon_niveau" value="{{ mon_niveau }}">{% endif %}
+    <button type="submit">{% translate "Chercher" %}</button>
+  </form>
+  <form class="mon-niveau" action="" method="get">
+    {% for cle, valeur in parametres_conserves %}<input type="hidden" name="{{ cle }}" value="{{ valeur }}">
+    {% endfor %}<label for="choix-niveau">{% translate "Mon niveau" %}</label>
+    <select id="choix-niveau" name="mon_niveau">
+      <option value="">{% translate "Celui de chaque entrée" %}</option>
+      {% for niveau in niveaux %}<option value="{{ niveau }}"{% if niveau == mon_niveau %} selected{% endif %}>{{ niveau }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">{% translate "Choisir" %}</button>
+  </form>
+  <nav class="navigation" aria-label="{% translate 'Menu principal' %}">
+    {% url 'lexique:liste' as adresse_liste %}{% url 'lexique:telecharger' as adresse_telecharger %}{% url 'lexique:a_propos' as adresse_a_propos %}
+    <ul>
+      <li><a href="{% avec_niveau adresse_liste %}">{% translate "Toutes les expressions" %}</a></li>
+      <li><a href="{% avec_niveau adresse_telecharger %}">{% translate "Télécharger" %}</a></li>
+      <li><a href="{% avec_niveau adresse_a_propos %}">{% translate "À propos" %}</a></li>
+    </ul>
+  </nav>
+</header>
+<main id="contenu">
+{% block contenu %}{% endblock %}
+</main>
+<footer class="pied">
+  {% url 'lexique:a_propos' as adresse_a_propos %}
+  <p class="licence">{% blocktranslate trimmed with adresse=adresse_a_propos %}
+    Données sous licence <a href="{{ adresse }}#licence">CC BY 4.0</a>,
+    par les <a href="{{ adresse }}#contributeurs">contributeurs de Mots en commun</a>.
+    Code sous licence MIT. Ce site ne dépose aucun cookie.
+  {% endblocktranslate %}</p>
+  <nav class="langues" aria-label="{% translate 'Langue du site' %}">
+    <ul>
+      {% for autre in langues_du_site %}<li><a href="{{ autre.adresse }}" hreflang="{{ autre.code }}" lang="{{ autre.code }}"{% if autre.active %} aria-current="true"{% endif %}>{{ autre.nom }}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+</footer>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{% extends "lexique/base.html" %}{% load i18n lexique %}
+{% block titre %}{% translate "Page introuvable" %}{% endblock %}
+{% block contenu %}
+<h1>{% translate "Page introuvable" %}</h1>
+<p>{% translate "Cette page n'existe pas, ou n'est pas encore publiée." %}</p>
+{% url 'lexique:liste' as adresse_liste %}
+<p><a href="{% avec_niveau adresse_liste %}">{% translate "Voir toutes les expressions" %}</a></p>
+{% endblock %}

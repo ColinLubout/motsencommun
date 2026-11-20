@@ -49,6 +49,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # La langue vient du préfixe de l'adresse ; l'administration reste en français.
+    "motsencommun.langues.LangueDeLAdresse",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -72,6 +74,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "lexique.contexte.site",
             ],
         },
     },
@@ -151,3 +154,10 @@ TIME_ZONE = "Europe/Paris"
 USE_TZ = True
 
 STATIC_URL = "static/"
+# La feuille de style unique du site (et, plus tard, ses polices).
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+#: Entrées par page dans les listes publiques.
+ENTREES_PAR_PAGE = 50
+#: Entrées récentes sur la page d'accueil.
+ENTREES_RECENTES = 10
