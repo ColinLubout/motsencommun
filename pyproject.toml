@@ -6,7 +6,7 @@ requires-python = "==3.13.*"
 dependencies = [
     "django-otp>=1.7.5",
     "django-simple-history>=3.13.0",
-    "django[argon2]>=5.2,<5.3",
+    "django[argon2]>=5.2,<6.2",
     "qrcode>=8.2",
 ]
 
