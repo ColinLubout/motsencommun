@@ -4,7 +4,10 @@ version = "0.1.0"
 description = "Les expressions françaises, expliquées par ceux qui les apprennent et ceux qui les parlent."
 requires-python = "==3.13.*"
 dependencies = [
-    "django>=5.2,<5.3",
+    "django-otp>=1.7.5",
+    "django-simple-history>=3.13.0",
+    "django[argon2]>=5.2,<5.3",
+    "qrcode>=8.2",
 ]
 
 [tool.pytest.ini_options]
@@ -24,10 +27,13 @@ extend-exclude = ["**/migrations/*"]
 # En plus des règles par défaut : tri des imports (I), erreurs probables (B), syntaxe Python
 # récente (UP), Django (DJ), sécurité (S) et dates sans fuseau horaire (DTZ).
 extend-select = ["I", "B", "UP", "DJ", "S", "DTZ"]
+# Django déclare ses réglages en attributs de classe (Meta, admin) : listes et dictionnaires
+# y sont l'usage normal, sans annotation ClassVar.
+ignore = ["RUF012"]
 
 [tool.ruff.lint.per-file-ignores]
-# Dans les tests, assert est l'outil normal.
-"**/tests/*" = ["S101"]
+# Dans les tests, assert et des mots de passe écrits en clair sont l'outil normal.
+"**/tests/*" = ["S101", "S105", "S106"]
 
 [dependency-groups]
 audit = [
