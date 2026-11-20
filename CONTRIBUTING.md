@@ -11,7 +11,7 @@ Les issues et les pull requests peuvent être écrites en français ou en anglai
 
 ## Préparer son poste
 
-Installez [uv](https://docs.astral.sh/uv/), puis, à la racine du dépôt :
+Installez [uv](https://docs.astral.sh/uv/), ICU et gettext (sous Debian ou Ubuntu : `sudo apt install libicu-dev pkg-config g++ gettext`), puis, à la racine du dépôt :
 
 ```sh
 uv sync          # installe Python et les dépendances verrouillées dans uv.lock
@@ -57,5 +57,11 @@ powershell -ExecutionPolicy Bypass -File outils\preparer-poste-windows.ps1
 
 ## Traduire
 
-- **L'interface** se traduit dans les fichiers `.po` du dossier `locale/`. Ces traductions s'ouvriront aux contributeurs en phase 2.
+- **L'interface** se traduit dans les fichiers `.po` du dossier `locale/` (l'anglais pour l'instant). Ces traductions s'ouvriront aux contributeurs en phase 2. Après avoir ajouté ou changé un texte de l'interface, mettez les catalogues à jour, puis traduisez les nouvelles entrées :
+
+  ```sh
+  DJANGO_DEBUG=1 uv run python manage.py makemessages --all --no-location --no-obsolete --ignore=.venv --ignore=donnees --ignore="*/tests/*"
+  ```
+
+  Un test vérifie que le catalogue anglais est complet, et l'intégration continue lance cette même commande avant les tests : un texte oublié fait échouer la vérification. Les fichiers `.mo` ne sont pas dans le dépôt ; les tests les recompilent, et `python manage.py compilemessages` le fait à la main.
 - **Le README** : voir la section « Traduire ce README » de [README.md](README.md). Si vous modifiez `README.md`, mettez à jour sa date de version.
