@@ -27,7 +27,10 @@ Le site est en construction : c'est la phase 1, le site de base. Il sera annonc�
 
 ## Travailler sur le code
 
-Il faut [uv](https://docs.astral.sh/uv/), qui installe lui-même la bonne version de Python et les dépendances verrouillées dans `uv.lock`.
+Il faut [uv](https://docs.astral.sh/uv/), qui installe lui-même la bonne version de Python et les dépendances verrouillées dans `uv.lock`. Il faut aussi la bibliothèque ICU, qui trie les mots selon l'alphabet de chaque langue : PyICU se compile contre elle à l'installation.
+
+- Debian ou Ubuntu : `sudo apt install libicu-dev pkg-config g++`
+- macOS : `brew install icu4c pkg-config`, puis `export PKG_CONFIG_PATH="$(brew --prefix icu4c)/lib/pkgconfig"` avant `uv sync`
 
 ```sh
 uv sync              # crée l'environnement du projet (.venv)
