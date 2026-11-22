@@ -15,6 +15,7 @@ Installez [uv](https://docs.astral.sh/uv/), ICU et gettext (sous Debian ou Ubunt
 
 ```sh
 uv sync          # installe Python et les dépendances verrouillées dans uv.lock
+uv run playwright install --with-deps chromium   # Chromium, pour les tests du navigateur
 uv run pytest    # tous les tests doivent passer
 ```
 
@@ -45,6 +46,7 @@ powershell -ExecutionPolicy Bypass -File outils\preparer-poste-windows.ps1
 - **Textes de l'interface** écrits en français et marqués pour la traduction (`gettext`, `{% translate %}`, `{% blocktranslate %}`). Dès qu'un nombre apparaît, utilisez les formes plurielles de Django : le polonais et l'ukrainien en ont plus de deux.
 - **Tests** : chaque critère vérifiable par du code devient un test (pytest-django). Un test qui échoue bloque la fusion.
 - **Migrations** : committées avec le code qui les demande, et jamais modifiées une fois publiées.
+- **Polices** : `static/polices/` est produit par [outils/preparer-polices.py](outils/preparer-polices.py), à partir de versions publiées et vérifiées par leur empreinte. On ne modifie pas ces fichiers à la main ; OpenDyslexic, dont le nom est réservé, reste tel que son autrice le publie.
 - **Dépendances** : le moins possible, toutes verrouillées dans `uv.lock` (`uv add` pour en ajouter une). Une nouvelle dépendance doit être vraiment nécessaire, et la pull request explique pourquoi. Les actions GitHub sont épinglées à un commit complet.
 
 ## Règles impératives

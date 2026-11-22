@@ -2,7 +2,7 @@
 
 *Les expressions françaises, expliquées par ceux qui les apprennent et ceux qui les parlent.*
 
-Version de ce texte : 2026-11-21 · Traductions : [English](README.en.md)
+Version de ce texte : 2026-11-22 · Traductions : [English](README.en.md)
 
 **Mots en commun** est un site gratuit et auto-hébergé où les personnes qui apprennent le français et celles qui le parlent depuis toujours notent et retrouvent les expressions qui ne veulent pas dire ce que leurs mots laissent croire : *être en train de*, *en vouloir à quelqu'un*, *poser un lapin*… Chaque entrée donne une explication simple, son niveau, les pièges qu'elle tend et des phrases d'exemple. Toute la liste pourra être téléchargée en données structurées, pour construire d'autres outils d'apprentissage.
 
@@ -34,7 +34,8 @@ Il faut [uv](https://docs.astral.sh/uv/), qui installe lui-même la bonne versio
 
 ```sh
 uv sync              # crée l'environnement du projet (.venv)
-uv run pytest        # lance les tests
+uv run playwright install --with-deps chromium   # Chromium, pour les tests du navigateur
+uv run pytest        # lance les tests (uv run pytest -m "not navigateur" : sans le navigateur, plus vite)
 uv run ruff check    # vérifie le code
 uv run ruff format   # met le code en forme
 ```
