@@ -237,6 +237,21 @@ if (Test-Path (Join-Path $Dossier "uv.lock")) {
 set -eu
 export UV_LINK_MODE=copy
 $HOME/.local/bin/uv sync --locked
+'@
+    # Les tests du navigateur (Playwright) ont besoin de Chromium et de ses bibliothèques.
+    if (Test-Path (Join-Path $Dossier ".venv\bin\playwright")) {
+        Write-Info "Chromium, pour les tests du navigateur"
+        Invoke-Debian -Root -Repertoire $Dossier -Script @'
+set -eu
+.venv/bin/playwright install-deps chromium >/dev/null
+'@
+        Invoke-Debian -Repertoire $Dossier -Script @'
+set -eu
+$HOME/.local/bin/uv run playwright install chromium
+'@
+    }
+    Invoke-Debian -Repertoire $Dossier -Script @'
+set -eu
 $HOME/.local/bin/uv run pytest -q
 '@
 } else {

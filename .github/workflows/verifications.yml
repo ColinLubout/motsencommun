@@ -32,6 +32,8 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends libicu-dev pkg-config gettext
       - name: Installer Python et les dépendances verrouillées
         run: uv sync --locked
+      - name: Installer Chromium, pour les tests du navigateur (Playwright)
+        run: uv run playwright install --with-deps chromium
       - name: Vérifier le style (ruff)
         run: |
           uv run ruff check

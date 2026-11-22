@@ -19,7 +19,15 @@ python_files = ["test_*.py"]
 addopts = ["--strict-markers", "--strict-config", "-ra"]
 # Un avertissement (par exemple une fonction de Django bientôt retirée) fait échouer les tests :
 # on le voit tout de suite plutôt qu'au moment de changer de version.
-filterwarnings = ["error"]
+filterwarnings = [
+    "error",
+    # Le serveur de test de Django (tests du navigateur) laisse ses connexions SQLite
+    # au ramasse-miettes, parfois jusqu'à la fin de la session.
+    "ignore:unclosed database in <sqlite3.Connection:ResourceWarning",
+]
+markers = [
+    "navigateur: ouvre les pages dans Chromium, par Playwright (uv run playwright install --with-deps chromium)",
+]
 
 [tool.ruff]
 # Les migrations ne sont jamais modifiées une fois publiées : on ne les reformate pas.
@@ -42,6 +50,8 @@ audit = [
     "pip-audit>=2.10.1",
 ]
 dev = [
+    "axe-playwright-python>=0.1.8",
+    "playwright>=1.65.2",
     "pytest>=9.2.0",
     "pytest-django>=4.14.0",
     "ruff>=0.17.6",

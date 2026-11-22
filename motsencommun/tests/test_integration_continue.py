@@ -48,6 +48,12 @@ def test_les_textes_de_l_interface_sont_recueillis_avant_les_tests():
     assert texte.index("makemessages --all") < texte.index("uv run pytest")
 
 
+def test_chromium_est_installe_pour_les_tests_du_navigateur():
+    texte = WORKFLOW.read_text("utf-8")
+    assert "playwright install --with-deps chromium" in texte
+    assert texte.index("playwright install") < texte.index("uv run pytest")
+
+
 def test_les_verifications_lancent_les_tests_et_pip_audit():
     texte = WORKFLOW.read_text("utf-8")
     assert "uv run pytest" in texte
