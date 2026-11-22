@@ -5,13 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block titre_complet %}{% block titre %}{% endblock %} — Mots en commun{% endblock %}</title>
 {% if apercu %}<meta name="robots" content="noindex">{% endif %}
+<link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+<link rel="preload" href="{% static 'polices/literata-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{% static 'mots-en-commun.css' %}">
+<script src="{% static 'mots-en-commun.js' %}"></script>
 </head>
 <body>
 <a class="evitement" href="#contenu">{% translate "Aller au contenu" %}</a>
 <header class="en-tete">
   {% url 'lexique:accueil' as adresse_accueil %}
   <p class="logo"><a href="{% avec_niveau adresse_accueil %}">Mots en commun</a></p>
+  <button type="button" id="bouton-confort" class="bouton-confort" aria-pressed="false" hidden>{% translate "Confort de lecture" %}</button>
   <form class="recherche" action="{% url 'lexique:recherche' %}" method="get" role="search">
     <label for="champ-recherche">{% translate "Chercher une expression" %}</label>
     <input type="search" id="champ-recherche" name="q" value="{{ requete|default:'' }}">

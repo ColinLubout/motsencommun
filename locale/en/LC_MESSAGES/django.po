@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mots en commun\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 00:33+0100\n"
+"POT-Creation-Date: 2026-11-22 16:08+0100\n"
 "PO-Revision-Date: 2026-11-21 00:33+0100\n"
 "Last-Translator: Contributeurs de Mots en commun\n"
 "Language-Team: English\n"
@@ -561,6 +561,9 @@ msgstr "No reviewed expressions yet."
 
 msgid "Aller au contenu"
 msgstr "Skip to content"
+
+msgid "Confort de lecture"
+msgstr "Reading comfort"
 
 msgid "Chercher une expression"
 msgstr "Search for an expression"
