@@ -108,10 +108,11 @@ body {
   overflow-wrap: break-word;
 }
 
+/* Les mots s'écartent nettement plus que les lettres : ils restent des mots. */
 .confort body {
   line-height: 1.8;
   letter-spacing: 0.05em;
-  word-spacing: 0.16em;
+  word-spacing: 0.3em;
 }
 
 .confort em,
@@ -356,6 +357,16 @@ button {
   background: var(--accent-fond);
   padding-inline: 0.4em;
   border-radius: 0.3em;
+}
+
+/* Literata n'a pas tout l'alphabet phonétique (ɛ, ʁ, ɥ…) : la prononciation entière
+   passe dans une police du système qui l'a, plutôt que de mêler deux polices. */
+.api {
+  font-family: "Charis SIL", "Doulos SIL", "Noto Serif", "DejaVu Serif", "Times New Roman", serif;
+}
+
+.confort .api {
+  font-family: var(--police);
 }
 
 .api,
