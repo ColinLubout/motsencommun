@@ -1,4 +1,4 @@
-Translation of README.md, version 2026-11-21.
+Translation of README.md, version 2026-11-22.
 
 # Mots en commun
 
@@ -36,7 +36,8 @@ You need [uv](https://docs.astral.sh/uv/), which installs the right Python versi
 
 ```sh
 uv sync              # create the project environment (.venv)
-uv run pytest        # run the tests
+uv run playwright install --with-deps chromium   # Chromium, for the browser tests
+uv run pytest        # run the tests (uv run pytest -m "not navigateur": without the browser, faster)
 uv run ruff check    # lint the code
 uv run ruff format   # format the code
 ```

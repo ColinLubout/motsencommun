@@ -1,19 +1,186 @@
 /* Mots en commun : la feuille de style unique du site.
-   Jalon 5 : la mise en page de base et l'impression. L'apparence complète
-   (Literata, mode sombre, confort de lecture) arrive au jalon 6.
+   Les couleurs sont des variables : clair, sombre (selon l'appareil), et le
+   confort de lecture dans chacun ; les tests vérifient leurs contrastes.
    Propriétés logiques (margin-inline-start…) : la droite-à-gauche n'a pas
    besoin d'une seconde feuille. */
 
+/* --- Polices -------------------------------------------------------------- */
+
+/* Literata (SIL OFL 1.1), découpée en latin et cyrillique : le navigateur ne
+   télécharge que le fichier dont la page a besoin. */
+@font-face {
+  font-family: "Literata";
+  src: url("polices/literata-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0000-024F, U+02BB-02DC, U+0300-0329, U+1E00-1EFF, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Literata";
+  src: url("polices/literata-cyrillique.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-052F, U+1C80-1C8A, U+20B4, U+2116, U+2DE0-2DFF, U+A640-A69F;
+}
+/* OpenDyslexic (SIL OFL 1.1) : seul le confort de lecture s'en sert, donc
+   personne d'autre ne la télécharge. */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("polices/OpenDyslexic-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("polices/OpenDyslexic-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* --- Couleurs ------------------------------------------------------------- */
+
+:root {
+  color-scheme: light dark;
+  --police: "Literata", Georgia, "Times New Roman", serif;
+  --fond: #fbfaf7;
+  --fond-encart: #f1eee6;
+  --texte: #1c1c21;
+  --texte-discret: #55565d;
+  --accent: #1c3d8f;
+  --accent-fond: #e5ebf8;
+  --surlignage: #fce7a0;
+  --bordure: #cfcbbf;
+  --alerte: #7a4100;
+  --alerte-fond: #fcefd9;
+  --gravite-faible: #2c6a3c;
+  --gravite-moyenne: #7d5000;
+  --gravite-elevee: #a0252a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fond: #16181d;
+    --fond-encart: #20232a;
+    --texte: #ececef;
+    --texte-discret: #b3b6be;
+    --accent: #a9c1ff;
+    --accent-fond: #26324f;
+    --surlignage: #5a4b10;
+    --bordure: #454953;
+    --alerte: #f4c27a;
+    --alerte-fond: #34291a;
+    --gravite-faible: #8fd3a0;
+    --gravite-moyenne: #f0c46e;
+    --gravite-elevee: #ffa0a0;
+  }
+}
+
+/* Confort de lecture : OpenDyslexic, texte plus grand, plus d'espace, fond crème. */
+:root.confort {
+  --police: "OpenDyslexic", "Literata", Georgia, sans-serif;
+  --fond: #f8efd8;
+  --fond-encart: #efe3c6;
+  font-size: 125%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.confort {
+    --fond: #1f1a12;
+    --fond-encart: #2b251a;
+  }
+}
+
+/* --- Page ----------------------------------------------------------------- */
+
 html {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  font-family: var(--police);
   font-size: 106.25%; /* 17 px */
   line-height: 1.5;
+  background: var(--fond);
+  color: var(--texte);
+  text-size-adjust: 100%;
 }
 
 body {
   margin: 0 auto;
-  max-inline-size: 42rem;
+  max-inline-size: 70ch;
   padding: 1rem;
+  overflow-wrap: break-word;
+}
+
+/* Les mots s'écartent nettement plus que les lettres : ils restent des mots. */
+.confort body {
+  line-height: 1.8;
+  letter-spacing: 0.05em;
+  word-spacing: 0.3em;
+}
+
+.confort em,
+.confort i,
+.confort .traduction {
+  font-style: normal;
+}
+
+.confort p,
+.confort li {
+  text-align: start;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-block: 1rem 0.5rem;
+}
+
+h2 {
+  font-size: 1.35rem;
+  margin-block: 2rem 0.5rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin-block: 1rem 0.25rem;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.15em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  color: var(--texte);
+  background: var(--fond);
+  border: 1px solid var(--texte-discret);
+  border-radius: 0.3em;
+  padding: 0.3em 0.6em;
+}
+
+select {
+  max-inline-size: 100%; /* un long choix, en grand et espacé, ne déborde pas */
+}
+
+button {
+  cursor: pointer;
+  color: var(--fond);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 /* Lien d'évitement : visible seulement quand il reçoit le focus. */
@@ -21,18 +188,84 @@ body {
   position: absolute;
   inset-inline-start: -100vw;
 }
+
 .evitement:focus {
   position: static;
 }
 
 /* Texte pour les lecteurs d'écran seulement. */
-.lecteur-ecran {
+.lecteur-ecran,
+.recherche label {
   position: absolute;
   inline-size: 1px;
   block-size: 1px;
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* --- En-tête et pied ------------------------------------------------------ */
+
+.en-tete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding-block-end: 0.75rem;
+  border-block-end: 1px solid var(--bordure);
+}
+
+.logo {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.logo a {
+  color: var(--texte);
+  text-decoration: none;
+}
+
+.bouton-confort {
+  margin-inline-start: auto;
+  color: var(--accent);
+  background: var(--fond);
+}
+
+.bouton-confort[aria-pressed="true"] {
+  color: var(--fond);
+  background: var(--accent);
+}
+
+.recherche {
+  display: flex;
+  flex: 1 1 100%;
+  gap: 0.5rem;
+  min-inline-size: 0; /* sinon la largeur naturelle du champ déborde d'un téléphone */
+}
+
+.recherche input {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.mon-niveau {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-inline-size: 0;
+}
+
+.navigation ul,
+.langues ul,
+.raccourcis,
+.etiquettes,
+.paire,
+.entrees,
+.contributeurs {
+  list-style: none;
+  padding-inline-start: 0;
 }
 
 .navigation ul,
@@ -42,37 +275,201 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem 1rem;
-  list-style: none;
-  padding-inline-start: 0;
-}
-
-.entrees {
-  padding-inline-start: 0;
-  list-style: none;
-}
-
-.resume {
-  margin-block-end: 1rem;
-}
-
-.resume p {
-  margin-block: 0.125rem;
-}
-
-.bandeau-brouillon,
-.pas-encore-relu {
-  border-inline-start: 0.25rem solid;
-  padding-inline-start: 0.5rem;
+  margin-block: 0.5rem;
 }
 
 .pied {
   margin-block-start: 3rem;
+  padding-block-start: 0.75rem;
+  border-block-start: 1px solid var(--bordure);
   font-size: 0.9rem;
+  color: var(--texte-discret);
 }
 
-/* Impression : la liste ou la fiche seules, sans navigation ni formulaires. */
+/* --- Listes --------------------------------------------------------------- */
+
+.filtres {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--fond-encart);
+  border-radius: 0.4rem;
+}
+
+.filtres p {
+  display: flex;
+  flex-direction: column;
+  max-inline-size: 100%;
+  margin: 0;
+}
+
+.compte {
+  color: var(--texte-discret);
+}
+
+.resume {
+  padding-block: 0.6rem;
+  border-block-end: 1px solid var(--bordure);
+}
+
+.resume p {
+  margin-block: 0.15rem;
+}
+
+.vedette {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.precision {
+  font-weight: 400;
+  color: var(--texte-discret);
+}
+
+.raccourcis a {
+  display: inline-block;
+  padding: 0.15em 0.7em;
+  border: 1px solid var(--bordure);
+  border-radius: 1em;
+  text-decoration: none;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-block: 1.5rem;
+}
+
+/* --- Fiche ---------------------------------------------------------------- */
+
+.etiquettes,
+.resume .etiquettes {
+  font-size: 0.9rem;
+  color: var(--texte-discret);
+}
+
+.niveau {
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-fond);
+  padding-inline: 0.4em;
+  border-radius: 0.3em;
+}
+
+/* Literata n'a pas tout l'alphabet phonétique (ɛ, ʁ, ɥ…) : la prononciation entière
+   passe dans une police du système qui l'a, plutôt que de mêler deux polices. */
+.api {
+  font-family: "Charis SIL", "Doulos SIL", "Noto Serif", "DejaVu Serif", "Times New Roman", serif;
+}
+
+.confort .api {
+  font-family: var(--police);
+}
+
+.api,
+.note-niveau,
+.sens-litteral,
+.traduction,
+.credit {
+  color: var(--texte-discret);
+}
+
+.traduction {
+  font-style: italic;
+}
+
+.piege {
+  margin-block: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--fond-encart);
+  border-radius: 0.4rem;
+}
+
+/* La gravité se lit en mots, et se voit aussi à sa forme (pas seulement sa couleur). */
+.gravite {
+  font-weight: 700;
+}
+
+.gravite::before {
+  margin-inline-end: 0.4em;
+  letter-spacing: 0.1em;
+}
+
+.gravite-faible {
+  color: var(--gravite-faible);
+}
+
+.gravite-faible::before {
+  content: "●○○";
+  content: "●○○" / "";
+}
+
+.gravite-moyenne {
+  color: var(--gravite-moyenne);
+}
+
+.gravite-moyenne::before {
+  content: "●●○";
+  content: "●●○" / "";
+}
+
+.gravite-elevee {
+  color: var(--gravite-elevee);
+}
+
+.gravite-elevee::before {
+  content: "●●●";
+  content: "●●●" / "";
+}
+
+.incorrect [aria-hidden="true"] {
+  color: var(--gravite-elevee);
+}
+
+.correct [aria-hidden="true"] {
+  color: var(--gravite-faible);
+}
+
+.exemple {
+  margin-block: 0.75rem;
+}
+
+.exemple p {
+  margin-block: 0.15rem;
+}
+
+mark {
+  color: var(--texte);
+  background: var(--surlignage);
+  padding-inline: 0.1em;
+  border-radius: 0.15em;
+}
+
+.bandeau-brouillon,
+.pas-encore-relu {
+  color: var(--alerte);
+  background: var(--alerte-fond);
+  border-inline-start: 0.3rem solid currentColor;
+  padding: 0.4rem 0.75rem;
+}
+
+/* --- Impression : la liste ou la fiche seules, sans navigation ni formulaires. */
+
 @media print {
+  :root,
+  :root.confort {
+    --fond: #fff;
+    --fond-encart: #fff;
+    --texte: #000;
+    --texte-discret: #333;
+    --accent: #000;
+  }
+
   .evitement,
+  .bouton-confort,
   .recherche,
   .mon-niveau,
   .navigation,
@@ -102,8 +499,7 @@ body {
   /* Le surlignage reste lisible en noir et blanc. */
   mark {
     background: none;
-    color: inherit;
-    font-weight: bold;
+    font-weight: 700;
     text-decoration: underline;
   }
 }

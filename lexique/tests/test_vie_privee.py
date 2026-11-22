@@ -72,11 +72,16 @@ def test_la_feuille_de_style_ne_fait_appel_a_aucun_autre_site():
         )
 
 
-def test_chaque_page_marche_sans_javascript(client, site_public):
-    """Pour l'instant, aucune page n'a même de script ; le jalon 6 en ajoutera, en fichier."""
+def test_le_seul_javascript_est_le_fichier_du_site(client, site_public):
+    """Aucun script écrit dans le HTML ni attribut on… : seulement le fichier du site.
+
+    Que chaque page marche sans JavaScript est vérifié dans un vrai navigateur
+    (test_navigateur.py).
+    """
     for adresse, reponse in reponses(client):
         contenu = reponse.content.decode()
-        assert "<script" not in contenu, adresse
+        scripts = re.findall(r"<script\b([^>]*)>(.*?)</script>", contenu, re.DOTALL)
+        assert scripts == [(' src="/static/mots-en-commun.js"', "")], adresse
         assert not re.search(r"<[^>]+\son[a-z]+=", contenu, re.IGNORECASE), adresse
 
 

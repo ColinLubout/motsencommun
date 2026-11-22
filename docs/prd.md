@@ -116,13 +116,13 @@ Every public URL starts with a language prefix that sets the interface language:
 - **Lists print cleanly.** A print stylesheet removes navigation and fits entries on paper, so a teacher prints straight from the browser.
 - **Every page works without JavaScript.**
 - **Teachers can embed entries.** Each entry has an embed page (`/fr/expressions/poser-un-lapin/integrer/`): the entry alone, with no navigation, plus a small link back to the full page. Only these pages may be shown inside other sites, such as a course site or Moodle. The entry page offers a ready-to-copy `<iframe>` code.
-- **Explanations follow the reader's level.** A *Mon niveau* selector (A1–C2) sits beside the search box. Each meaning and trap explanation shows the highest version written at or below the reader's level, and the lowest available version if none is. When the reader hasn't chosen a level, the entry's own level is used. The choice is a `?mon_niveau=A2` parameter in the URL, so it works without JavaScript and can be shared. Links carry it from page to page. It only chooses which version is shown and never filters a list; the list's level filter is the separate `?niveau=B1` (decided 20 November 2026). With JavaScript it's also remembered in `localStorage`, like the reading-comfort switch. A small note says which level's version is shown, with links to the others.
+- **Explanations follow the reader's level.** A *Mon niveau* selector (A1–C2) sits beside the search box. Each meaning and trap explanation shows the highest version written at or below the reader's level, and the lowest available version if none is. When the reader hasn't chosen a level, the entry's own level is used. The choice is a `?mon_niveau=A2` parameter in the URL, so it works without JavaScript and can be shared. Links carry it from page to page. It only chooses which version is shown and never filters a list; the list's level filter is the separate `?niveau=B1` (decided 20 November 2026). With JavaScript it's also remembered in `localStorage`, like the reading-comfort switch: the level chosen in the selector is remembered, and a page opened without a level reloads once with it. A shared link that carries its own level doesn't change the remembered one. A small note says which level's version is shown, with links to the others.
 
 ## Look and feel
 
 Plain and calm, like a well-set dictionary page: the words are the design.
 
-- **Type:** **Literata**, one self-hosted variable font for everything, under the SIL Open Font License, covering Latin, Latin Extended and Cyrillic. It's served as WOFF2 from our own server, cut down to just those characters, with `font-display: swap` so text appears at once in a fallback font while it loads. Scripts it doesn't cover (Arabic, Hebrew…) fall back to system fonts. Body text at least 17 px, lines no longer than about 70 characters, line height 1.5.
+- **Type:** **Literata**, one self-hosted variable font for everything, under the SIL Open Font License, covering Latin, Latin Extended and Cyrillic. It's served as WOFF2 from our own server, cut down to just those characters, with `font-display: swap` so text appears at once in a fallback font while it loads. The optical size is fixed at text size and the weight stays variable from 400 to 700, and the font is split into a Latin file (74 KB) and a Cyrillic one (33 KB): a browser downloads only the file a page needs. `outils/preparer-polices.py` rebuilds both from the published release, checked by its checksum. Scripts it doesn't cover (Arabic, Hebrew…) fall back to system fonts. Body text at least 17 px, lines no longer than about 70 characters, line height 1.5.
 - **Reading comfort mode (*Confort de lecture*):** a switch at the top of every page for readers with dyslexia, or anyone who finds dense text hard. When it's on:
   - the font becomes **OpenDyslexic** (SIL Open Font License, covers Latin and Cyrillic)
   - text is larger
@@ -131,7 +131,7 @@ Plain and calm, like a well-set dictionary page: the words are the design.
   - italics and justified text are turned off
   - the background is a soft cream, with an equivalent in dark mode
 
-  Research finds that the spacing does most of the work, not the letter shapes, which is why the mode changes both. The OpenDyslexic file downloads only when the mode is first switched on, so nobody else pays for it. The choice is remembered in the browser's `localStorage`: it's never sent to the server and it isn't a cookie. The switch needs JavaScript; without it, the switch is simply hidden.
+  Research finds that the spacing does most of the work, not the letter shapes, which is why the mode changes both. The OpenDyslexic file downloads only when the mode is first switched on, so nobody else pays for it. *OpenDyslexic* is a Reserved Font Name under its licence, and a cut-down font counts as a modified version, which may not keep that name. So its files are served exactly as the author publishes them, not subset. The choice is remembered in the browser's `localStorage`: it's never sent to the server and it isn't a cookie. The switch needs JavaScript; without it, the switch is simply hidden.
 - **Spacing must never break the layout.** Pages must still work when readers apply their own spacing through browser extensions (WCAG 2.2 success criterion 1.4.12, Text Spacing).
 - **Colour:** near-black text on off-white, and one deep blue accent colour for links and level labels, adjusted to pass contrast checks in both light and dark mode. Severity is shown with words and a shape as well as colour, never by colour alone.
 - **Highlights:** `<mark>` in a soft colour that stays readable when printed in black and white.
@@ -776,7 +776,7 @@ Phase 1 is done when every item below passes. Most are automated tests.
 - [ ] A test asserts that no public page response contains a `Set-Cookie` header.
 - [ ] A test asserts that no rendered public page references another domain.
 - [ ] An entry page weighs under 30 KB of HTML and CSS combined.
-- [ ] Pages pass an automated accessibility check (e.g. axe) with no serious issues.
+- [ ] Pages pass an automated accessibility check (e.g. axe) with no serious issues. The test suite opens the pages in headless Chromium through Playwright, a development-only dependency (decided 21 November 2026), and runs axe on each kind of page in light mode, dark mode and reading-comfort mode.
 - [ ] Responses carry the specified security headers: CSP with `default-src 'self'`, `frame-ancestors 'none'` (except embed pages), HSTS for one year, `Referrer-Policy` and `Permissions-Policy`.
 
 **Operations**

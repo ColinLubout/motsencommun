@@ -31,6 +31,13 @@ def test_le_script_installe_de_quoi_compiler_pyicu():
     assert {"libicu-dev", "pkg-config", "g++"} <= set(paquets.split())
 
 
+def test_le_script_installe_chromium_pour_les_tests_du_navigateur():
+    texte = SCRIPT.read_text("utf-8-sig")
+    assert "playwright install-deps chromium" in texte
+    assert "playwright install chromium" in texte
+    assert texte.index("playwright install chromium") < texte.index("uv run pytest -q")
+
+
 def test_le_script_installe_de_quoi_compiler_les_traductions():
     """« compilemessages » et « makemessages » ont besoin des outils GNU gettext."""
     paquets = re.search(r'paquets="([^"]+)"', SCRIPT.read_text("utf-8-sig")).group(1)
