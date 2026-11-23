@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block titre_complet %}{% block titre %}{% endblock %} — Mots en commun{% endblock %}</title>
 {% if apercu %}<meta name="robots" content="noindex">{% endif %}
+{% block reperes %}
+<meta name="description" content="{% block description %}{{ description_du_site }}{% endblock %}">
+<link rel="canonical" href="{{ adresse_canonique }}">
+{% for version in langues_alternatives %}<link rel="alternate" hreflang="{{ version.code }}" href="{{ version.adresse }}">
+{% endfor %}{% block partage %}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mots en commun">
+<meta property="og:title" content="Mots en commun">
+<meta property="og:description" content="{{ description_du_site }}">
+<meta property="og:url" content="{{ adresse_canonique }}">
+{% endblock %}
+{% endblock %}
 <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
 <link rel="preload" href="{% static 'polices/literata-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{% static 'mots-en-commun.css' %}">

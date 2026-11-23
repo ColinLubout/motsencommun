@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mots en commun\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-22 16:08+0100\n"
-"PO-Revision-Date: 2026-11-21 00:33+0100\n"
+"POT-Creation-Date: 2026-11-23 09:16+0100\n"
+"PO-Revision-Date: 2026-11-23 09:16+0100\n"
 "Last-Translator: Contributeurs de Mots en commun\n"
 "Language-Team: English\n"
 "Language: en\n"
@@ -69,6 +69,13 @@ msgstr "A value appears twice."
 #, python-format
 msgid "Codes inconnus : %(codes)s."
 msgstr "Unknown codes: %(codes)s."
+
+msgid ""
+"Les expressions françaises qui ne veulent pas dire ce que disent leurs mots, "
+"expliquées par celles et ceux qui apprennent et parlent le français."
+msgstr ""
+"French expressions that don't mean what their words say, explained by people "
+"who learn and speak French."
 
 msgid "généré par IA"
 msgstr "AI-generated"
@@ -465,143 +472,6 @@ msgstr "You have already approved this version of the content."
 msgid "Un refus s'accompagne d'un commentaire qui l'explique."
 msgstr "A refusal needs a comment explaining it."
 
-msgid "Pages"
-msgstr "Pages"
-
-msgid "Page précédente"
-msgstr "Previous page"
-
-#, python-format
-msgid "Page %(numero)s sur %(total)s"
-msgstr "Page %(numero)s of %(total)s"
-
-msgid "Page suivante"
-msgstr "Next page"
-
-msgid "À propos"
-msgstr "About"
-
-msgid ""
-"Mots en commun est un site libre et gratuit où les personnes qui apprennent "
-"le français et celles qui le parlent recensent les expressions dont les mots "
-"sont familiers mais dont le sens ne l'est pas, et expliquent pourquoi elles "
-"trompent. Chaque entrée est relue avant d'être publiée."
-msgstr ""
-"Mots en commun is a free, open website where people learning French and "
-"people who speak it collect the expressions whose words are familiar but "
-"whose meaning isn't, and explain why they mislead. Every entry is reviewed "
-"before it's published."
-
-msgid "Contributeurs"
-msgstr "Contributors"
-
-msgid "Personne n'a encore de contenu publié."
-msgstr "Nobody has published content yet."
-
-msgid "Licence"
-msgstr "Licence"
-
-msgid ""
-"Les données sont publiées sous licence <a href=\"https://creativecommons.org/"
-"licenses/by/4.0/deed.fr\">CC BY 4.0</a>, au nom des « Contributeurs de Mots "
-"en commun ». Le code est sous licence MIT et se trouve sur <a href=\"https://"
-"github.com/ColinLubout/motsencommun\">GitHub</a>."
-msgstr ""
-"The data is published under the <a href=\"https://creativecommons.org/"
-"licenses/by/4.0/deed.en\">CC BY 4.0</a> licence, credited to “Contributeurs "
-"de Mots en commun”. The code is under the MIT licence and is on <a "
-"href=\"https://github.com/ColinLubout/motsencommun\">GitHub</a>."
-
-msgid "Vie privée"
-msgstr "Privacy"
-
-msgid ""
-"Ce site ne dépose aucun cookie et ne fait appel à aucun autre site : pas de "
-"polices venues d'ailleurs, pas de statistiques, pas de publicité. Il "
-"n'enregistre ni les pages que vous lisez, ni votre adresse IP. Lire ne "
-"demande aucun compte."
-msgstr ""
-"This site sets no cookies and calls on no other website: no fonts from "
-"elsewhere, no statistics, no advertising. It records neither the pages you "
-"read nor your IP address. Reading needs no account."
-
-msgid ""
-"Pour signaler une faille de sécurité, utilisez le <a href=\"https://"
-"github.com/ColinLubout/motsencommun/security/advisories/new\">signalement "
-"privé de GitHub</a> plutôt qu'un message public."
-msgstr ""
-"To report a security problem, use <a href=\"https://github.com/ColinLubout/"
-"motsencommun/security/advisories/new\">GitHub's private reporting</a> rather "
-"than a public message."
-
-msgid ""
-"Les expressions françaises qui ne veulent pas dire ce que disent leurs mots, "
-"expliquées par celles et ceux qui apprennent et parlent le français."
-msgstr ""
-"French expressions that don't mean what their words say, explained by people "
-"who learn and speak French."
-
-msgid "Parcourir"
-msgstr "Browse"
-
-msgid "Par niveau"
-msgstr "By level"
-
-msgid "Par type de piège"
-msgstr "By trap type"
-
-msgid "Par thème"
-msgstr "By theme"
-
-msgid "Ajoutées récemment"
-msgstr "Recently added"
-
-msgid "Aucune expression relue pour l'instant."
-msgstr "No reviewed expressions yet."
-
-msgid "Aller au contenu"
-msgstr "Skip to content"
-
-msgid "Confort de lecture"
-msgstr "Reading comfort"
-
-msgid "Chercher une expression"
-msgstr "Search for an expression"
-
-msgid "Chercher"
-msgstr "Search"
-
-msgid "Mon niveau"
-msgstr "My level"
-
-msgid "Celui de chaque entrée"
-msgstr "Each entry's own"
-
-msgid "Choisir"
-msgstr "Choose"
-
-msgid "Menu principal"
-msgstr "Main menu"
-
-msgid "Toutes les expressions"
-msgstr "All expressions"
-
-msgid "Télécharger"
-msgstr "Download"
-
-#, python-format
-msgid ""
-"Données sous licence <a href=\"%(adresse)s#licence\">CC BY 4.0</a>, par les "
-"<a href=\"%(adresse)s#contributeurs\">contributeurs de Mots en commun</a>. "
-"Code sous licence MIT. Ce site ne dépose aucun cookie."
-msgstr ""
-"Data under the <a href=\"%(adresse)s#licence\">CC BY 4.0</a> licence, by the "
-"<a href=\"%(adresse)s#contributeurs\">contributors to Mots en commun</a>. "
-"Code under the MIT licence. This site sets no cookies."
-
-msgid "Langue du site"
-msgstr "Site language"
-
 msgid "Pas encore relu"
 msgstr "Not yet reviewed"
 
@@ -671,6 +541,152 @@ msgstr "Related entries"
 msgid ""
 "Ajoutée par %(auteur)s · texte modifié le %(date)s · statut : %(statut)s"
 msgstr "Added by %(auteur)s · text changed on %(date)s · status: %(statut)s"
+
+msgid "Pages"
+msgstr "Pages"
+
+msgid "Page précédente"
+msgstr "Previous page"
+
+#, python-format
+msgid "Page %(numero)s sur %(total)s"
+msgstr "Page %(numero)s of %(total)s"
+
+msgid "Page suivante"
+msgstr "Next page"
+
+msgid "À propos"
+msgstr "About"
+
+msgid ""
+"Mots en commun est un site libre et gratuit où les personnes qui apprennent "
+"le français et celles qui le parlent recensent les expressions dont les mots "
+"sont familiers mais dont le sens ne l'est pas, et expliquent pourquoi elles "
+"trompent. Chaque entrée est relue avant d'être publiée."
+msgstr ""
+"Mots en commun is a free, open website where people learning French and "
+"people who speak it collect the expressions whose words are familiar but "
+"whose meaning isn't, and explain why they mislead. Every entry is reviewed "
+"before it's published."
+
+msgid "Contributeurs"
+msgstr "Contributors"
+
+msgid "Personne n'a encore de contenu publié."
+msgstr "Nobody has published content yet."
+
+msgid "Licence"
+msgstr "Licence"
+
+msgid ""
+"Les données sont publiées sous licence <a href=\"https://creativecommons.org/"
+"licenses/by/4.0/deed.fr\">CC BY 4.0</a>, au nom des « Contributeurs de Mots "
+"en commun ». Le code est sous licence MIT et se trouve sur <a href=\"https://"
+"github.com/ColinLubout/motsencommun\">GitHub</a>."
+msgstr ""
+"The data is published under the <a href=\"https://creativecommons.org/"
+"licenses/by/4.0/deed.en\">CC BY 4.0</a> licence, credited to “Contributeurs "
+"de Mots en commun”. The code is under the MIT licence and is on <a "
+"href=\"https://github.com/ColinLubout/motsencommun\">GitHub</a>."
+
+msgid "Vie privée"
+msgstr "Privacy"
+
+msgid ""
+"Ce site ne dépose aucun cookie et ne fait appel à aucun autre site : pas de "
+"polices venues d'ailleurs, pas de statistiques, pas de publicité. Il "
+"n'enregistre ni les pages que vous lisez, ni votre adresse IP. Lire ne "
+"demande aucun compte."
+msgstr ""
+"This site sets no cookies and calls on no other website: no fonts from "
+"elsewhere, no statistics, no advertising. It records neither the pages you "
+"read nor your IP address. Reading needs no account."
+
+msgid ""
+"Pour signaler une faille de sécurité, utilisez le <a href=\"https://"
+"github.com/ColinLubout/motsencommun/security/advisories/new\">signalement "
+"privé de GitHub</a> plutôt qu'un message public."
+msgstr ""
+"To report a security problem, use <a href=\"https://github.com/ColinLubout/"
+"motsencommun/security/advisories/new\">GitHub's private reporting</a> rather "
+"than a public message."
+
+msgid "Parcourir"
+msgstr "Browse"
+
+msgid "Par niveau"
+msgstr "By level"
+
+msgid "Par type de piège"
+msgstr "By trap type"
+
+msgid "Par thème"
+msgstr "By theme"
+
+msgid "Ajoutées récemment"
+msgstr "Recently added"
+
+msgid "Aucune expression relue pour l'instant."
+msgstr "No reviewed expressions yet."
+
+msgid "Aller au contenu"
+msgstr "Skip to content"
+
+msgid "Confort de lecture"
+msgstr "Reading comfort"
+
+msgid "Chercher une expression"
+msgstr "Search for an expression"
+
+msgid "Chercher"
+msgstr "Search"
+
+msgid "Mon niveau"
+msgstr "My level"
+
+msgid "Celui de chaque entrée"
+msgstr "Each entry's own"
+
+msgid "Choisir"
+msgstr "Choose"
+
+msgid "Menu principal"
+msgstr "Main menu"
+
+msgid "Toutes les expressions"
+msgstr "All expressions"
+
+msgid "Télécharger"
+msgstr "Download"
+
+#, python-format
+msgid ""
+"Données sous licence <a href=\"%(adresse)s#licence\">CC BY 4.0</a>, par les "
+"<a href=\"%(adresse)s#contributeurs\">contributeurs de Mots en commun</a>. "
+"Code sous licence MIT. Ce site ne dépose aucun cookie."
+msgstr ""
+"Data under the <a href=\"%(adresse)s#licence\">CC BY 4.0</a> licence, by the "
+"<a href=\"%(adresse)s#contributeurs\">contributors to Mots en commun</a>. "
+"Code under the MIT licence. This site sets no cookies."
+
+msgid "Langue du site"
+msgstr "Site language"
+
+msgid "Intégrer cette fiche à un autre site"
+msgstr "Embed this entry in another site"
+
+msgid ""
+"Copiez ce code dans la page d'un cours, par exemple sur Moodle : la fiche "
+"s'y affiche seule, avec un lien vers Mots en commun."
+msgstr ""
+"Copy this code into a course page, for example on Moodle: the entry appears "
+"there on its own, with a link to Mots en commun."
+
+msgid "Voir cette fiche sur Mots en commun"
+msgstr "See this entry on Mots en commun"
+
+msgid "CC BY 4.0, contributeurs de Mots en commun"
+msgstr "CC BY 4.0, contributors to Mots en commun"
 
 msgid "Niveau"
 msgstr "Level"

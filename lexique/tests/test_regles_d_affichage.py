@@ -198,6 +198,8 @@ def test_le_texte_des_contributeurs_reste_echappe_sur_les_pages_publiques(
         "/fr/expressions/",
         "/fr/expressions/xss/",
         "/en/expressions/xss/",
+        "/fr/expressions/xss/integrer/",
+        "/en/expressions/xss/integrer/",
         "/fr/theme/piege/",
         "/en/theme/piege/",
         "/fr/type/faux-ami/",

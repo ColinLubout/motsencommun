@@ -10,6 +10,7 @@ import os
 
 import pytest
 from axe_playwright_python.sync_playwright import Axe
+from django.conf import settings
 from playwright.sync_api import sync_playwright
 
 from lexique.tests.conftest import creer_entree, rendre_public
@@ -30,7 +31,12 @@ def chromium():
     # accepter d'y servir la base de données de test.
     os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
     with sync_playwright() as playwright:
-        navigateur = playwright.chromium.launch()
+        # Un test simule un autre site par une page que Playwright fournit lui-même :
+        # Chromium, qui ne sait pas d'où elle vient, lui interdirait sinon d'afficher
+        # notre serveur de test local dans un cadre (Local Network Access).
+        navigateur = playwright.chromium.launch(
+            args=["--disable-features=LocalNetworkAccessChecks"]
+        )
         yield navigateur
         navigateur.close()
 
@@ -43,7 +49,20 @@ class Visite:
         self.contexte = chromium.new_context(**options)
         self.page = self.contexte.new_page()
         self.requetes = []
+        self.erreurs = []
         self.page.on("request", lambda requete: self.requetes.append(requete.url))
+        self.page.on(
+            "console",
+            lambda message: (
+                self.erreurs.append(message.text) if message.type == "error" else None
+            ),
+        )
+
+    def refus_de_la_politique(self):
+        """Ce que la politique de sécurité du contenu (CSP) a bloqué jusqu'ici."""
+        return [
+            erreur for erreur in self.erreurs if "Content Security Policy" in erreur
+        ]
 
     def aller(self, chemin):
         self.page.goto(self.racine + chemin)
@@ -199,6 +218,7 @@ PAGES = [
     "/fr/theme/relations/",
     FICHE,
     "/en/expressions/poser-un-lapin/",
+    FICHE + "integrer/",
     "/fr/recherche/?q=lapin",
     "/fr/telecharger/",
     "/fr/a-propos/",
@@ -271,8 +291,12 @@ def test_rien_ne_deborde_quelle_que_soit_la_largeur(visite, site_public, largeur
 def test_les_espacements_du_lecteur_ne_cassent_pas_la_page(
     visite, site_public, confort
 ):
-    """WCAG 2.2, critère 1.4.12 : les espacements imposés par le lecteur ne cassent rien."""
-    v = visite(viewport={"width": 360, "height": 800})
+    """WCAG 2.2, critère 1.4.12 : les espacements imposés par le lecteur ne cassent rien.
+
+    Une extension du navigateur n'est pas tenue par notre politique de sécurité du
+    contenu : le style ajouté ici non plus (``bypass_csp``).
+    """
+    v = visite(viewport={"width": 360, "height": 800}, bypass_csp=True)
     if confort:
         v.contexte.add_init_script(f"localStorage.setItem({CONFORT!r}, 'oui')")
     for chemin in ("/fr/expressions/", FICHE):
@@ -303,3 +327,101 @@ def test_literata_et_seulement_le_fichier_utile(visite, site_public, proprietair
     rendre_public(creer_entree(proprietaire, slug="kyiv", vedette="aller à Київ"))
     v.aller("/fr/expressions/kyiv/")
     assert v.polices_demandees("literata-cyrillique")
+
+
+# --- Sécurité du contenu (CSP) et cadres ----------------------------------------
+
+
+def test_la_politique_de_securite_ne_bloque_rien_sur_le_site(visite, site_public):
+    """Tout vient du site et rien n'est écrit dans le HTML : la CSP ne refuse rien."""
+    v = visite()
+    v.contexte.add_init_script(f"localStorage.setItem({CONFORT!r}, 'oui')")
+    for chemin in PAGES:
+        v.aller(chemin)
+    assert v.polices_demandees("OpenDyslexic"), "le confort de lecture a bien servi"
+    assert v.refus_de_la_politique() == []
+
+
+def ouvrir_l_administration(visite, client_proprietaire):
+    """Un navigateur connecté en propriétaire (double authentification passée)."""
+    v = visite()
+    v.contexte.add_cookies(
+        [
+            {
+                "name": settings.SESSION_COOKIE_NAME,
+                "value": client_proprietaire.cookies[
+                    settings.SESSION_COOKIE_NAME
+                ].value,
+                "url": v.racine,
+            }
+        ]
+    )
+    return v
+
+
+def test_la_politique_de_securite_ne_bloque_rien_dans_l_administration(
+    visite, site_public, client_proprietaire, proprietaire
+):
+    admin = f"/{settings.CHEMIN_ADMIN}"
+    entree = site_public.lapin.pk
+    contributeur = proprietaire.contributeur.pk
+    v = ouvrir_l_administration(visite, client_proprietaire)
+    for chemin in (
+        admin,
+        f"{admin}lexique/entree/",
+        f"{admin}lexique/entree/add/",
+        f"{admin}lexique/entree/{entree}/change/",
+        f"{admin}lexique/exemple/{site_public.exemple.pk}/change/",
+        f"{admin}lexique/contributeur/{contributeur}/change/",
+        f"{admin}lexique/relecture/add/",
+    ):
+        page = v.aller(chemin)
+        assert page.locator("#site-name").is_visible(), chemin
+    assert v.refus_de_la_politique() == []
+
+    deconnecte = visite()
+    deconnecte.aller(f"{admin}login/")
+    assert deconnecte.refus_de_la_politique() == []
+
+
+def test_seules_les_pages_a_integrer_s_affichent_dans_un_autre_site(
+    visite, site_public
+):
+    """Critère du PRD : les pages /integrer/ sont les seules qu'un autre site peut encadrer."""
+    v = visite()
+
+    def lecon(chemin):
+        """Ouvre une page d'un autre site qui encadre ``chemin`` de notre site.
+
+        127.0.0.1 est une autre origine que localhost, celle du site. Un seul cadre
+        par page : le serveur de test répond mal à deux pages à la fois (une seule
+        connexion SQLite en mémoire).
+        """
+        cours = v.racine.replace("localhost", "127.0.0.1") + f"/autre-site{chemin}"
+        assert cours.startswith("http://127.0.0.1:")
+        html = f'<!doctype html><title>Leçon</title><iframe src="{v.racine}{chemin}"></iframe>'
+        v.contexte.route(
+            cours,
+            lambda route: route.fulfill(
+                body=html, content_type="text/html; charset=utf-8"
+            ),
+        )
+        v.page.goto(cours)
+        v.page.wait_for_load_state("networkidle")
+        return v.page.frame_locator("iframe")
+
+    # La fiche ordinaire : le navigateur la refuse, à cause de notre politique.
+    lecon(FICHE)
+    cadre = v.page.locator("iframe").element_handle().content_frame()
+    assert "poser un lapin" not in cadre.content()
+    assert any("frame-ancestors 'none'" in refus for refus in v.refus_de_la_politique())
+
+    # La page à intégrer s'affiche.
+    integree = lecon(FICHE + "integrer/")
+    assert integree.locator("h1").inner_text() == "poser un lapin à qqn"
+
+    # Le lien vers la fiche complète s'ouvre dans un nouvel onglet, hors du cadre.
+    with v.page.expect_popup() as onglet:
+        integree.get_by_role("link", name="Voir cette fiche sur Mots en commun").click()
+    onglet.value.wait_for_url(v.racine + FICHE)
+    assert onglet.value.locator("h1").inner_text() == "poser un lapin à qqn"

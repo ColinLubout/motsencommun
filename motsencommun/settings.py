@@ -48,6 +48,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # CSP et Permissions-Policy, sur chaque page rendue par Django.
+    "motsencommun.entetes.EntetesDeSecurite",
     "django.contrib.sessions.middleware.SessionMiddleware",
     # La langue vient du préfixe de l'adresse ; l'administration reste en français.
     "motsencommun.langues.LangueDeLAdresse",
@@ -135,6 +137,24 @@ CSRF_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 
+# En-têtes de sécurité (les autres sont dans motsencommun/entetes.py).
+# Caddy reçoit les visiteurs en HTTPS et le dit à Django par X-Forwarded-Proto ;
+# Gunicorn n'écoute que sur une socket Unix, que seul Caddy atteint.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# HTTPS toujours, pendant un an, pour le domaine et ses sous-domaines (tous servis
+# par Caddy, en HTTPS automatique). Pas d'inscription sur la liste de préchargement
+# des navigateurs : elle se défait difficilement (PRD, « Privacy »).
+SECURE_HSTS_SECONDS = 365 * 24 * 60 * 60
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = False
+SECURE_REFERRER_POLICY = "no-referrer"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
+SILENCED_SYSTEM_CHECKS = [
+    # « SECURE_HSTS_PRELOAD n'est pas activé » : c'est voulu, voir plus haut.
+    "security.W021",
+]
+
 # Le nom de l'émetteur affiché dans l'application de double authentification.
 OTP_TOTP_ISSUER = "Mots en commun"
 
@@ -154,8 +174,31 @@ TIME_ZONE = "Europe/Paris"
 USE_TZ = True
 
 STATIC_URL = "static/"
+# Les fichiers que le site crée lui-même, comme les images d'aperçu des fiches.
+# Sur le serveur, Caddy les sert directement.
+MEDIA_URL = "/media/"
+MEDIA_ROOT = DOSSIER_DONNEES / "media"
 # La feuille de style unique du site (et, plus tard, ses polices).
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+#: Le dépôt du code : les failles s'y signalent en privé (SECURITY.md, security.txt).
+DEPOT_DU_CODE = "https://github.com/ColinLubout/motsencommun"
+
+#: Les robots qui collectent des textes pour entraîner une IA : robots.txt leur
+#: demande de ne pas parcourir le site, et les envoie vers la page de
+#: téléchargement, la voie prévue pour l'IA (données relues, structurées, créditées).
+ROBOTS_D_ENTRAINEMENT_IA = [
+    "GPTBot",
+    "ClaudeBot",
+    "anthropic-ai",
+    "Google-Extended",
+    "Applebot-Extended",
+    "CCBot",
+    "Bytespider",
+    "Meta-ExternalAgent",
+    "cohere-training-data-crawler",
+    "AI2Bot",
+]
 
 #: Entrées par page dans les listes publiques.
 ENTREES_PAR_PAGE = 50

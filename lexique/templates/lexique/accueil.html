@@ -2,10 +2,7 @@
 {% block titre_complet %}Mots en commun{% endblock %}
 {% block contenu %}
 <h1>Mots en commun</h1>
-<p class="introduction">{% blocktranslate trimmed %}
-  Les expressions françaises qui ne veulent pas dire ce que disent leurs mots,
-  expliquées par celles et ceux qui apprennent et parlent le français.
-{% endblocktranslate %}</p>
+<p class="introduction">{{ description_du_site }}</p>
 
 <section aria-labelledby="titre-parcourir">
   <h2 id="titre-parcourir">{% translate "Parcourir" %}</h2>

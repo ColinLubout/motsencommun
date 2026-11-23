@@ -5,14 +5,20 @@ Aucune de ces pages ne pose de cookie ni ne lit la session d'un visiteur
 protégé par CSRF : tout passe par des liens et des formulaires GET.
 """
 
+from urllib.parse import urlencode
+
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.utils import translation
 from django.utils.translation import get_language
 from django.utils.translation import gettext as _
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 from lexique import affichage as a
+from lexique import apercus, reperes
 from lexique import models as m
 from lexique import recherche as r
 from lexique import vocabulaire as v
@@ -190,7 +196,12 @@ def traduction_dans(traductions, langue):
     return next((t for t in traductions if t.langue == langue), None)
 
 
-def fiche(request, slug):
+def contenu_de_la_fiche(request, slug):
+    """Ce que montrent la fiche et sa page à intégrer : le contenu relu, au niveau du lecteur.
+
+    Un visiteur reçoit une 404 pour une entrée pas encore relue ; un relecteur
+    connecté la voit, en aperçu.
+    """
     apercu = a.voit_les_brouillons(request)
     entree = get_object_or_404(
         m.Entree.objects.select_related("ajoute_par__contributeur"), slug=slug
@@ -251,32 +262,89 @@ def fiche(request, slug):
         if cibles:
             liens.append({"type": type_lien, "libelle": libelle, "cibles": cibles})
 
-    return render(
-        request,
-        "lexique/fiche.html",
-        {
-            "entree": entree,
-            "apercu": apercu,
-            "public": a.est_public(entree),
-            "sens": sens,
-            "niveau_du_sens": niveau_du_sens,
-            "niveau_demande": niveau_demande,
-            "autres_niveaux": [n for n in versions if n != niveau_du_sens],
-            "traduction": traduction_dans(
-                a.visibles(entree.traductions.all(), apercu), langue
-            ),
-            "themes": [
-                {"theme": theme, "nom": nom, "langue_du_nom": langue_du_nom}
-                for theme in entree.themes.prefetch_related("traductions")
-                for nom, langue_du_nom in [a.nom_du_theme(theme, langue)]
-            ],
-            "pieges": pieges,
-            "exemples": exemples,
-            "liens": liens,
-            "auteur": entree.ajoute_par.contributeur.nom_affiche,
-            "regions": [v.Region(code).label for code in entree.regions],
-        },
+    return {
+        "entree": entree,
+        "apercu": apercu,
+        "public": a.est_public(entree),
+        "sens": sens,
+        "niveau_du_sens": niveau_du_sens,
+        "niveau_demande": niveau_demande,
+        "autres_niveaux": [n for n in versions if n != niveau_du_sens],
+        "traduction": traduction_dans(
+            a.visibles(entree.traductions.all(), apercu), langue
+        ),
+        "themes": [
+            {"theme": theme, "nom": nom, "langue_du_nom": langue_du_nom}
+            for theme in entree.themes.prefetch_related("traductions")
+            for nom, langue_du_nom in [a.nom_du_theme(theme, langue)]
+        ],
+        "pieges": pieges,
+        "exemples": exemples,
+        "liens": liens,
+        "auteur": entree.ajoute_par.contributeur.nom_affiche,
+        "regions": [v.Region(code).label for code in entree.regions],
+    }
+
+
+def attribut_html(texte):
+    """Le texte prêt à aller entre les guillemets d'un attribut HTML."""
+    return (
+        texte.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
     )
+
+
+def code_d_integration(request, entree, niveau):
+    """Le code <iframe> qu'un enseignant copie dans sa page (affiché comme du texte).
+
+    C'est une simple chaîne : le gabarit l'échappe encore pour l'afficher, et
+    la vedette y est déjà échappée pour l'attribut ``title`` de la page d'arrivée.
+    """
+    adresse = reverse("lexique:integrer", args=[entree.slug])
+    if niveau:
+        adresse += "?" + urlencode({"mon_niveau": niveau})
+    titre = f"{entree} — Mots en commun"
+    return (
+        f'<iframe src="{attribut_html(request.build_absolute_uri(adresse))}" '
+        f'title="{attribut_html(titre)}" width="100%" height="500" loading="lazy"></iframe>'
+    )
+
+
+def description_de_la_fiche(entree, traduction):
+    """Le sens à montrer aux moteurs et aux aperçus : la traduction relue, sinon le français.
+
+    Au niveau de l'entrée, comme sur son adresse canonique (sans « mon_niveau »).
+    """
+    if traduction and traduction.sens:
+        return traduction.sens
+    return a.version_au_niveau(entree.sens(), entree.niveau)[1]
+
+
+def fiche(request, slug):
+    contenu = contenu_de_la_fiche(request, slug)
+    entree = contenu["entree"]
+    contenu["code_integration"] = code_d_integration(
+        request, entree, contenu["niveau_demande"]
+    )
+    contenu.update(reperes.reperes_de_la_fiche(request, entree))
+    contenu["description"] = description_de_la_fiche(entree, contenu["traduction"])
+    image = apercus.adresse(entree)
+    contenu["image_d_apercu"] = request.build_absolute_uri(image) if image else None
+    return render(request, "lexique/fiche.html", contenu)
+
+
+@xframe_options_exempt
+def integrer(request, slug):
+    """La fiche seule, sans navigation : la seule page que d'autres sites peuvent encadrer.
+
+    ``xframe_options_exempt`` retire « X-Frame-Options », et la politique de
+    sécurité du contenu laisse alors tout site afficher la page (motsencommun/entetes.py).
+    """
+    contenu = contenu_de_la_fiche(request, slug)
+    contenu["integration"] = True
+    return render(request, "lexique/integrer.html", contenu)
 
 
 # --- Recherche ----------------------------------------------------------------
@@ -345,4 +413,33 @@ def a_propos(request):
         request,
         "lexique/a_propos.html",
         {"contributeurs": contributeurs_credites(get_language())},
+    )
+
+
+# --- Pour les robots ------------------------------------------------------------
+
+
+def robots_txt(request):
+    """Les moteurs de recherche sont bienvenus ; les robots d'entraînement d'IA, envoyés aux téléchargements."""
+    with translation.override(settings.LANGUAGE_CODE):
+        adresse_telecharger = request.build_absolute_uri(reverse("lexique:telecharger"))
+    return render(
+        request,
+        "lexique/robots.txt",
+        {
+            "robots_ia": settings.ROBOTS_D_ENTRAINEMENT_IA,
+            "adresse_telecharger": adresse_telecharger,
+            "adresse_plan": request.build_absolute_uri(reverse("plan_du_site")),
+        },
+        content_type="text/plain; charset=utf-8",
+    )
+
+
+def plan_du_site(request):
+    """sitemap.xml : les adresses canoniques des pages publiques, entrées relues seulement."""
+    return render(
+        request,
+        "lexique/sitemap.xml",
+        {"adresses": reperes.adresses_du_plan(request)},
+        content_type="application/xml; charset=utf-8",
     )

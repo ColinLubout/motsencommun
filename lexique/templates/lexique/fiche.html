@@ -1,110 +1,29 @@
-{% extends "lexique/base.html" %}{% load i18n lexique %}
+{% extends "lexique/base.html" %}{% load i18n %}
 {% block titre %}{{ entree.vedette }}{% endblock %}
+{% block description %}{{ description }}{% endblock %}
+{% block partage %}
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Mots en commun">
+<meta property="og:title" content="{{ entree }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:url" content="{{ adresse_canonique }}">
+{% if image_d_apercu %}<meta property="og:image" content="{{ image_d_apercu }}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ entree }} : {{ description }}">
+<meta name="twitter:card" content="summary_large_image">
+{% endif %}{% endblock %}
 {% block contenu %}
-{% if not public %}
-<p class="bandeau-brouillon" role="status">
-  <strong>{% translate "Pas encore relu" %}</strong>
-  {% blocktranslate trimmed with statut=entree.get_statut_display %}
-    (statut : {{ statut }}). Seuls les relecteurs connectés voient cette page.
-  {% endblocktranslate %}
-</p>
+{% include "lexique/_fiche.html" %}
+{% if public %}
+<details class="integrer">
+  <summary>{% translate "Intégrer cette fiche à un autre site" %}</summary>
+  <p>{% blocktranslate trimmed %}
+    Copiez ce code dans la page d'un cours, par exemple sur Moodle : la fiche
+    s'y affiche seule, avec un lien vers Mots en commun.
+  {% endblocktranslate %}</p>
+  <pre class="code-integration"><code>{{ code_integration }}</code></pre>
+</details>
 {% endif %}
-<article class="fiche">
-  <header class="fiche-en-tete">
-    <h1><span lang="fr">{{ entree.vedette }}</span>{% if entree.precision %} <span class="precision" lang="fr">({{ entree.precision }})</span>{% endif %}</h1>
-    {% if entree.api %}<p class="api">{{ entree.api }}</p>{% endif %}
-    <ul class="etiquettes">
-      <li>{{ entree.get_nature_display }}</li>
-      {% if entree.genre %}<li>{{ entree.get_genre_display }}</li>{% endif %}
-      <li class="niveau">{% blocktranslate with niveau=entree.niveau %}Niveau {{ niveau }}{% endblocktranslate %}</li>
-      <li>{{ entree.get_registre_display }}</li>
-      {% for region in regions %}<li>{{ region }}</li>{% endfor %}
-    </ul>
-    {% if themes %}
-    <p class="themes">{% translate "Thèmes :" %}
-      {% for choix in themes %}{% url 'lexique:par_theme' choix.theme.slug as adresse %}<a href="{% avec_niveau adresse %}" lang="{{ choix.langue_du_nom }}">{{ choix.nom }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
-    </p>
-    {% endif %}
-  </header>
-
-  <section class="sens" aria-labelledby="titre-sens">
-    <h2 id="titre-sens">{% translate "Sens" %}</h2>
-    {% if sens %}
-    <p lang="fr">{{ sens }}</p>
-    <p class="note-niveau">
-      {% if niveau_demande and niveau_demande != niveau_du_sens %}{% blocktranslate trimmed %}
-        Pas de version de niveau {{ niveau_demande }} : voici la version {{ niveau_du_sens }}.
-      {% endblocktranslate %}{% else %}{% blocktranslate trimmed %}
-        Version de niveau {{ niveau_du_sens }}.
-      {% endblocktranslate %}{% endif %}
-      {% if autres_niveaux %}{% translate "Autres versions :" %}
-        {% for niveau in autres_niveaux %}<a href="?mon_niveau={{ niveau }}">{{ niveau }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}
-    </p>
-    {% else %}
-    <p>{% translate "Le sens n'est pas encore écrit." %}</p>
-    {% endif %}
-    {% if entree.sens_litteral %}<p class="sens-litteral">{% translate "Mot à mot :" %} <span lang="fr">{{ entree.sens_litteral }}</span></p>{% endif %}
-    {% if traduction %}
-    <p class="traduction">{% translate "Traduction :" %} <span lang="{{ traduction.langue }}" dir="{{ traduction.langue|direction }}">{{ traduction.sens }}</span>{% if traduction.sens_litteral %} <span class="sens-litteral" lang="{{ traduction.langue }}" dir="{{ traduction.langue|direction }}">({{ traduction.sens_litteral }})</span>{% endif %}</p>
-    {% endif %}
-  </section>
-
-  {% if pieges %}
-  <section class="pieges" aria-labelledby="titre-pieges">
-    <h2 id="titre-pieges">{% translate "Pièges" %}</h2>
-    {% for element in pieges %}{% with piege=element.piege %}
-    <section class="piege">
-      <h3>{{ piege.get_type_piege_display }}</h3>
-      {% if not element.public %}<p class="pas-encore-relu">{% translate "Pas encore relu" %}</p>{% endif %}
-      <p class="gravite gravite-{{ piege.gravite }}">{% blocktranslate with gravite=piege.get_gravite_display %}Gravité : {{ gravite }}{% endblocktranslate %}</p>
-      {% if piege.langue_apprenant %}
-      <p class="langue-apprenant">{% blocktranslate with langue=piege.get_langue_apprenant_display %}Langue de l'apprenant : {{ langue }}{% endblocktranslate %}{% if piege.declencheur %} · <span lang="{{ piege.langue_apprenant }}" dir="{{ piege.langue_apprenant|direction }}">{{ piege.declencheur }}</span>{% endif %}</p>
-      {% endif %}
-      {% if element.explication %}<p lang="fr">{{ element.explication }}</p>{% endif %}
-      {% if piege.incorrect or piege.correct %}
-      <ul class="paire">
-        {% if piege.incorrect %}<li class="incorrect"><span aria-hidden="true">✗</span> <span class="lecteur-ecran">{% translate "À éviter :" %}</span> <span lang="fr">{{ piege.incorrect }}</span></li>{% endif %}
-        {% if piege.correct %}<li class="correct"><span aria-hidden="true">✓</span> <span class="lecteur-ecran">{% translate "À dire :" %}</span> <span lang="fr">{{ piege.correct }}</span></li>{% endif %}
-      </ul>
-      {% endif %}
-      {% if element.traduction %}<p class="traduction">{% translate "Traduction :" %} <span lang="{{ element.traduction.langue }}" dir="{{ element.traduction.langue|direction }}">{{ element.traduction.explication }}</span></p>{% endif %}
-    </section>
-    {% endwith %}{% endfor %}
-  </section>
-  {% endif %}
-
-  {% if exemples %}
-  <section class="exemples" aria-labelledby="titre-exemples">
-    <h2 id="titre-exemples">{% translate "Exemples" %}</h2>
-    <ul>
-      {% for exemple in exemples %}
-      <li class="exemple">
-        <p lang="fr">{{ exemple.avant }}{% if exemple.mots %}<mark>{{ exemple.mots }}</mark>{% endif %}{{ exemple.apres }}</p>
-        {% if exemple.traduction %}<p class="traduction" lang="{{ exemple.traduction.langue }}" dir="{{ exemple.traduction.langue|direction }}">{{ exemple.traduction.traduction }}</p>{% endif %}
-        {% if not exemple.public %}<p class="pas-encore-relu">{% translate "Pas encore relu" %}</p>{% endif %}
-      </li>
-      {% endfor %}
-    </ul>
-  </section>
-  {% endif %}
-
-  {% if liens %}
-  <section class="liens" aria-labelledby="titre-liens">
-    <h2 id="titre-liens">{% translate "Entrées liées" %}</h2>
-    {% for groupe in liens %}
-    <h3>{{ groupe.libelle }}</h3>
-    <ul>
-      {% for cible in groupe.cibles %}{% url 'lexique:fiche' cible.slug as adresse %}<li><a href="{% avec_niveau adresse %}" lang="fr">{{ cible }}</a></li>
-      {% endfor %}
-    </ul>
-    {% endfor %}
-  </section>
-  {% endif %}
-
-  <footer class="credit">
-    <p>{% blocktranslate trimmed with date=entree.texte_modifie_le|date:"DATE_FORMAT" statut=entree.get_statut_display %}
-      Ajoutée par {{ auteur }} · texte modifié le {{ date }} · statut : {{ statut }}
-    {% endblocktranslate %}</p>
-  </footer>
-</article>
 {% endblock %}

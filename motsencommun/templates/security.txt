@@ -1,0 +1,8 @@
+{% autoescape off %}# Mots en commun : pour signaler une faille de sécurité, en privé.
+# Les bugs ordinaires vont dans les issues publiques du dépôt.
+Contact: {{ contact }}
+Expires: {{ expiration }}
+Policy: {{ politique }}
+Preferred-Languages: fr, en
+Canonical: {{ adresse }}
+{% endautoescape %}

@@ -448,6 +448,46 @@ mark {
   border-radius: 0.15em;
 }
 
+/* --- Intégration dans un autre site ------------------------------------------ */
+
+.integrer {
+  margin-block-start: 2rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--bordure);
+  border-radius: 0.4rem;
+}
+
+.integrer summary {
+  cursor: pointer;
+  color: var(--accent);
+}
+
+.code-integration {
+  padding: 0.5rem;
+  background: var(--fond-encart);
+  border-radius: 0.3rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere; /* une longue adresse ne déborde pas d'un téléphone */
+  font-size: 0.85rem;
+}
+
+/* La page à intégrer : la fiche seule, dans le cadre d'un autre site. */
+.integration {
+  max-inline-size: none;
+}
+
+.integration h1 {
+  margin-block-start: 0;
+}
+
+.source {
+  margin-block-start: 1.5rem;
+  padding-block-start: 0.5rem;
+  border-block-start: 1px solid var(--bordure);
+  font-size: 0.9rem;
+  color: var(--texte-discret);
+}
+
 .bandeau-brouillon,
 .pas-encore-relu {
   color: var(--alerte);
@@ -475,7 +515,8 @@ mark {
   .navigation,
   .filtres,
   .pagination,
-  .langues {
+  .langues,
+  .integrer {
     display: none;
   }
 
