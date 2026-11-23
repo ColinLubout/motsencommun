@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mots en commun\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 09:16+0100\n"
-"PO-Revision-Date: 2026-11-23 09:16+0100\n"
+"POT-Creation-Date: 2026-11-23 09:56+0100\n"
+"PO-Revision-Date: 2026-11-23 09:55+0100\n"
 "Last-Translator: Contributeurs de Mots en commun\n"
 "Language-Team: English\n"
 "Language: en\n"
@@ -76,6 +76,412 @@ msgid ""
 msgstr ""
 "French expressions that don't mean what their words say, explained by people "
 "who learn and speak French."
+
+msgid ""
+"Où en est la relecture (vocabulaire statut) : relu ou valide, ou retire pour "
+"ce qui a été retiré après sa publication. Un contenu retiré garde ici sa "
+"dernière version publiée."
+msgstr ""
+"Where the review stands (statut vocabulary): relu or valide, or retire for "
+"anything withdrawn after publication. Withdrawn content keeps its last "
+"published version here."
+
+msgid "Le nom affiché de la personne qui l'a ajouté."
+msgstr "The display name of the person who added it."
+
+msgid "Les noms affichés des personnes qui l'ont approuvé."
+msgstr "The display names of the people who approved it."
+
+msgid ""
+"Date et heure de sa création et de sa dernière modification, en temps "
+"universel (ISO 8601)."
+msgstr "Date and time it was created and last changed, in UTC (ISO 8601)."
+
+msgid "Le nom du projet."
+msgstr "The project's name."
+
+msgid "Quand le fichier a été écrit, en temps universel (ISO 8601)."
+msgstr "When the file was written, in UTC (ISO 8601)."
+
+msgid ""
+"La licence des données (nom, adresse) et le crédit à donner pour les "
+"réutiliser."
+msgstr ""
+"The data licence (name, address) and the credit to give when reusing it."
+
+msgid "Le nom de ce document."
+msgstr "The name of this document."
+
+msgid ""
+"Les noms affichés de toutes les personnes qui ont ajouté ou approuvé quelque "
+"chose dans le fichier."
+msgstr ""
+"The display names of everyone who added or approved something in the file."
+
+msgid ""
+"Les thèmes des entrées : slug, nom en français, et traductions du nom par "
+"code de langue."
+msgstr ""
+"The entries' themes: slug, French name, and translations of the name by "
+"language code."
+
+msgid "Les entrées, décrites ci-dessous."
+msgstr "The entries, described below."
+
+msgid ""
+"L'identifiant permanent de l'entrée, en ASCII, tiré de la vedette. Il ne "
+"change jamais, même si la vedette est corrigée : c'est aussi l'adresse de sa "
+"fiche, `/fr/expressions/<slug>/`."
+msgstr ""
+"The entry's permanent identifier, in ASCII, taken from the headword. It "
+"never changes, even when the headword is corrected: it's also the address of "
+"its page, `/fr/expressions/<slug>/`."
+
+msgid ""
+"Le mot ou l'expression, dans sa forme de citation : « poser un lapin à qqn »."
+msgstr "The word or expression, in its citation form: “poser un lapin à qqn”."
+
+msgid ""
+"Ce qui distingue deux entrées de même vedette, comme « avant le nom ». Le "
+"plus souvent vide."
+msgstr ""
+"What tells apart two entries with the same headword, such as “avant le nom”. "
+"Usually empty."
+
+msgid "Mot, expression ou construction (vocabulaire type_entree)."
+msgstr "Word, expression or construction (type_entree vocabulary)."
+
+msgid "La nature grammaticale (vocabulaire nature)."
+msgstr "The part of speech (nature vocabulary)."
+
+msgid "Le genre d'un nom (vocabulaire genre) ; vide pour les autres entrées."
+msgstr "A noun's gender (genre vocabulary); empty for other entries."
+
+msgid "La prononciation, en alphabet phonétique international."
+msgstr "The pronunciation, in the International Phonetic Alphabet."
+
+msgid ""
+"Le sens, expliqué en français à chaque niveau du CECRL, en une à trois "
+"phrases. Tous les niveaux ne sont pas écrits : celui de l'entrée l'est "
+"d'abord."
+msgstr ""
+"The meaning, explained in French at each CEFR level, in one to three "
+"sentences. Not every level is written: the entry's own level comes first."
+
+msgid "Ce que disent les mots pris un à un, pour une expression imagée."
+msgstr "What the words say taken one by one, for an idiom."
+
+msgid "Le niveau du CECRL de l'entrée (vocabulaire niveau)."
+msgstr "The entry's CEFR level (niveau vocabulary)."
+
+msgid "Le registre de langue (vocabulaire registre)."
+msgstr "The register (registre vocabulary)."
+
+msgid "La fréquence d'emploi (vocabulaire frequence)."
+msgstr "How often it's used (frequence vocabulary)."
+
+msgid ""
+"Les régions où l'entrée s'emploie (vocabulaire region). Une liste vide veut "
+"dire : partout."
+msgstr ""
+"The regions where the entry is used (region vocabulary). An empty list means "
+"everywhere."
+
+msgid ""
+"Les slugs des thèmes de l'entrée. Leurs noms sont dans la liste themes du "
+"JSON, et leurs traductions aussi dans traductions.csv."
+msgstr ""
+"The slugs of the entry's themes. Their names are in the JSON's themes list, "
+"and their translations are also in traductions.csv."
+
+msgid ""
+"D'autres façons d'écrire l'entrée, que la recherche trouve : « j'en ai "
+"marre », « t'en as marre »…"
+msgstr ""
+"Other ways of writing the entry, which search finds: “j'en ai marre”, “t'en "
+"as marre”…"
+
+msgid ""
+"JSON seulement. Les entrées liées : type_lien (vocabulaire type_lien) et "
+"cible, le slug de l'autre entrée."
+msgstr ""
+"JSON only. Related entries: type_lien (type_lien vocabulary) and cible, the "
+"other entry's slug."
+
+msgid ""
+"CSV seulement. Les mêmes liens, une colonne par type : les slugs des entrées "
+"liées."
+msgstr ""
+"CSV only. The same links, one column per type: the slugs of the related "
+"entries."
+
+msgid "JSON seulement. Les pièges de l'entrée, décrits plus bas."
+msgstr "JSON only. The entry's traps, described below."
+
+msgid "JSON seulement. Ses phrases d'exemple, décrites plus bas."
+msgstr "JSON only. Its example sentences, described below."
+
+msgid "JSON seulement. Ses traductions relues, décrites plus bas."
+msgstr "JSON only. Its reviewed translations, described below."
+
+msgid "L'identifiant numérique du piège. Il ne change pas."
+msgstr "The trap's numeric identifier. It doesn't change."
+
+msgid "CSV seulement. Le slug de l'entrée du piège."
+msgstr "CSV only. The slug of the trap's entry."
+
+msgid "Le genre de piège (vocabulaire type_piege)."
+msgstr "The kind of trap (type_piege vocabulary)."
+
+msgid ""
+"Ce que le piège gêne : comprendre, s'exprimer, ou les deux (vocabulaire "
+"concerne)."
+msgstr ""
+"What the trap gets in the way of: understanding, expressing oneself, or both "
+"(concerne vocabulary)."
+
+msgid "À quel point l'erreur gêne (vocabulaire gravite)."
+msgstr "How much the mistake matters (gravite vocabulary)."
+
+msgid ""
+"Le code de la langue de l'apprenant quand le piège en dépend (en pour un "
+"faux ami des anglophones) ; vide quand il vaut pour tous."
+msgstr ""
+"The learner's language code when the trap depends on it (en for a false "
+"friend for English speakers); empty when it applies to everyone."
+
+msgid "Le mot de la langue de l'apprenant qui tend le piège : « actually »."
+msgstr "The word in the learner's language that sets the trap: “actually”."
+
+msgid ""
+"Pourquoi l'entrée trompe, expliqué en français à chaque niveau du CECRL."
+msgstr "Why the entry is misleading, explained in French at each CEFR level."
+
+msgid "Une paire minimale : ce qu'il ne faut pas dire, et ce qu'il faut dire."
+msgstr "A minimal pair: what not to say, and what to say."
+
+msgid "JSON seulement. Les traductions relues de l'explication."
+msgstr "JSON only. Reviewed translations of the explanation."
+
+msgid ""
+"L'identifiant numérique de la phrase. Une phrase qui illustre plusieurs "
+"entrées garde le même id partout."
+msgstr ""
+"The sentence's numeric identifier. A sentence that illustrates several "
+"entries keeps the same id everywhere."
+
+msgid ""
+"CSV seulement. Le slug de l'entrée illustrée : une phrase qui illustre deux "
+"entrées occupe deux lignes."
+msgstr ""
+"CSV only. The slug of the illustrated entry: a sentence that illustrates two "
+"entries takes two rows."
+
+msgid "La phrase, en français."
+msgstr "The sentence, in French."
+
+msgid ""
+"Les mots exacts de la phrase qui montrent l'entrée ; le site les surligne."
+msgstr ""
+"The exact words of the sentence that show the entry; the site highlights "
+"them."
+
+msgid "La place de la phrase parmi les exemples de l'entrée."
+msgstr "The sentence's position among the entry's examples."
+
+msgid "Le niveau du CECRL de la phrase entière."
+msgstr "The CEFR level of the whole sentence."
+
+msgid "JSON seulement. Les traductions relues de la phrase."
+msgstr "JSON only. Reviewed translations of the sentence."
+
+msgid ""
+"Pour une entrée : le sens dans cette langue (une seule version, pas une par "
+"niveau), et la lecture mot à mot."
+msgstr ""
+"For an entry: the meaning in that language (one version, not one per level), "
+"and the word-for-word reading."
+
+msgid "Pour un piège : l'explication dans cette langue."
+msgstr "For a trap: the explanation in that language."
+
+msgid "Pour un exemple : la phrase dans cette langue."
+msgstr "For an example: the sentence in that language."
+
+msgid "Ce qui est traduit : entree, piege, exemple ou theme."
+msgstr "What is translated: entree, piege, exemple or theme."
+
+msgid "Le slug de l'entrée ou du thème, ou l'id du piège ou de l'exemple."
+msgstr "The slug of the entry or theme, or the id of the trap or example."
+
+msgid "Le code ISO 639-1 de la langue de la traduction."
+msgstr "The ISO 639-1 code of the translation's language."
+
+msgid "Le champ traduit : sens, sens_litteral, explication, traduction ou nom."
+msgstr ""
+"The translated field: sens, sens_litteral, explication, traduction or nom."
+
+msgid "Le texte traduit."
+msgstr "The translated text."
+
+msgid ""
+"Comme pour le reste du contenu. Vides pour les noms des thèmes, que le "
+"propriétaire du site gère sans relecture."
+msgstr ""
+"As for the rest of the content. Empty for theme names, which the site's "
+"owner manages without review."
+
+msgid "Champ"
+msgstr "Field"
+
+msgid "Dictionnaire de données de Mots en commun"
+msgstr "Mots en commun data dictionary"
+
+msgid ""
+"Ce document décrit les fichiers à télécharger de Mots en commun, champ par "
+"champ et code par code. Les données sont sous licence CC BY 4.0 : pour les "
+"réutiliser, créditez-les « Contributeurs de Mots en commun »."
+msgstr ""
+"This document describes the Mots en commun download files, field by field "
+"and code by code. The data is under the CC BY 4.0 licence: to reuse it, "
+"credit it to “Contributeurs de Mots en commun”."
+
+msgid "Les fichiers"
+msgstr "The files"
+
+msgid "Fichier"
+msgstr "File"
+
+msgid "Contenu"
+msgstr "Contents"
+
+msgid ""
+"Toutes les entrées, avec leurs pièges, exemples, liens et traductions, et en "
+"tête la date, la licence et les crédits."
+msgstr ""
+"Every entry, with its traps, examples, links and translations, headed by the "
+"date, the licence and the credits."
+
+msgid "Les entrées, une par ligne."
+msgstr "The entries, one per row."
+
+msgid "Les pièges, un par ligne."
+msgstr "The traps, one per row."
+
+msgid "Les phrases d'exemple, une ligne par phrase et par entrée."
+msgstr "The example sentences, one row per sentence and entry."
+
+msgid "Les traductions relues, une ligne par texte traduit."
+msgstr "The reviewed translations, one row per translated text."
+
+msgid "Ce document."
+msgstr "This document."
+
+msgid "Règles communes"
+msgstr "General rules"
+
+msgid ""
+"Seul le contenu relu est publié : statut relu ou valide, plus retire pour ce "
+"qui a été retiré après sa publication. Les brouillons, ce qui attend sa "
+"relecture et ce qui a été refusé restent sur le serveur."
+msgstr ""
+"Only reviewed content is published: statut relu or valide, plus retire for "
+"anything withdrawn after publication. Drafts, content awaiting review and "
+"refused content stay on the server."
+
+msgid ""
+"Les noms des champs sont ceux de la base de données, en français sans "
+"accents. Les codes (niveau, registre…) ne changent jamais ; leurs libellés "
+"sont dans les vocabulaires, plus bas."
+msgstr ""
+"Field names are the database's, in French without accents. Codes (niveau, "
+"registre…) never change; their labels are in the vocabularies, below."
+
+msgid ""
+"Tout est en UTF-8. Les CSV commencent par une marque d'ordre des octets "
+"(BOM), pour que les tableurs affichent bien le cyrillique et le polonais. "
+"Leurs colonnes sont séparées par des virgules ; une liste tient dans une "
+"seule case, ses éléments séparés par une barre verticale entourée d'espaces."
+msgstr ""
+"Everything is UTF-8. The CSV files start with a byte-order mark (BOM), so "
+"spreadsheets display Cyrillic and Polish correctly. Their columns are "
+"separated by commas; a list fits in a single cell, its items separated by a "
+"vertical bar with a space on each side."
+
+msgid "Un champ vide vaut null dans le JSON, et une case vide dans les CSV."
+msgstr ""
+"An empty field is null in the JSON, and an empty cell in the CSV files."
+
+msgid ""
+"Les dates sont en temps universel, au format ISO 8601 : 2026-11-23T03:30:00Z."
+msgstr "Dates are in UTC, in ISO 8601 format: 2026-11-23T03:30:00Z."
+
+msgid ""
+"Les fichiers sont refaits chaque nuit. Le premier de chaque mois, une copie "
+"datée est gardée pour toujours, dans instantanes/AAAA-MM/ : citez-la pour "
+"renvoyer à une version précise."
+msgstr ""
+"The files are rebuilt every night. On the first of each month, a dated copy "
+"is kept permanently, in instantanes/YYYY-MM/: cite it to refer to an exact "
+"version."
+
+msgid ""
+"Seuls les noms affichés des contributeurs sont publiés : ni adresse e-mail, "
+"ni compte, ni historique des modifications."
+msgstr ""
+"Only contributors' display names are published: no email addresses, no "
+"accounts, no edit history."
+
+msgid "En-tête du JSON"
+msgstr "JSON header"
+
+msgid "Entrées"
+msgstr "Entries"
+
+msgid ""
+"Dans le JSON, chaque élément de « entrees » ; dans entrees.csv, chaque ligne."
+msgstr "In the JSON, each item of “entrees”; in entrees.csv, each row."
+
+msgid "Pièges"
+msgstr "Traps"
+
+msgid "Dans le JSON, dans « pieges » de chaque entrée ; dans pieges.csv."
+msgstr "In the JSON, in each entry's “pieges”; in pieges.csv."
+
+msgid "Exemples"
+msgstr "Examples"
+
+msgid "Dans le JSON, dans « exemples » de chaque entrée ; dans exemples.csv."
+msgstr "In the JSON, in each entry's “exemples”; in exemples.csv."
+
+msgid "Traductions"
+msgstr "Translations"
+
+msgid ""
+"Dans le JSON, « traductions » est un objet dont les clés sont des codes de "
+"langue ISO 639-1 (en, pl, uk…). Chaque traduction a ces champs :"
+msgstr ""
+"In the JSON, “traductions” is an object whose keys are ISO 639-1 language "
+"codes (en, pl, uk…). Each translation has these fields:"
+
+msgid "Dans traductions.csv, une ligne par texte traduit :"
+msgstr "In traductions.csv, one row per translated text:"
+
+msgid "Vocabulaires"
+msgstr "Vocabularies"
+
+msgid ""
+"Chaque code, avec son libellé. Les langues (langue, langue_apprenant) sont "
+"des codes ISO 639-1 à deux lettres : fr, en, pl, uk…"
+msgstr ""
+"Each code, with its label. Languages (langue, langue_apprenant) are two-"
+"letter ISO 639-1 codes: fr, en, pl, uk…"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Libellé"
+msgstr "Label"
 
 msgid "généré par IA"
 msgstr "AI-generated"
@@ -514,9 +920,6 @@ msgstr "Word for word:"
 msgid "Traduction :"
 msgstr "Translation:"
 
-msgid "Pièges"
-msgstr "Traps"
-
 #, python-format
 msgid "Gravité : %(gravite)s"
 msgstr "Severity: %(gravite)s"
@@ -530,9 +933,6 @@ msgstr "Avoid:"
 
 msgid "À dire :"
 msgstr "Say:"
-
-msgid "Exemples"
-msgstr "Examples"
 
 msgid "Entrées liées"
 msgstr "Related entries"
@@ -745,8 +1145,32 @@ msgstr ""
 "CSV, with a data dictionary that explains every field and code. The files "
 "are rebuilt every night, and a dated copy is kept on the first of each month."
 
+#, python-format
+msgid "Fichiers du %(date)s."
+msgstr "Files of %(date)s."
+
+msgid "Dictionnaire de données"
+msgstr "Data dictionary"
+
+msgid "Chaque champ et chaque code des fichiers, expliqués :"
+msgstr "Every field and code in the files, explained:"
+
 msgid "Les fichiers ne sont pas encore disponibles."
 msgstr "The files aren't available yet."
+
+msgid "Versions mensuelles"
+msgstr "Monthly versions"
+
+msgid ""
+"Le premier de chaque mois, une copie datée des fichiers est gardée pour "
+"toujours : une fiche de cours ou une étude peut citer la version exacte "
+"qu'elle a utilisée."
+msgstr ""
+"On the first of each month, a dated copy of the files is kept permanently, "
+"so a worksheet or a study can cite the exact version it used."
+
+msgid "Aucune pour l'instant : la première sera gardée le premier du mois."
+msgstr "None yet: the first will be kept on the first of the month."
 
 msgid ""
 "Les données sont publiées sous licence CC BY 4.0 : vous pouvez les "
@@ -756,6 +1180,13 @@ msgstr ""
 "The data is published under the CC BY 4.0 licence: you may reuse, change and "
 "share it, including for commercial use, as long as you credit “Contributeurs "
 "de Mots en commun”."
+
+msgid ""
+"Tout le contenu relu en un seul fichier : entrées, pièges, exemples, liens, "
+"traductions et crédits."
+msgstr ""
+"All reviewed content in a single file: entries, traps, examples, links, "
+"translations and credits."
 
 msgid "Mot"
 msgstr "Word"

@@ -8,9 +8,10 @@ HORS_DU_PROJET = [".venv", ".git", "donnees", "node_modules"]
 
 
 @pytest.fixture(autouse=True)
-def media_temporaire(settings, tmp_path):
-    """Les fichiers que crée le site (images d'aperçu) vont dans un dossier jetable."""
+def dossiers_temporaires(settings, tmp_path):
+    """Les fichiers que crée le site (images d'aperçu, téléchargements) vont dans un dossier jetable."""
     settings.MEDIA_ROOT = tmp_path / "media"
+    settings.DOSSIER_TELECHARGEMENTS = tmp_path / "telechargements"
 
 
 @pytest.fixture(scope="session", autouse=True)

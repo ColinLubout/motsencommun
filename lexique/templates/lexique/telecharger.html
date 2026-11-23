@@ -7,7 +7,38 @@
   et en CSV, avec un dictionnaire de données qui explique chaque champ et chaque code.
   Les fichiers sont refaits chaque nuit, et une copie datée est gardée le premier de chaque mois.
 {% endblocktranslate %}</p>
+
+{% if fichiers %}
+<p class="compte">{% blocktranslate trimmed with date=date_de_l_export|date:"DATE_FORMAT" %}
+  Fichiers du {{ date }}.
+{% endblocktranslate %}</p>
+<ul class="fichiers">
+  {% for fichier in fichiers %}<li><a href="{{ fichier.adresse }}">{{ fichier.nom }}</a> <span class="taille">({{ fichier.taille|filesizeformat }})</span> : {{ fichier.description }}</li>
+  {% endfor %}
+</ul>
+{% if dictionnaire %}
+<h2 id="dictionnaire">{% translate "Dictionnaire de données" %}</h2>
+<p>{% translate "Chaque champ et chaque code des fichiers, expliqués :" %}
+  <a href="{{ dictionnaire.adresse }}" hreflang="{{ dictionnaire.langue }}">{{ dictionnaire.nom }}</a></p>
+{% endif %}
+{% else %}
 <p class="a-venir">{% translate "Les fichiers ne sont pas encore disponibles." %}</p>
+{% endif %}
+
+<h2 id="instantanes">{% translate "Versions mensuelles" %}</h2>
+{% if instantanes %}
+<p>{% blocktranslate trimmed %}
+  Le premier de chaque mois, une copie datée des fichiers est gardée pour toujours :
+  une fiche de cours ou une étude peut citer la version exacte qu'elle a utilisée.
+{% endblocktranslate %}</p>
+<ul class="instantanes">
+  {% for instantane in instantanes %}<li><strong>{{ instantane.mois|date:"F Y"|capfirst }}</strong> :
+    {% for fichier in instantane.fichiers %}<a href="{{ fichier.adresse }}">{{ fichier.nom }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>{% translate "Aucune pour l'instant : la première sera gardée le premier du mois." %}</p>
+{% endif %}
 
 <h2 id="licence">{% translate "Licence" %}</h2>
 <p>{% blocktranslate trimmed %}

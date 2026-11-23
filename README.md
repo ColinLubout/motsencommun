@@ -63,6 +63,8 @@ Elles ont été rédigées par une IA et ne servent qu'aux essais : tout arrive 
 
 Quand une entrée est relue, le site dessine l'image qui accompagne ses liens partagés (Open Graph), dans `donnees/media/apercus/`. Après une modification faite hors de l'administration, `uv run python manage.py generer_apercus` remet ces images en ordre.
 
+Pour écrire les fichiers à télécharger (le contenu relu en JSON et en CSV, avec le dictionnaire de données) : `uv run python manage.py exporter`. Ils vont dans `donnees/telechargements/`, et la page Télécharger y mène. Sur le serveur, un minuteur les refait chaque nuit, et garde une copie datée le premier du mois.
+
 Sous Windows, si Smart App Control bloque Python, travaillez dans WSL (le sous-système Windows pour Linux) : le script [outils/preparer-poste-windows.ps1](outils/preparer-poste-windows.ps1) installe et prépare tout.
 
 ## Contribuer

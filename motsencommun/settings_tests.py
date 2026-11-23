@@ -16,6 +16,9 @@ VARIABLES_DES_TESTS = {
     "CHEMIN_ADMIN": "gestion-tests/",
     # Les tests utilisent une base en mémoire : rien n'est écrit dans ce dossier.
     "DOSSIER_DONNEES": str(Path(tempfile.gettempdir()) / "motsencommun-tests"),
+    "DOSSIER_TELECHARGEMENTS": str(
+        Path(tempfile.gettempdir()) / "motsencommun-tests" / "telechargements"
+    ),
 }
 os.environ.update(VARIABLES_DES_TESTS)
 

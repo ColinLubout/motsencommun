@@ -13,12 +13,12 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils import translation
-from django.utils.translation import get_language
+from django.utils.translation import get_language, gettext_lazy
 from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 
 from lexique import affichage as a
-from lexique import apercus, reperes
+from lexique import apercus, dictionnaire, exportation, reperes
 from lexique import models as m
 from lexique import recherche as r
 from lexique import vocabulaire as v
@@ -379,8 +379,77 @@ def recherche(request):
 # --- Téléchargement et à propos -----------------------------------------------
 
 
+#: Ce que contient chaque fichier, sur la page de téléchargement.
+DESCRIPTIONS_DES_FICHIERS = {
+    exportation.FICHIER_JSON: gettext_lazy(
+        "Tout le contenu relu en un seul fichier : entrées, pièges, exemples, liens, "
+        "traductions et crédits."
+    ),
+    "entrees.csv": gettext_lazy("Les entrées, une par ligne."),
+    "pieges.csv": gettext_lazy("Les pièges, un par ligne."),
+    "exemples.csv": gettext_lazy(
+        "Les phrases d'exemple, une ligne par phrase et par entrée."
+    ),
+    "traductions.csv": gettext_lazy(
+        "Les traductions relues, une ligne par texte traduit."
+    ),
+}
+
+
+def adresse_de_telechargement(*parties):
+    return settings.TELECHARGEMENTS_URL + "/".join(parties)
+
+
 def telecharger(request):
-    return render(request, "lexique/telecharger.html")
+    """Les fichiers du jour, le dictionnaire de données et les instantanés mensuels."""
+    disponibles = dict(exportation.fichiers_disponibles())
+    fichiers = [
+        {
+            "nom": nom,
+            "adresse": adresse_de_telechargement(nom),
+            "taille": disponibles[nom],
+            "description": description,
+        }
+        for nom, description in DESCRIPTIONS_DES_FICHIERS.items()
+        if nom in disponibles
+    ]
+    # Le dictionnaire dans la langue de la page, sinon en français.
+    dictionnaire_ = next(
+        (
+            {"nom": nom, "adresse": adresse_de_telechargement(nom), "langue": langue}
+            for langue, nom in (
+                (get_language(), dictionnaire.nom_du_fichier(get_language())),
+                (settings.LANGUAGE_CODE, dictionnaire.NOM_DU_FICHIER),
+            )
+            if nom in disponibles
+        ),
+        None,
+    )
+    instantanes = [
+        {
+            "mois": premier_du_mois,
+            "fichiers": [
+                {
+                    "nom": nom,
+                    "adresse": adresse_de_telechargement(
+                        exportation.DOSSIER_INSTANTANES, mois, nom
+                    ),
+                }
+                for nom in noms
+            ],
+        }
+        for premier_du_mois, mois, noms in exportation.instantanes_disponibles()
+    ]
+    return render(
+        request,
+        "lexique/telecharger.html",
+        {
+            "fichiers": fichiers,
+            "dictionnaire": dictionnaire_,
+            "date_de_l_export": exportation.date_de_l_export(),
+            "instantanes": instantanes,
+        },
+    )
 
 
 def contributeurs_credites(langue):
