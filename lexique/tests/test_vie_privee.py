@@ -17,6 +17,7 @@ ADRESSES_PUBLIQUES = [
     "/fr/expressions/poser-un-lapin/",
     "/fr/expressions/poser-un-lapin/?mon_niveau=A2",
     "/en/expressions/poser-un-lapin/",
+    "/fr/expressions/poser-un-lapin/integrer/",
     "/fr/recherche/?q=lapin",
     "/fr/telecharger/",
     "/fr/a-propos/",
@@ -75,13 +76,18 @@ def test_la_feuille_de_style_ne_fait_appel_a_aucun_autre_site():
 def test_le_seul_javascript_est_le_fichier_du_site(client, site_public):
     """Aucun script écrit dans le HTML ni attribut on… : seulement le fichier du site.
 
-    Que chaque page marche sans JavaScript est vérifié dans un vrai navigateur
-    (test_navigateur.py).
+    La page à intégrer n'a pas de script du tout. Que chaque page marche sans
+    JavaScript est vérifié dans un vrai navigateur (test_navigateur.py).
     """
     for adresse, reponse in reponses(client):
         contenu = reponse.content.decode()
         scripts = re.findall(r"<script\b([^>]*)>(.*?)</script>", contenu, re.DOTALL)
-        assert scripts == [(' src="/static/mots-en-commun.js"', "")], adresse
+        attendus = (
+            []
+            if "/integrer/" in adresse
+            else [(' src="/static/mots-en-commun.js"', "")]
+        )
+        assert scripts == attendus, adresse
         assert not re.search(r"<[^>]+\son[a-z]+=", contenu, re.IGNORECASE), adresse
 
 

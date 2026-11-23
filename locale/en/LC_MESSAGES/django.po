@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mots en commun\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-22 16:08+0100\n"
-"PO-Revision-Date: 2026-11-21 00:33+0100\n"
+"POT-Creation-Date: 2026-11-23 08:59+0100\n"
+"PO-Revision-Date: 2026-11-23 08:59+0100\n"
 "Last-Translator: Contributeurs de Mots en commun\n"
 "Language-Team: English\n"
 "Language: en\n"
@@ -465,6 +465,76 @@ msgstr "You have already approved this version of the content."
 msgid "Un refus s'accompagne d'un commentaire qui l'explique."
 msgstr "A refusal needs a comment explaining it."
 
+msgid "Pas encore relu"
+msgstr "Not yet reviewed"
+
+#, python-format
+msgid ""
+"(statut : %(statut)s). Seuls les relecteurs connectés voient cette page."
+msgstr "(status: %(statut)s). Only logged-in reviewers can see this page."
+
+#, python-format
+msgid "Niveau %(niveau)s"
+msgstr "Level %(niveau)s"
+
+msgid "Thèmes :"
+msgstr "Themes:"
+
+msgid "Sens"
+msgstr "Meaning"
+
+#, python-format
+msgid ""
+"Pas de version de niveau %(niveau_demande)s : voici la version "
+"%(niveau_du_sens)s."
+msgstr ""
+"No version for level %(niveau_demande)s: here is the level "
+"%(niveau_du_sens)s version."
+
+#, python-format
+msgid "Version de niveau %(niveau_du_sens)s."
+msgstr "Version for level %(niveau_du_sens)s."
+
+msgid "Autres versions :"
+msgstr "Other versions:"
+
+msgid "Le sens n'est pas encore écrit."
+msgstr "The meaning hasn't been written yet."
+
+msgid "Mot à mot :"
+msgstr "Word for word:"
+
+msgid "Traduction :"
+msgstr "Translation:"
+
+msgid "Pièges"
+msgstr "Traps"
+
+#, python-format
+msgid "Gravité : %(gravite)s"
+msgstr "Severity: %(gravite)s"
+
+#, python-format
+msgid "Langue de l'apprenant : %(langue)s"
+msgstr "Learner's language: %(langue)s"
+
+msgid "À éviter :"
+msgstr "Avoid:"
+
+msgid "À dire :"
+msgstr "Say:"
+
+msgid "Exemples"
+msgstr "Examples"
+
+msgid "Entrées liées"
+msgstr "Related entries"
+
+#, python-format
+msgid ""
+"Ajoutée par %(auteur)s · texte modifié le %(date)s · statut : %(statut)s"
+msgstr "Added by %(auteur)s · text changed on %(date)s · status: %(statut)s"
+
 msgid "Pages"
 msgstr "Pages"
 
@@ -602,75 +672,21 @@ msgstr ""
 msgid "Langue du site"
 msgstr "Site language"
 
-msgid "Pas encore relu"
-msgstr "Not yet reviewed"
+msgid "Intégrer cette fiche à un autre site"
+msgstr "Embed this entry in another site"
 
-#, python-format
 msgid ""
-"(statut : %(statut)s). Seuls les relecteurs connectés voient cette page."
-msgstr "(status: %(statut)s). Only logged-in reviewers can see this page."
-
-#, python-format
-msgid "Niveau %(niveau)s"
-msgstr "Level %(niveau)s"
-
-msgid "Thèmes :"
-msgstr "Themes:"
-
-msgid "Sens"
-msgstr "Meaning"
-
-#, python-format
-msgid ""
-"Pas de version de niveau %(niveau_demande)s : voici la version "
-"%(niveau_du_sens)s."
+"Copiez ce code dans la page d'un cours, par exemple sur Moodle : la fiche "
+"s'y affiche seule, avec un lien vers Mots en commun."
 msgstr ""
-"No version for level %(niveau_demande)s: here is the level "
-"%(niveau_du_sens)s version."
+"Copy this code into a course page, for example on Moodle: the entry appears "
+"there on its own, with a link to Mots en commun."
 
-#, python-format
-msgid "Version de niveau %(niveau_du_sens)s."
-msgstr "Version for level %(niveau_du_sens)s."
+msgid "Voir cette fiche sur Mots en commun"
+msgstr "See this entry on Mots en commun"
 
-msgid "Autres versions :"
-msgstr "Other versions:"
-
-msgid "Le sens n'est pas encore écrit."
-msgstr "The meaning hasn't been written yet."
-
-msgid "Mot à mot :"
-msgstr "Word for word:"
-
-msgid "Traduction :"
-msgstr "Translation:"
-
-msgid "Pièges"
-msgstr "Traps"
-
-#, python-format
-msgid "Gravité : %(gravite)s"
-msgstr "Severity: %(gravite)s"
-
-#, python-format
-msgid "Langue de l'apprenant : %(langue)s"
-msgstr "Learner's language: %(langue)s"
-
-msgid "À éviter :"
-msgstr "Avoid:"
-
-msgid "À dire :"
-msgstr "Say:"
-
-msgid "Exemples"
-msgstr "Examples"
-
-msgid "Entrées liées"
-msgstr "Related entries"
-
-#, python-format
-msgid ""
-"Ajoutée par %(auteur)s · texte modifié le %(date)s · statut : %(statut)s"
-msgstr "Added by %(auteur)s · text changed on %(date)s · status: %(statut)s"
+msgid "CC BY 4.0, contributeurs de Mots en commun"
+msgstr "CC BY 4.0, contributors to Mots en commun"
 
 msgid "Niveau"
 msgstr "Level"

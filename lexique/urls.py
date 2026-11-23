@@ -10,6 +10,7 @@ urlpatterns = [
     path("", views.accueil, name="accueil"),
     path("expressions/", views.liste, name="liste"),
     path("expressions/<slug:slug>/", views.fiche, name="fiche"),
+    path("expressions/<slug:slug>/integrer/", views.integrer, name="integrer"),
     path("niveau/<str:niveau>/", views.par_niveau, name="par_niveau"),
     path("type/<str:type_piege>/", views.par_type, name="par_type"),
     path("theme/<slug:slug>/", views.par_theme, name="par_theme"),

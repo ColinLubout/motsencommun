@@ -1,0 +1,21 @@
+{% load i18n static lexique %}<!doctype html>
+<html lang="{{ langue }}" dir="{{ direction_langue }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ entree.vedette }} — Mots en commun</title>
+<meta name="robots" content="noindex">
+<link rel="preload" href="{% static 'polices/literata-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{% static 'mots-en-commun.css' %}">
+</head>
+<body class="integration">
+<main>
+{% include "lexique/_fiche.html" %}
+</main>
+<footer class="source">
+  {% url 'lexique:fiche' entree.slug as adresse_fiche %}
+  <p><a href="{% avec_niveau adresse_fiche %}" target="_blank">{% translate "Voir cette fiche sur Mots en commun" %}</a>
+    · {% translate "CC BY 4.0, contributeurs de Mots en commun" %}</p>
+</footer>
+</body>
+</html>
