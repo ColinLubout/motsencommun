@@ -416,7 +416,7 @@ motsencommun/
   deploiement/         Caddyfile, systemd units, scripts, INCIDENT.md
 ```
 
-Settings come from environment variables: secret key, allowed hosts, admin path, backup destination and `INSCRIPTION_SUR_INVITATION` (on by default). Nothing secret lives in the repository.
+Settings come from environment variables: secret key, allowed hosts, admin path, data and download folders (`DOSSIER_DONNEES`, `DOSSIER_TELECHARGEMENTS`), backup destination and `INSCRIPTION_SUR_INVITATION` (on by default). Nothing secret lives in the repository.
 
 ## Downloads and licence
 
@@ -425,8 +425,8 @@ The `/fr/telecharger/` page links to files that `python manage.py exporter` rege
 | File | Contents |
 | --- | --- |
 | `mots-en-commun.json` | Every entry, nested with its traps, examples, links and translations. Header with export date, licence and contributor credits |
-| `entrees.csv`, `pieges.csv`, `exemples.csv`, `traductions.csv` | The same data as flat tables, UTF-8 with a byte-order mark |
-| `dictionnaire-de-donnees.md` | Every field and code, explained in French. Contributors can translate it like everything else |
+| `entrees.csv`, `pieges.csv`, `exemples.csv`, `traductions.csv` | The same data as flat tables, UTF-8 with a byte-order mark, comma-separated. A list fits in one cell, its items joined by ` \| `. `entrees.csv` has one column per link type; `exemples.csv` has one row per sentence and entry; `traductions.csv` has one row per translated text (`objet`, `cle`, `langue`, `champ`, `texte`), theme names included |
+| `dictionnaire-de-donnees.md` | Every field and code, explained in French. Contributors can translate it like everything else: its text lives in the `.po` files, and `exporter` writes one version per interface language (`dictionnaire-de-donnees.en.md`…) |
 
 One entry in `mots-en-commun.json`, once written and reviewed, looks like this (abridged):
 
@@ -450,7 +450,7 @@ One entry in `mots-en-commun.json`, once written and reviewed, looks like this (
   "exemples": [
     {"phrase": "Il m'a posé un lapin hier soir, j'ai attendu une heure au café.",
      "surlignage": "m'a posé un lapin", "niveau": "B1",
-     "traductions": {"en": "He stood me up last night. I waited an hour at the café."}}
+     "traductions": {"en": {"traduction": "He stood me up last night. I waited an hour at the café.", "statut": "relu"}}}
   ],
   "traductions": {"en": {"sens": "to stand someone up", "statut": "relu"}}
 }
@@ -459,11 +459,11 @@ One entry in `mots-en-commun.json`, once written and reviewed, looks like this (
 **Rules**
 
 - **Field names in the downloads are the model's French names.** `vedette`, `niveau`, `type_piege` are the public vocabulary.
-- **Only reviewed content is included:** records with `statut` `relu` or `valide`, plus `retire` for anything withdrawn after publication. Drafts and records still in review stay on the site only. Every record still carries its `statut`, and a translation appears only once it's reviewed too.
+- **Only reviewed content is included:** records with `statut` `relu` or `valide`, plus `retire` for anything withdrawn after publication. Drafts and records still in review stay on the site only. Every record still carries its `statut`, and a translation appears only once it's reviewed too. A record withdrawn after publication appears in its last published version, taken from the history, so text that was never reviewed never leaves the server. One that was withdrawn without ever being published stays out.
 - **Refused records are left out.**
 - **Slugs are permanent.** A retired entry stays in the downloads marked `retire`, rather than disappearing.
 - **Credit by name:** each record includes the display names of whoever added it (`ajoute_par`) and reviewed it (`relecteurs`), and the file header lists every contributor. Email addresses, accounts and the edit history never leave the server.
-- **Two kinds of file:** `mots-en-commun.json` and its CSVs are rebuilt every night. On the first of each month a dated copy is also saved, for example `mots-en-commun-2026-12.json`, and kept permanently. Old snapshots are listed on the download page, so a worksheet or a study can cite the exact version it used.
+- **Two kinds of file:** `mots-en-commun.json` and its CSVs are rebuilt every night. On the first of each month a dated copy is also saved, for example `mots-en-commun-2026-12.json`, and kept permanently. Old snapshots are listed on the download page, so a worksheet or a study can cite the exact version it used. A snapshot holds every file, renamed with its month (`entrees-2026-12.csv`…), in `telechargements/instantanes/2026-12/`. The first of the month is counted in Paris time, `exporter --instantane` takes the month's snapshot on another day, and an existing snapshot is never replaced. Files are written to a temporary name and then renamed, so nobody downloads a half-written file.
 - **At launch the files are empty.** The live site starts from an empty database (see the seed data section), and only reviewed entries are exported, so the files grow as the owner adds entries and reviewers approve them.
 
 **Licence** (decided 18 November 2026):

@@ -65,6 +65,8 @@ It was drafted by an AI and is for testing only: everything arrives as a draft, 
 
 When an entry is reviewed, the site draws the image shown with its shared links (Open Graph), in `donnees/media/apercus/`. After a change made outside the admin, `uv run python manage.py generer_apercus` puts these images back in order.
 
+To write the download files (reviewed content as JSON and CSV, with the data dictionary): `uv run python manage.py exporter`. They go to `donnees/telechargements/`, and the Download page links to them. On the server, a timer rebuilds them every night and keeps a dated copy on the first of the month.
+
 On Windows, if Smart App Control blocks Python, work in WSL (Windows Subsystem for Linux): the [outils/preparer-poste-windows.ps1](outils/preparer-poste-windows.ps1) script installs and sets up everything.
 
 ## Contributing
