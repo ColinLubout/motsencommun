@@ -389,31 +389,39 @@ def test_seules_les_pages_a_integrer_s_affichent_dans_un_autre_site(
 ):
     """Critère du PRD : les pages /integrer/ sont les seules qu'un autre site peut encadrer."""
     v = visite()
-    # Un autre site que le nôtre (localhost) : 127.0.0.1 est une autre origine.
-    cours = v.racine.replace("localhost", "127.0.0.1") + "/autre-site/lecon.html"
-    assert cours.startswith("http://127.0.0.1:")
-    html = (
-        "<!doctype html><title>Leçon</title>"
-        f'<iframe id="integree" src="{v.racine}{FICHE}integrer/"></iframe>'
-        f'<iframe id="ordinaire" src="{v.racine}{FICHE}"></iframe>'
-    )
-    v.contexte.route(
-        cours,
-        lambda route: route.fulfill(body=html, content_type="text/html; charset=utf-8"),
-    )
-    v.page.goto(cours)
-    v.page.wait_for_load_state("networkidle")
 
-    integree = v.page.frame_locator("#integree")
+    def lecon(chemin):
+        """Ouvre une page d'un autre site qui encadre ``chemin`` de notre site.
+
+        127.0.0.1 est une autre origine que localhost, celle du site. Un seul cadre
+        par page : le serveur de test répond mal à deux pages à la fois (une seule
+        connexion SQLite en mémoire).
+        """
+        cours = v.racine.replace("localhost", "127.0.0.1") + f"/autre-site{chemin}"
+        assert cours.startswith("http://127.0.0.1:")
+        html = f'<!doctype html><title>Leçon</title><iframe src="{v.racine}{chemin}"></iframe>'
+        v.contexte.route(
+            cours,
+            lambda route: route.fulfill(
+                body=html, content_type="text/html; charset=utf-8"
+            ),
+        )
+        v.page.goto(cours)
+        v.page.wait_for_load_state("networkidle")
+        return v.page.frame_locator("iframe")
+
+    # La fiche ordinaire : le navigateur la refuse, à cause de notre politique.
+    lecon(FICHE)
+    cadre = v.page.locator("iframe").element_handle().content_frame()
+    assert "poser un lapin" not in cadre.content()
+    assert any("frame-ancestors 'none'" in refus for refus in v.refus_de_la_politique())
+
+    # La page à intégrer s'affiche.
+    integree = lecon(FICHE + "integrer/")
     assert integree.locator("h1").inner_text() == "poser un lapin à qqn"
-    ordinaire = v.page.locator("#ordinaire").element_handle().content_frame()
-    assert "poser un lapin" not in ordinaire.content()
 
     # Le lien vers la fiche complète s'ouvre dans un nouvel onglet, hors du cadre.
     with v.page.expect_popup() as onglet:
         integree.get_by_role("link", name="Voir cette fiche sur Mots en commun").click()
     onglet.value.wait_for_url(v.racine + FICHE)
     assert onglet.value.locator("h1").inner_text() == "poser un lapin à qqn"
-
-    # Le navigateur a bien refusé la fiche ordinaire à cause de notre politique.
-    assert any("frame-ancestors 'none'" in refus for refus in v.refus_de_la_politique())
