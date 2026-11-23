@@ -35,7 +35,7 @@ POLICE = Path(settings.BASE_DIR) / "static" / "polices" / "literata-latin.woff2"
 #: Tailles essayées pour la vedette, de la plus grande à la plus petite.
 TAILLES_DE_LA_VEDETTE = (76, 68, 60, 52, 46)
 LIGNES_DE_LA_VEDETTE = 2
-TAILLE_DU_SENS = 38
+TAILLE_DU_SENS = 44  # lisible même en petit, dans une messagerie
 TAILLE_DU_PIED = 34
 
 #: Changer cette valeur redessine toutes les images (nouvelle mise en page).
@@ -121,15 +121,20 @@ def dessiner(entree):
         y += round(taille * 1.2)
 
     pied = HAUTEUR - MARGE - TAILLE_DU_PIED
+    filet = pied - 20
     y += 24
     texte_du_sens = police(TAILLE_DU_SENS)
     hauteur_de_ligne = round(TAILLE_DU_SENS * 1.35)
-    place = max(0, (pied - 32 - y) // hauteur_de_ligne)
+    # Une ligne occupe sa taille plus les jambages (environ 1,3 fois) ; on garde
+    # 20 px libres au-dessus du filet.
+    place = max(
+        0, (filet - 20 - y - round(TAILLE_DU_SENS * 1.3)) // hauteur_de_ligne + 1
+    )
     for ligne in couper(sens, texte_du_sens, largeur, place) if place else []:
         dessin.text((MARGE, y), ligne, font=texte_du_sens, fill=TEXTE_DISCRET)
         y += hauteur_de_ligne
 
-    dessin.line((MARGE, pied - 20, LARGEUR - MARGE, pied - 20), fill=TEXTE_DISCRET)
+    dessin.line((MARGE, filet, LARGEUR - MARGE, filet), fill=TEXTE_DISCRET)
     nom_du_site = police(TAILLE_DU_PIED, 700)
     dessin.text((MARGE, pied), "Mots en commun", font=nom_du_site, fill=TEXTE)
     largeur_du_niveau = nom_du_site.getlength(niveau)
