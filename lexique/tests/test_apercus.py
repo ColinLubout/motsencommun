@@ -110,6 +110,18 @@ def test_l_apercu_d_un_relecteur_ne_mene_a_aucune_image(client_relecteur, site_p
     assert "og:image" not in contenu
 
 
+def test_une_image_oubliee_ne_rend_pas_un_brouillon_partageable(
+    client_relecteur, site_public
+):
+    """Une modification en masse peut laisser un fichier : la fiche d'un brouillon n'y mène pas."""
+    apercus.mettre_a_jour(site_public.lapin)
+    rendre_public(site_public.lapin, statut="en_relecture")  # sans enregistrer l'entrée
+    assert len(images()) == 1
+    contenu = client_relecteur.get("/fr/expressions/poser-un-lapin/").content.decode()
+    assert "Pas encore relu" in contenu
+    assert "og:image" not in contenu
+
+
 def test_un_long_sens_est_coupe_proprement():
     police = apercus.police(apercus.TAILLE_DU_SENS)
     lignes = apercus.couper("mot " * 200, police, 1040, 4)
