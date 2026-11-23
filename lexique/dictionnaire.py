@@ -90,7 +90,7 @@ ENTREES = [
         gettext_lazy(
             "L'identifiant permanent de l'entrée, en ASCII, tiré de la vedette. Il ne "
             "change jamais, même si la vedette est corrigée : c'est aussi l'adresse "
-            "de sa fiche, /fr/expressions/<slug>/."
+            "de sa fiche, `/fr/expressions/<slug>/`."
         ),
     ),
     (
