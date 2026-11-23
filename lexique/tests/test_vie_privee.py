@@ -54,14 +54,17 @@ def test_aucune_page_publique_ne_fait_appel_a_un_autre_site(client, site_public)
     """Critère du PRD : aucune page ne charge quoi que ce soit d'un autre domaine.
 
     Les liens <a> vers d'autres sites (la licence, le code) ne chargent rien :
-    le navigateur ne les suit que si on clique.
+    le navigateur ne les suit que si on clique. Les adresses absolues (adresse
+    canonique, autres langues) restent sur le site lui-même.
     """
     for adresse, reponse in reponses(client):
         for groupes in RESSOURCES.findall(reponse.content.decode()):
             ressource = next(g for g in groupes if g)
-            assert not re.match(
-                r"^(?:[a-z][a-z0-9+.-]*:)?//", ressource, re.IGNORECASE
-            ), f"{adresse} charge {ressource}"
+            absolue = re.match(
+                r"^(?:[a-z][a-z0-9+.-]*:)?//([^/:?#]*)", ressource, re.IGNORECASE
+            )
+            if absolue:
+                assert absolue.group(1) == "testserver", f"{adresse} charge {ressource}"
 
 
 def test_la_feuille_de_style_ne_fait_appel_a_aucun_autre_site():

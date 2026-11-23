@@ -2,7 +2,8 @@
 
 from django.apps import AppConfig
 from django.conf import settings
-from django.db.models.signals import post_migrate, post_save
+from django.db import transaction
+from django.db.models.signals import post_delete, post_migrate, post_save
 from django.utils.translation import gettext_lazy as _
 
 #: Le groupe des relecteurs et relectrices : voir le contenu et le relire, rien d'autre.
@@ -49,6 +50,25 @@ def creer_profil_de_contributeur(sender, instance, created, raw=False, **kwargs)
         )
 
 
+def mettre_a_jour_l_apercu(sender, instance, raw=False, **kwargs):
+    """Après l'enregistrement d'une entrée : son image d'aperçu suit son statut et son texte.
+
+    L'image est dessinée une fois la transaction validée, et une erreur (disque
+    plein…) est notée dans le journal sans faire échouer l'enregistrement.
+    """
+    from lexique import apercus
+
+    if not raw:
+        transaction.on_commit(lambda: apercus.mettre_a_jour(instance), robust=True)
+
+
+def effacer_l_apercu(sender, instance, **kwargs):
+    from lexique import apercus
+
+    slug = instance.slug
+    transaction.on_commit(lambda: apercus.effacer(slug), robust=True)
+
+
 class LexiqueConfig(AppConfig):
     """Les entrées, leurs pièges, leurs exemples et leurs traductions."""
 
@@ -58,3 +78,5 @@ class LexiqueConfig(AppConfig):
     def ready(self):
         post_migrate.connect(preparer_groupe_des_relecteurs, sender=self)
         post_save.connect(creer_profil_de_contributeur, sender=settings.AUTH_USER_MODEL)
+        post_save.connect(mettre_a_jour_l_apercu, sender="lexique.Entree")
+        post_delete.connect(effacer_l_apercu, sender="lexique.Entree")

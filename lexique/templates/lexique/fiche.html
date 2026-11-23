@@ -1,5 +1,19 @@
 {% extends "lexique/base.html" %}{% load i18n %}
 {% block titre %}{{ entree.vedette }}{% endblock %}
+{% block description %}{{ description }}{% endblock %}
+{% block partage %}
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Mots en commun">
+<meta property="og:title" content="{{ entree }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:url" content="{{ adresse_canonique }}">
+{% if image_d_apercu %}<meta property="og:image" content="{{ image_d_apercu }}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ entree }} : {{ description }}">
+<meta name="twitter:card" content="summary_large_image">
+{% endif %}{% endblock %}
 {% block contenu %}
 {% include "lexique/_fiche.html" %}
 {% if public %}

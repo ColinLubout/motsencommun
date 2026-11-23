@@ -7,6 +7,12 @@ from django.core.management import call_command
 HORS_DU_PROJET = [".venv", ".git", "donnees", "node_modules"]
 
 
+@pytest.fixture(autouse=True)
+def media_temporaire(settings, tmp_path):
+    """Les fichiers que crée le site (images d'aperçu) vont dans un dossier jetable."""
+    settings.MEDIA_ROOT = tmp_path / "media"
+
+
 @pytest.fixture(scope="session", autouse=True)
 def traductions_compilees():
     """Les .mo ne sont pas dans le dépôt : on les recrée à partir des .po avant les tests."""

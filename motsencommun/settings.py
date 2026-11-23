@@ -174,8 +174,31 @@ TIME_ZONE = "Europe/Paris"
 USE_TZ = True
 
 STATIC_URL = "static/"
+# Les fichiers que le site crée lui-même, comme les images d'aperçu des fiches.
+# Sur le serveur, Caddy les sert directement.
+MEDIA_URL = "/media/"
+MEDIA_ROOT = DOSSIER_DONNEES / "media"
 # La feuille de style unique du site (et, plus tard, ses polices).
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+#: Le dépôt du code : les failles s'y signalent en privé (SECURITY.md, security.txt).
+DEPOT_DU_CODE = "https://github.com/ColinLubout/motsencommun"
+
+#: Les robots qui collectent des textes pour entraîner une IA : robots.txt leur
+#: demande de ne pas parcourir le site, et les envoie vers la page de
+#: téléchargement, la voie prévue pour l'IA (données relues, structurées, créditées).
+ROBOTS_D_ENTRAINEMENT_IA = [
+    "GPTBot",
+    "ClaudeBot",
+    "anthropic-ai",
+    "Google-Extended",
+    "Applebot-Extended",
+    "CCBot",
+    "Bytespider",
+    "Meta-ExternalAgent",
+    "cohere-training-data-crawler",
+    "AI2Bot",
+]
 
 #: Entrées par page dans les listes publiques.
 ENTREES_PAR_PAGE = 50

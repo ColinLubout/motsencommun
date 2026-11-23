@@ -1,0 +1,17 @@
+{% autoescape off %}# Mots en commun
+#
+# Les moteurs de recherche sont les bienvenus.
+#
+# Les robots qui collectent des textes pour entraîner une intelligence
+# artificielle sont priés de ne pas parcourir ce site. Les données relues s'y
+# téléchargent librement, structurées, sous licence CC BY 4.0, avec le nom de
+# leurs auteurs : {{ adresse_telecharger }}
+
+{% for robot in robots_ia %}User-agent: {{ robot }}
+{% endfor %}Disallow: /
+
+User-agent: *
+Disallow:
+
+Sitemap: {{ adresse_plan }}
+{% endautoescape %}

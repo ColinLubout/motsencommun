@@ -12,11 +12,13 @@ from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.utils import translation
 from django.utils.translation import get_language
 from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 
 from lexique import affichage as a
+from lexique import apercus, reperes
 from lexique import models as m
 from lexique import recherche as r
 from lexique import vocabulaire as v
@@ -310,11 +312,26 @@ def code_d_integration(request, entree, niveau):
     )
 
 
+def description_de_la_fiche(entree, traduction):
+    """Le sens à montrer aux moteurs et aux aperçus : la traduction relue, sinon le français.
+
+    Au niveau de l'entrée, comme sur son adresse canonique (sans « mon_niveau »).
+    """
+    if traduction and traduction.sens:
+        return traduction.sens
+    return a.version_au_niveau(entree.sens(), entree.niveau)[1]
+
+
 def fiche(request, slug):
     contenu = contenu_de_la_fiche(request, slug)
+    entree = contenu["entree"]
     contenu["code_integration"] = code_d_integration(
-        request, contenu["entree"], contenu["niveau_demande"]
+        request, entree, contenu["niveau_demande"]
     )
+    contenu.update(reperes.reperes_de_la_fiche(request, entree))
+    contenu["description"] = description_de_la_fiche(entree, contenu["traduction"])
+    image = apercus.adresse(entree)
+    contenu["image_d_apercu"] = request.build_absolute_uri(image) if image else None
     return render(request, "lexique/fiche.html", contenu)
 
 
@@ -396,4 +413,33 @@ def a_propos(request):
         request,
         "lexique/a_propos.html",
         {"contributeurs": contributeurs_credites(get_language())},
+    )
+
+
+# --- Pour les robots ------------------------------------------------------------
+
+
+def robots_txt(request):
+    """Les moteurs de recherche sont bienvenus ; les robots d'entraînement d'IA, envoyés aux téléchargements."""
+    with translation.override(settings.LANGUAGE_CODE):
+        adresse_telecharger = request.build_absolute_uri(reverse("lexique:telecharger"))
+    return render(
+        request,
+        "lexique/robots.txt",
+        {
+            "robots_ia": settings.ROBOTS_D_ENTRAINEMENT_IA,
+            "adresse_telecharger": adresse_telecharger,
+            "adresse_plan": request.build_absolute_uri(reverse("plan_du_site")),
+        },
+        content_type="text/plain; charset=utf-8",
+    )
+
+
+def plan_du_site(request):
+    """sitemap.xml : les adresses canoniques des pages publiques, entrées relues seulement."""
+    return render(
+        request,
+        "lexique/sitemap.xml",
+        {"adresses": reperes.adresses_du_plan(request)},
+        content_type="application/xml; charset=utf-8",
     )
