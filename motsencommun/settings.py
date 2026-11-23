@@ -27,6 +27,9 @@ SECRET_KEY = env.obligatoire("DJANGO_SECRET_KEY", en_developpement=CLE_DE_DEVELO
 ALLOWED_HOSTS = env.liste("DJANGO_ALLOWED_HOSTS", en_developpement=[])
 CHEMIN_ADMIN = env.chemin_admin("CHEMIN_ADMIN")
 DOSSIER_DONNEES = env.dossier("DOSSIER_DONNEES", en_developpement=BASE_DIR / "donnees")
+DOSSIER_TELECHARGEMENTS = env.dossier(
+    "DOSSIER_TELECHARGEMENTS", en_developpement=BASE_DIR / "donnees" / "telechargements"
+)
 
 # S'il manque une variable obligatoire, on s'arrête ici en les nommant toutes.
 env.verifier()
@@ -178,6 +181,9 @@ STATIC_URL = "static/"
 # Sur le serveur, Caddy les sert directement.
 MEDIA_URL = "/media/"
 MEDIA_ROOT = DOSSIER_DONNEES / "media"
+# Les fichiers à télécharger, refaits chaque nuit par « manage.py exporter » ;
+# sur le serveur, Caddy les sert lui-même.
+TELECHARGEMENTS_URL = "/telechargements/"
 # La feuille de style unique du site (et, plus tard, ses polices).
 STATICFILES_DIRS = [BASE_DIR / "static"]
 

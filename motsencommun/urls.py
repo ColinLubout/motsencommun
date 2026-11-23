@@ -24,5 +24,9 @@ urlpatterns = [
     *i18n_patterns(path("", include("lexique.urls")), prefix_default_language=True),
 ]
 
-# En développement seulement : sur le serveur, Caddy sert /media/ lui-même.
+# En développement seulement : sur le serveur, Caddy sert /media/ et
+# /telechargements/ lui-même.
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(
+    settings.TELECHARGEMENTS_URL, document_root=settings.DOSSIER_TELECHARGEMENTS
+)

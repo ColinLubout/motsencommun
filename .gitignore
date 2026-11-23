@@ -13,6 +13,7 @@ __pycache__/
 donnees/base.sqlite3*
 donnees/cache/
 donnees/media/
+donnees/telechargements/
 
 # Traductions compilées : « manage.py compilemessages » les recrée à partir des .po
 *.mo

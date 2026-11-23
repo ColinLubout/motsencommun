@@ -13,6 +13,7 @@ OBLIGATOIRES = [
     "DJANGO_ALLOWED_HOSTS",
     "CHEMIN_ADMIN",
     "DOSSIER_DONNEES",
+    "DOSSIER_TELECHARGEMENTS",
 ]
 
 
@@ -24,6 +25,7 @@ def variables_serveur(tmp_path):
         "DJANGO_ALLOWED_HOSTS": "motsencommun.fr",
         "CHEMIN_ADMIN": "coulisses-4f7k/",
         "DOSSIER_DONNEES": str(tmp_path),
+        "DOSSIER_TELECHARGEMENTS": str(tmp_path / "telechargements"),
     }
 
 
@@ -36,6 +38,7 @@ def test_les_reglages_viennent_de_l_environnement(
     assert reglages["ALLOWED_HOSTS"] == ["motsencommun.fr"]
     assert reglages["CHEMIN_ADMIN"] == "coulisses-4f7k/"
     assert reglages["DATABASES"]["default"]["NAME"] == tmp_path / "base.sqlite3"
+    assert reglages["DOSSIER_TELECHARGEMENTS"] == tmp_path / "telechargements"
 
 
 def test_le_serveur_ne_demarre_pas_sans_ses_variables(charger_reglages):
